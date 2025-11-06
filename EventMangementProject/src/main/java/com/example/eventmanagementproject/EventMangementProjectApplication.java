@@ -1,4 +1,4 @@
-package com.example.eventmangementproject;
+package com.example.eventmanagementproject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
