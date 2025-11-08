@@ -1,4 +1,4 @@
-package com.example.eventmangementproject.dao.entities;
+package com.example.eventmanagementproject.dao.entities;
 
 public enum ParticipationStatus {
     CONFIRMED,      // Registration confirmed

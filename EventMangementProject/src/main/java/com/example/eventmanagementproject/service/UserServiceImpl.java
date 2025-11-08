@@ -1,7 +1,7 @@
-package com.example.eventmangementproject.service;
+package com.example.eventmanagementproject.service;
 
-import com.example.eventmangementproject.dao.entities.User;
-import com.example.eventmangementproject.dao.repositories.UserRepository;
+import com.example.eventmanagementproject.dao.entities.User;
+import com.example.eventmanagementproject.dao.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,5 @@
-package com.example.eventmangementproject.service;
-import com.example.eventmangementproject.dao.entities.Event;
+package com.example.eventmanagementproject.service;
+import com.example.eventmanagementproject.dao.entities.Event;
 
 import java.util.List;
 

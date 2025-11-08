@@ -1,15 +1,9 @@
-package com.example.eventmangementproject.web;
+package com.example.eventmanagementproject.web;
 
-<<<<<<< HEAD:EventMangementProject/src/main/java/com/example/eventmanagementproject/web/EventController.java
 import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-=======
-import com.example.eventmangementproject.dao.entities.Event;
-import com.example.eventmangementproject.service.EventServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> 2b6492f7f7f753c3f8fa7802786b7b2d6f564679:EventMangementProject/src/main/java/com/example/eventmangementproject/web/EventController.java
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

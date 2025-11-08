@@ -1,7 +1,7 @@
-package com.example.eventmangementproject.dao.repositories;
+package com.example.eventmanagementproject.dao.repositories;
 
-import com.example.eventmangementproject.dao.entities.Notification;
-import com.example.eventmangementproject.dao.entities.User;
+import com.example.eventmanagementproject.dao.entities.Notification;
+import com.example.eventmanagementproject.dao.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

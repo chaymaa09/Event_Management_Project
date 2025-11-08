@@ -1,39 +1,46 @@
-package com.example.eventmangementproject;
+package com.example.eventmanagementproject;
 
-import com.example.eventmangementproject.dao.entities.User;
-import com.example.eventmangementproject.dao.repositories.UserRepository;
+import com.example.eventmanagementproject.dao.entities.User;
+import com.example.eventmanagementproject.dao.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Stream;
 
 @SpringBootApplication
-public class EventMangementProjectApplication implements CommandLineRunner {
-	@Autowired
-	private UserRepository userRepository;
+public class EventManagementProjectApplication implements CommandLineRunner {
+    
+    @Autowired
+    private UserRepository userRepository;
 
-	public static void main(String[] args) {
-		SpringApplication.run(EventMangementProjectApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EventManagementProjectApplication.class, args);
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
-		Stream.of("John", "Julie", "Jennifer", "Helen", "Rachel").forEach(name -> {
-			User user = new User(
-					null,
-					name,
-					name.toLowerCase() + "@domain.com",
-					"test",   // password should be a String, not char
-					"LOCAL",  // provider type also String
-					null, null, null, null, null
-			);
-			userRepository.save(user);
-		});
+    @Override
+    @Transactional  // keeps the session open for lazy loading
+    public void run(String... args) throws Exception {
+        
+        Stream.of("John", "Julie", "Jennifer", "Helen", "Rachel").forEach(name -> {
+            User user = new User();
+            user.setName(name);
+            user.setEmail(name.toLowerCase() + "@domain.com");
+            user.setPassword("test123");  
+            user.setAuthType("LOCAL");
+            user.setProvider("LOCAL");
+            userRepository.save(user);
+        });
 
-		userRepository.findAll().forEach(System.out::println);
-	}
-
-
+        
+        userRepository.findAll().forEach(user -> 
+            System.out.println("User created: ID=" + user.getId() + 
+                             ", Name=" + user.getName() + 
+                             ", Email=" + user.getEmail())
+        );
+        
+        System.out.println("Test data created successfully!");
+    }
 }

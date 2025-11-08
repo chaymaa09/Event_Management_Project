@@ -1,7 +1,7 @@
-package com.example.eventmangementproject.service;
+package com.example.eventmanagementproject.service;
 
-import com.example.eventmangementproject.dao.entities.Location;
-import com.example.eventmangementproject.dao.repositories.LocationRepository;
+import com.example.eventmanagementproject.dao.entities.Location;
+import com.example.eventmanagementproject.dao.repositories.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
