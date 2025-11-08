@@ -1,4 +1,4 @@
-package com.example.eventmanagementproject.dao.entities;
+package com.example.eventmangementproject.dao.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 

@@ -1,8 +1,8 @@
-package com.example.eventmanagementproject.service;
+package com.example.eventmangementproject.service;
 
-import com.example.eventmanagementproject.dao.entities.Event;
-import com.example.eventmanagementproject.dao.entities.Participation;
-import com.example.eventmanagementproject.dao.entities.ParticipationStatus;
+import com.example.eventmangementproject.dao.entities.Event;
+import com.example.eventmangementproject.dao.entities.Participation;
+import com.example.eventmangementproject.dao.entities.ParticipationStatus;
 
 import java.util.List;
 

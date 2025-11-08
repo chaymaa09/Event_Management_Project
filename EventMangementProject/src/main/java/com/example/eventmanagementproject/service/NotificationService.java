@@ -1,6 +1,6 @@
-package com.example.eventmanagementproject.service;
-import com.example.eventmanagementproject.dao.entities.Notification;
-import com.example.eventmanagementproject.dao.entities.User;
+package com.example.eventmangementproject.service;
+import com.example.eventmangementproject.dao.entities.Notification;
+import com.example.eventmangementproject.dao.entities.User;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package com.example.eventmanagementproject.service;
+package com.example.eventmangementproject.service;
 
-import com.example.eventmanagementproject.dao.entities.Tag;
-import com.example.eventmanagementproject.dao.repositories.TagRepository;
+import com.example.eventmangementproject.dao.entities.Tag;
+import com.example.eventmangementproject.dao.repositories.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +26,14 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag getTagByName(String name) {
-        return tagRepository.findByNameIgnoreCase(name)
+        return tagRepository.findByTagNameIgnoreCase(name)
                 .orElseThrow(() -> new RuntimeException("Tag not found with name: " + name));
     }
 
 
     @Override
     public Tag createTag(Tag tag) {
-        Optional<Tag> existingTag = tagRepository.findByNameIgnoreCase(tag.getTagName());
+        Optional<Tag> existingTag = tagRepository.findByTagNameIgnoreCase(tag.getTagName());
         if (existingTag.isPresent()) {
             throw new RuntimeException("Tag with name '" + tag.getTagName() + "' already exists!");
         }
