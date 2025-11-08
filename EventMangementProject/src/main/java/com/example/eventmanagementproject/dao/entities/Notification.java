@@ -18,7 +18,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean read;
+    private boolean isRead;
     private String message;
     private ZonedDateTime createdAt = ZonedDateTime.now();
 

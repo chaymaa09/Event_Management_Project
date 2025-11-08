@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface TagService {
     List<Tag> getAllTags();
-    Optional<Tag> getTagById(Long id);
+    Tag getTagById(Long id);
     Tag getTagByName(String tagName);
     Tag createTag(Tag tag);
     Tag updateTag(Tag tag);

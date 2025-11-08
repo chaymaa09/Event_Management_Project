@@ -1,39 +1,43 @@
 package com.example.eventmanagementproject.web;
 
 import com.example.eventmanagementproject.dao.entities.Event;
-import com.example.eventmanagementproject.service.EventServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.eventmanagementproject.service.EventService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/events")
+@RequiredArgsConstructor
 public class EventController {
-    @Autowired
-    private EventServiceImpl eventServiceImpl;
+    private final EventService eventService;
 
-    @GetMapping("/events/all")
-    public List<Event> getAllEvents() {
-        return eventServiceImpl.findAllEvent();
+    @GetMapping("/all")
+    public ResponseEntity<List<Event>> getAllEvents() {
+
+        return ResponseEntity.ok(eventService.findAllEvent());
     }
 
-    @GetMapping("/events/find")
-    public Event getEventById(@RequestParam("id") Long id) {
-        return eventServiceImpl.findEventById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
+        Event event = eventService.findEventById(id);
+        return event != null ? ResponseEntity.ok(event) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("events/add")
-    public Event addEvent(@RequestBody Event event) {
-        return eventServiceImpl.addEvent(event);
+    @PostMapping("/add")
+    public ResponseEntity<Event> addEvent(@RequestBody Event event) {
+        return ResponseEntity.ok(eventService.addEvent(event));
     }
 
-    @PutMapping("/events/update")
-    public Event updateEvent(@RequestBody Event event) {
-        return eventServiceImpl.updateEvent(event);
+    @PutMapping("/update")
+    public ResponseEntity<Event> updateEvent(@RequestBody Event event) {
+        return ResponseEntity.ok(eventService.updateEvent(event));
     }
 
-    @DeleteMapping("/events/delete")
-    public void deleteEventBId(@RequestParam("id") Long id) {
-        eventServiceImpl.deleteEvent(id);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Boolean> deleteEventBId(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.deleteEvent(id));
     }
 }
