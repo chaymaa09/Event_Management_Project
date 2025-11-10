@@ -14,6 +14,7 @@ public class EventController {
 
     @GetMapping("/events/all")
     public List<Event> getAllEvents() {
+
         return eventServiceImpl.findAllEvent();
     }
 
