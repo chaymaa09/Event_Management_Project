@@ -1,7 +1,7 @@
 /**
  * Event Model - Matches Event.java
  */
-export interface Event {
+export interface AppEvent {
   id?: number;
   title: string;
   description: string;
@@ -76,7 +76,7 @@ export interface Notification {
 export interface Participation {
   id?: number;
   user: User;
-  event: Event;
+  event: AppEvent;
   registrationDate?: string;
   status?: ParticipationStatus;
 }

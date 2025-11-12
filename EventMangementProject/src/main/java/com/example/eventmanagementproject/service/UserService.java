@@ -8,7 +8,8 @@ public interface UserService {
 
      User addUser(User user);
      User updateUser(User user);
-     boolean deleteUser(Long userId);
+     boolean deleteUserById(Long userId);
+     boolean deleteUser(User user);
      List<User> getAllUsers();
      User getUserById(Long userId);
 
