@@ -23,24 +23,7 @@ public class EventManagementProjectApplication implements CommandLineRunner {
     @Override
     @Transactional  // keeps the session open for lazy loading
     public void run(String... args) throws Exception {
-        
-        Stream.of("John", "Julie", "Jennifer", "Helen", "Rachel").forEach(name -> {
-            User user = new User();
-            user.setName(name);
-            user.setEmail(name.toLowerCase() + "@domain.com");
-            user.setPassword("test123");  
-            user.setAuthType("LOCAL");
-            user.setProvider("LOCAL");
-            userRepository.save(user);
-        });
 
-        
-        userRepository.findAll().forEach(user -> 
-            System.out.println("User created: ID=" + user.getId() + 
-                             ", Name=" + user.getName() + 
-                             ", Email=" + user.getEmail())
-        );
-        
-        System.out.println("Test data created successfully!");
+        System.out.println("app running successfully!");
     }
 }

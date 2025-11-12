@@ -3,6 +3,7 @@ package com.example.eventmanagementproject.service;
 import com.example.eventmanagementproject.dao.entities.User;
 import com.example.eventmanagementproject.dao.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.jdbc.Expectation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,13 +28,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUser(Long userId) {
+    public boolean deleteUserById(Long userId) {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
             return true;
         }
         return false;
     }
+
+    @Override
+    public boolean deleteUser(User user) {
+        if (userRepository.existsById(user.getId())) {
+            userRepository.deleteById(user.getId());
+            return true;
+        }
+        return false;
+    }
+
+
 
     @Override
     public List<User> getAllUsers() {
