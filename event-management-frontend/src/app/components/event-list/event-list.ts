@@ -51,20 +51,21 @@ export class EventList implements OnInit {
       return;
     }
 
-
     if (!confirm('Are you sure you want to delete this event?')) {
       return;
     }
-
 
     this.eventService.deleteEvent(id).subscribe({
       next: (result) => {
         console.log('Event deleted successfully:', id);
 
-        this.loadEvents();
+        // this.loadEvents();
 
         // Option 2: Remove from local array (faster, no server call)
-        // this.events = this.events.filter(e => e.id !== id);
+        this.events = this.events.filter(e => e.id !== id);
+
+
+
       },
       error: (err) => {
         console.error('Error deleting event:', err);
