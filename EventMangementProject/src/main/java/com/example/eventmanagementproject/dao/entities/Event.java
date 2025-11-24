@@ -2,7 +2,6 @@ package com.example.eventmanagementproject.dao.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 
