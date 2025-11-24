@@ -33,13 +33,7 @@ public class SecurityConfig {
     }
 
     // Authentication Provider
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder,
-            CustomUserDetailsService userDetailsService) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder);
-        return provider;
-    }
+
 
     // Authentication Manager
     @Bean
@@ -82,7 +76,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").permitAll() // ⚠️ TODO: Change to .authenticated()
 
                         .anyRequest().authenticated())
-                .authenticationProvider(authenticationProvider(passwordEncoder(), userDetailsService))
+
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable());
 

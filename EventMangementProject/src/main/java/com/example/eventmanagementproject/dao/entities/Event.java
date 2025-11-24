@@ -18,30 +18,51 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
-    private String description;
-    private ZonedDateTime creationDate;
-    private ZonedDateTime startDate;
-    private ZonedDateTime endDate;
-    private boolean isPrivate = false;
 
-    private boolean isVirtual = false;
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "creation_date", insertable = false, updatable = false)
+    private ZonedDateTime creationDate;
+
+    @Column(name = "start_date", nullable = false)
+    private ZonedDateTime startDate;
+
+    @Column(name = "end_date")
+    private ZonedDateTime endDate;
+
+    @Column(name = "is_private", nullable = false)
+    private Boolean isPrivate = false;
+
+    @Column(name = "is_virtual", nullable = false)
+    private Boolean isVirtual = false;
+
+    @Column(name = "virtual_link", length = 500)
     private String virtualLink;
 
-    private long capacity; // null => illimité
-    private boolean waitingListEnabled = false;
-    private boolean requiresApproval = false;
+    private Long capacity;
 
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
+    @Column(name = "waiting_list_enabled", nullable = false)
+    private Boolean waitingListEnabled = false;
+
+    @Column(name = "requires_approval", nullable = false)
+    private Boolean requiresApproval = false;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
 
-    @ManyToMany(mappedBy = "events")
+    @ManyToMany()
+    @JoinTable(name = "tag_events", // Junction table name
+            joinColumns = @JoinColumn(name = "event_id"), // Column for Event
+            inverseJoinColumns = @JoinColumn(name = "tag_id") // Column for Tag
+    )
     private List<Tag> tags;
-
 
 }
