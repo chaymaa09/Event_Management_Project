@@ -29,7 +29,6 @@ public class CorsConfig {
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html"
-
                     ).permitAll()
                     .requestMatchers("/api/**").permitAll()
                     .anyRequest().authenticated()
@@ -57,4 +56,3 @@ public class CorsConfig {
         return source;
     }
 }
-
