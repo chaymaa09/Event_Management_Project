@@ -2,8 +2,6 @@ package com.example.eventmanagementproject;
 
 import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.dao.repositories.EventRepository;
-import com.example.eventmanagementproject.dao.entities.User;
-import com.example.eventmanagementproject.dao.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

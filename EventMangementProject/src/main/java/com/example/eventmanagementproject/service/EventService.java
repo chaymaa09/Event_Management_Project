@@ -1,14 +1,16 @@
 package com.example.eventmanagementproject.service;
 import com.example.eventmanagementproject.dao.entities.Event;
+import com.example.eventmanagementproject.dto.EventCreateDTO;
 
 import java.util.List;
 
 public interface EventService {
     List<Event> findAllEvent();
     Event findEventById(Long id);
-    Event addEvent(Event event);
     Event updateEvent(Event event);
     boolean deleteEvent(Long eventId);
+    Event addEvent(EventCreateDTO dto, String creatorEmail);
+
     /// Additional methods we can add later ////////////////
 
     // List<Event> findUpcomingEvents();  // Events in the future
