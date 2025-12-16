@@ -32,6 +32,10 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .authType(AuthType.LOCAL)
                 .avatarUrl(request.getAvatarUrl())
+                .enabled(true)
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
