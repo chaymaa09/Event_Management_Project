@@ -15,6 +15,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User implements UserDetails {
 
     @Id
@@ -32,17 +33,18 @@ public class User implements UserDetails {
     private String providerId;
     private String avatarUrl;
 
+
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean enabled = true; 
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean accountNonExpired = true;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "boolean default true")
     private boolean accountNonLocked = true;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean credentialsNonExpired = true;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
@@ -55,7 +57,7 @@ public class User implements UserDetails {
     // UserDetails Implementation
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("USER"));
     }
 
     @Override
