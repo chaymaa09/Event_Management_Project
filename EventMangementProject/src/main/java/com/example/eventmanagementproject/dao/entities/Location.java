@@ -1,5 +1,6 @@
 package com.example.eventmanagementproject.dao.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@JsonIgnoreProperties({ "events" })
 public class Location {
 
     @Id
@@ -20,7 +21,7 @@ public class Location {
     private String name;
     private String street;
     private String city;
-    private String region;       // état/province
+    private String region; // état/province
     private String country;
     private String postalCode;
 
@@ -28,10 +29,9 @@ public class Location {
     private Double longitude;
 
     private String timezone;
-    private String placeId;      // ID provider
+    private String placeId; // ID provider
 
-    private String additionalInfos;   // Comme num de buildings, other info
-
+    private String additionalInfos; // Comme num de buildings, other info
 
     @OneToMany(mappedBy = "location")
     private List<Event> events;

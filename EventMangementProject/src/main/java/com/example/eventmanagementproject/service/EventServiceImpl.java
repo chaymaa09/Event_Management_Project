@@ -41,6 +41,9 @@ public class EventServiceImpl implements EventService {
         event.setIsPrivate(dto.getIsPrivate() != null ? dto.getIsPrivate() : false);
         event.setIsVirtual(dto.getIsVirtual() != null ? dto.getIsVirtual() : false);
         event.setVirtualLink(dto.getVirtualLink());
+        event.setPrice(dto.getPrice() != null ? dto.getPrice() : 0.0);
+        event.setCategory(dto.getCategory());
+        event.setPosterUrl(dto.getPosterUrl());
         event.setWaitingListEnabled(false);
         event.setRequiresApproval(false);
 
@@ -49,7 +52,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> findAllEvent() {
-        return eventRepository.findAll();
+        return eventRepository.findAllWithTags();
     }
 
     @Override

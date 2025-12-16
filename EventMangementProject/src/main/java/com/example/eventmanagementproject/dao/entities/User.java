@@ -1,5 +1,6 @@
 package com.example.eventmanagementproject.dao.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties({ "createdEvents", "participations", "password", "authorities", "accountNonExpired",
+        "accountNonLocked", "credentialsNonExpired" })
 public class User implements UserDetails {
 
     @Id
@@ -53,7 +56,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Participation> participations;
 
-    
     // UserDetails Implementation
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

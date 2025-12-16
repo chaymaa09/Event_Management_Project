@@ -1,0 +1,103 @@
+<!-- Hero Section -->
+<app-hero-section></app-hero-section>
+
+<!-- Infinite Marquee -->
+<div class="relative w-full overflow-hidden py-4 mb-16 bg-slate-100 -skew-y-1 transform origin-left z-20 border-y border-slate-100">
+  <div class="flex whitespace-nowrap animate-marquee">
+    <div *ngFor="let tag of hashtags" class="mx-4 md:mx-8 text-2xl md:text-3xl font-black font-outfit text-slate-300 hover:text-purple-500 transition-colors uppercase tracking-tighter cursor-default">
+      {{ tag }}
+    </div>
+  </div>
+</div>
+
+<!-- Browse by Vibe Section -->
+<section class="relative overflow-hidden py-16 px-6">
+  <h2 class="text-4xl font-outfit font-bold text-slate-900 text-center mb-12">
+    What's Your Vibe Today?
+  </h2>
+
+  <!-- Ambient blobs behind cards -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute -left-16 top-8 w-56 h-56 rounded-full bg-purple-200 blur-3xl opacity-70"></div>
+    <div class="absolute right-6 top-20 w-64 h-64 rounded-full bg-blue-200 blur-3xl opacity-70"></div>
+    <div class="absolute left-1/2 bottom-0 w-72 h-72 -translate-x-1/2 rounded-full bg-pink-200 blur-3xl opacity-60"></div>
+
+    <!-- Fade edges to avoid hard lines -->
+    <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white via-white/60 to-transparent"></div>
+    <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/60 to-transparent"></div>
+  </div>
+
+  <div class="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+        <div *ngFor="let category of categories"
+          (click)="onCategoryClick(category)"
+          class="group h-full bg-white  rounded-3xl p-6 flex flex-col items-center justify-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 relative overflow-hidden min-h-[180px]">
+
+       <!-- Gradient hover overlay -->
+      <div [ngClass]="'absolute inset-0 bg-gradient-to-br ' + category.gradient + ' opacity-0 group-hover:opacity-50 transition-opacity duration-300'"></div>
+
+      <!-- Content -->
+      <div class="relative z-10 text-center">
+        <svg class="w-16 h-16 mb-4 text-slate-900 group-hover:text-white group-hover:scale-110 transition-transform duration-300 mx-auto block" viewBox="0 0 24 24" aria-hidden="true">
+          <ng-container *ngFor="let d of category.paths">
+            <path [attr.d]="d" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </ng-container>
+          <ng-container *ngIf="category.circles">
+            <circle *ngFor="let c of category.circles" [attr.cx]="c.cx" [attr.cy]="c.cy" [attr.r]="c.r" fill="currentColor"></circle>
+          </ng-container>
+        </svg>
+        <h3 class="text-xl font-outfit font-bold text-slate-900 group-hover:text-white mb-2">{{ category.name }}</h3>
+        <p class="text-slate-600 group-hover:text-white/90 text-sm">{{ category.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Fade edges between sections -->
+<div class="relative pointer-events-none" aria-hidden="true">
+  <div class="absolute inset-x-0 -mt-6 h-16 bg-gradient-to-b from-white via-white/60 to-transparent"></div>
+  <div class="h-16"></div>
+  <div class="absolute inset-x-0 -mb-6 h-16 bg-gradient-to-t from-white via-white/60 to-transparent"></div>
+  <div class="h-0"></div>
+</div>
+<!-- STATS -->
+<section class="py-20 bg-slate-900 text-white w-full relative z-10 overflow-hidden">
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-12 text-center relative z-10 max-w-5xl mx-auto px-6">
+    <!-- Events Hosted -->
+    <div>
+      <mat-icon class="!w-12 !h-12 !text-5xl mx-auto mb-4 text-purple-400">event</mat-icon>
+      <div class="text-4xl md:text-5xl font-outfit font-bold mb-2">500K+</div>
+      <div class="text-sm md:text-base text-slate-400">Events Hosted</div>
+    </div>
+    <!-- Attendees -->
+    <div>
+      <mat-icon class="!w-12 !h-12 !text-5xl mx-auto mb-4 text-pink-400">people_outline</mat-icon>
+      <div class="text-4xl md:text-5xl font-outfit font-bold mb-2">2M+</div>
+      <div class="text-sm md:text-base text-slate-400">Happy Attendees</div>
+    </div>
+    <!-- Average Rating -->
+    <div class="col-span-2 md:col-span-1">
+      <mat-icon class="!w-12 !h-12 !text-5xl mx-auto mb-4 text-yellow-400">star_border</mat-icon>
+      <div class="text-4xl md:text-5xl font-outfit font-bold mb-2">4.8</div>
+      <div class="text-sm md:text-base text-slate-400">Average Rating</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="py-16 px-6 bg-purple-50 text-purple-600 w-full relative z-10">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-outfit font-bold mb-4">Stay in the Loop!</h2>
+    <p class="text-base md:text-lg mb-8">Subscribe to our newsletter for the latest events, tips, and exclusive offers.</p>
+    <form (submit)="onSubscribe($event)" class="flex flex-col sm:flex-row gap-4 justify-center">
+      <input type="email" placeholder="Enter your email" required
+             class="w-full sm:w-auto flex-grow px-4 py-3 rounded-full text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-400" />
+      <button type="submit"
+              class="bg-white text-purple-600 font-semibold px-6 py-3 rounded-full hover:bg-gray-100 transition-all duration-300">
+        Join
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<app-footer></app-footer>

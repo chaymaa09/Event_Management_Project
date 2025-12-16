@@ -2,6 +2,8 @@ package com.example.eventmanagementproject.web;
 
 import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.dto.EventCreateDTO;
+import com.example.eventmanagementproject.dto.EventResponseDTO;
+import com.example.eventmanagementproject.mapper.EventMapper;
 import com.example.eventmanagementproject.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/events")
@@ -18,16 +21,23 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private final EventMapper eventMapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Event>> getAllEvents() {
-        return ResponseEntity.ok(eventService.findAllEvent());
+    public ResponseEntity<List<EventResponseDTO>> getAllEvents() {
+        List<Event> events = eventService.findAllEvent();
+        List<EventResponseDTO> dtos = events.stream()
+                .map(eventMapper::toResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
+    public ResponseEntity<EventResponseDTO> getEventById(@PathVariable Long id) {
         Event event = eventService.findEventById(id);
-        return event != null ? ResponseEntity.ok(event) : ResponseEntity.notFound().build();
+        return event != null
+                ? ResponseEntity.ok(eventMapper.toResponseDTO(event))
+                : ResponseEntity.notFound().build();
     }
 
     @PostMapping("/add")
@@ -49,6 +59,9 @@ public class EventController {
         dto.setIsPrivate(event.getIsPrivate());
         dto.setIsVirtual(event.getIsVirtual());
         dto.setVirtualLink(event.getVirtualLink());
+        dto.setPrice(event.getPrice());
+        dto.setCategory(event.getCategory());
+        dto.setPosterUrl(event.getPosterUrl());
 
         // Extract IDs from nested objects
         if (event.getLocation() != null) {

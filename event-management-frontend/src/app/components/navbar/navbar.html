@@ -1,1 +1,138 @@
-<p>navbar works!</p>
+<!-- Desktop Navbar -->
+ <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex rounded-full items-center justify-between gap-32 px-12 py-2.5 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 min-w-[900px]">
+    <a routerLink="/" class="hover:scale-105 transition-transform flex-shrink-0 flex items-center gap-2 font-outfit font-bold text-xl text-slate-900 group">
+      <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 2v4"></path>
+          <path d="M16 2v4"></path>
+          <path d="M21 17V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11Z"></path>
+          <path d="M3 10h18"></path>
+          <path d="M15 22v-4a2 2 0 0 1 2-2h4"></path>
+        </svg>
+      </div>
+      GATHER
+    </a>
+    
+    <!-- Navigation Links & Buttons - Right Side -->
+    <div class="ml-auto flex gap-6 items-center">
+      <!-- Show different buttons based on page -->
+      <ng-container *ngIf="isLandingPage()">
+        <!-- Landing page buttons -->
+        <a routerLink="/auth/login">
+          <button class="text-gray-700 hover:text-gray-900 font-semibold px-6 py-2.5 rounded-full transition-colors text-sm">
+            Sign In
+          </button>
+        </a>
+        <a routerLink="/auth/register">
+          <button class="bg-black text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition-all active:scale-95 text-sm">
+            Sign Up
+          </button>
+        </a>
+      </ng-container>
+
+      <ng-container *ngIf="!isLandingPage()">
+        <!-- Regular pages navigation -->
+        <a routerLink="/events"
+           class="text-gray-500 hover:text-gray-900 transition-colors text-base font-medium"
+           [ngClass]="{'text-gray-900 font-semibold': router.url.includes('/events')}">
+          Explore
+        </a>
+        <a routerLink="/communities"
+           class="text-gray-500 hover:text-gray-900 transition-colors text-base font-medium"
+           [ngClass]="{'text-gray-900 font-semibold': router.url.includes('/communities')}">
+          Communities
+        </a>
+        
+        <!-- Divider -->
+        <div class="h-6 w-px bg-gray-300"></div>
+        
+        <!-- Create Button -->
+        <a routerLink="/create-event">
+          <button class="bg-black text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition-all active:scale-95 text-sm flex items-center gap-2">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 8v8"></path>
+              <path d="M8 12h8"></path>
+            </svg>
+            Create
+          </button>
+        </a>
+        
+        <!-- Avatar -->
+        <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-slate-200 transition-all">
+          <svg class="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+        </div>
+      </ng-container>
+    </div>
+  </nav>
+
+  <!-- Mobile Navbar -->
+  <nav class="md:hidden fixed top-0 left-0 right-0 z-50 p-4">
+    <div class="flex justify-between items-center glass-nav p-4 rounded-3xl shadow-lg">
+      <a routerLink="/" class="flex items-center gap-2 font-outfit font-bold text-xl text-white">
+        <div class="w-8 h-8 bg-gradient-to-br from-gather-purple to-gather-pink rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 2v4"></path>
+            <path d="M16 2v4"></path>
+            <path d="M21 17V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11Z"></path>
+            <path d="M3 10h18"></path>
+            <path d="M15 22v-4a2 2 0 0 1 2-2h4"></path>
+          </svg>
+        </div>
+        GATHER
+      </a>
+      <button (click)="toggleMobileMenu()" class="text-slate-800 p-2">
+        <svg *ngIf="!isMobileMenuOpen" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+        <svg *ngIf="isMobileMenuOpen" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Dropdown -->
+    <div *ngIf="isMobileMenuOpen" class="absolute top-24 left-4 right-4 glass-nav rounded-3xl p-6 shadow-2xl flex flex-col gap-4 animate-float bg-white/95">
+      <ng-container *ngIf="isLandingPage()">
+        <!-- Landing page mobile menu -->
+        <a routerLink="/auth/login" (click)="closeMobileMenu()">
+          <button class="w-full text-gray-700 font-medium p-3 rounded-xl text-center transition-colors hover:bg-gray-100">
+            Sign In
+          </button>
+        </a>
+        <a routerLink="/auth/register" (click)="closeMobileMenu()">
+          <button class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">
+            Sign Up
+          </button>
+        </a>
+      </ng-container>
+
+      <ng-container *ngIf="!isLandingPage()">
+        <!-- Regular pages mobile menu -->
+        <a routerLink="/" (click)="closeMobileMenu()" 
+           class="text-lg font-medium p-3 rounded-xl text-center transition-colors"
+           [ngClass]="{'bg-slate-100 text-slate-900': router.url === '/', 'text-slate-500': router.url !== '/'}">
+          Home
+        </a>
+        <a routerLink="/events" (click)="closeMobileMenu()" 
+           class="text-lg font-medium p-3 rounded-xl text-center transition-colors"
+           [ngClass]="{'bg-slate-100 text-slate-900': router.url.includes('/events'), 'text-slate-500': !router.url.includes('/events')}">
+          Explore
+        </a>
+        <a routerLink="/communities" (click)="closeMobileMenu()" 
+           class="text-lg font-medium p-3 rounded-xl text-center transition-colors"
+           [ngClass]="{'bg-slate-100 text-slate-900': router.url.includes('/communities'), 'text-slate-500': !router.url.includes('/communities')}">
+          Communities
+        </a>
+
+        <a routerLink="/create-event" (click)="closeMobileMenu()">
+          <button class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold mt-2 hover:bg-slate-800 transition-colors">
+            Create Event
+          </button>
+        </a>
+      </ng-container>
+    </div>
+  </nav>
