@@ -34,7 +34,6 @@ public class SecurityConfig {
 
     // Authentication Provider
 
-
     // Authentication Manager
     @Bean
     public AuthenticationManager authenticationManager(
@@ -71,7 +70,8 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/auth/**").permitAll() // Login/Register
- 
+                        .requestMatchers("/assets/**").permitAll() // Static assets (images, etc.)
+
                         // Protected endpoints (change to .authenticated() when ready)
                         .requestMatchers("/api/**").permitAll() // ⚠️ TODO: Change to .authenticated()
 

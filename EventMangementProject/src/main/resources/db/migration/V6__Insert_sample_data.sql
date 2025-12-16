@@ -23,15 +23,14 @@ VALUES
     (4, 'Conference'),
     (5, 'Virtual');
 
--- Events
-INSERT INTO event (id, title, description, creation_date, start_date, end_date, is_private, is_virtual, virtual_link, capacity, waiting_list_enabled, requires_approval, creator_id, location_id)
+-- Events (with pricing and poster URLs)
+INSERT INTO event (id, title, description, creation_date, start_date, end_date, is_private, is_virtual, virtual_link, capacity, waiting_list_enabled, requires_approval, price, category, poster_url, creator_id, location_id)
 VALUES
-    (1, 'AI Conference 2025', 'An in-depth conference on Artificial Intelligence trends.', '2025-11-01 10:00:00', '2025-11-20 09:00:00', '2025-11-22 17:00:00', FALSE, FALSE, NULL, 500, TRUE, TRUE, 1, 1),
-    (2, 'Startup Networking Night', 'Meet and connect with local startups and entrepreneurs.', '2025-11-02 15:00:00', '2025-11-18 18:00:00', '2025-11-18 22:00:00', FALSE, FALSE, NULL, 200, TRUE, FALSE, 2, 2),
-    (3, 'Online Python Workshop', 'Hands-on Python workshop online.', '2025-11-03 08:00:00', '2025-11-15 10:00:00', '2025-11-15 14:00:00', FALSE, TRUE, 'https://zoom.us/j/123456789', 100, FALSE, FALSE, 3, 3);
+    (1, 'AI Conference 2025', 'An in-depth conference on Artificial Intelligence trends.', '2026-01-01 10:00:00', '2026-01-20 09:00:00', '2026-01-22 17:00:00', FALSE, FALSE, NULL, 500, TRUE, TRUE, 299.00, 'Learn', '/assets/Artificial-Intelligence-Conference-2025-1.jpg', 1, 1),
+    (2, 'Startup Networking Night', 'Meet and connect with local startups and entrepreneurs.', '2026-02-02 15:00:00', '2026-02-18 18:00:00', '2026-02-18 22:00:00', FALSE, FALSE, NULL, 200, TRUE, FALSE, 49.00, 'Connect', '/assets/networking-night.jpg', 2, 2),
+    (3, 'Online Python Workshop', 'Hands-on Python workshop online.', '2026-03-03 08:00:00', '2026-03-15 10:00:00', '2026-03-15 14:00:00', FALSE, TRUE, 'https://zoom.us/j/123456789', 100, FALSE, FALSE, 19.99, 'Learn', '/assets/python-workshop.jpg', 3, 3);
 
--- Event-Tags mapping (many-to-many)
-
+-- Event-Tag relationships
 INSERT INTO tag_events (event_id, tag_id)
 VALUES
     (1, 1), -- AI Conference → Tech

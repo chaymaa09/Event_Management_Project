@@ -1,0 +1,41 @@
+<section class="relative flex flex-col items-center justify-center text-center pt-24 pb-20 overflow-hidden w-full">
+    <!-- Animated Background Blobs -->
+    <div class="absolute inset-0 -z-10">
+        <!-- Purple Blob -->
+        <div class="absolute top-20 left-10 w-96 h-96 bg-purple-400/40 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+        <!-- Yellow Blob -->
+        <div class="absolute top-30 right-20 w-96 h-96 bg-yellow-400/40 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+        <!-- Pink Blob -->
+        <div class="absolute bottom-20 left-1/2 w-96 h-96 bg-pink-400/40 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+    </div>
+    
+    <div class="mb-12 relative z-10 mt-10">
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 rounded-full border border-purple-200">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-600"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
+            <span class="text-sm font-medium text-purple-600">The #1 Platform for Next-Gen Events</span>
+        </div>
+    </div>
+    
+    <div class="flex flex-col items-center justify-center relative z-10">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-outfit font-bold text-slate-900 mb-4">Find your <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Vibe.</span></h1>
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-outfit font-bold text-slate-900">Find your <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Tribe.</span></h1>
+    </div>
+    <p class="text-xl md:text-2xl text-slate-500 max-w-2xl font-medium mb-10 mt-4 leading-relaxed relative z-10">Discover and join events that match your mood and interests.</p>
+
+    <!-- CTA's -->
+    <div class="relative z-10 flex flex-wrap justify-center gap-4">
+        <!-- Explore Events button - same for both pages -->
+        <a routerLink="/events">
+            <button class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full hover:scale-105 transition-all duration-300 shadow-lg cursor-pointer border-none">
+                Explore Events
+            </button>
+        </a>
+
+        <!-- Host an Event button - redirects based on page -->
+        <a [routerLink]="isLandingPage() ? '/auth/register' : '/create-event'">
+            <button class="inline-block bg-white hover:bg-gray-100 text-purple-600 font-semibold px-8 py-4 rounded-full hover:scale-105 transition-all duration-300 shadow-lg cursor-pointer border border-purple-600">
+                Host an Event
+            </button>
+        </a>
+    </div>
+</section>

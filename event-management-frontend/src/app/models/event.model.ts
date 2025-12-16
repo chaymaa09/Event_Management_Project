@@ -11,14 +11,24 @@ export interface AppEvent {
   isPrivate?: boolean;
   isVirtual?: boolean;
   virtualLink?: string;
+  price: number;
+  category: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect';
   capacity: number;
+  attendees?: number;
   waitingListEnabled?: boolean;
   requiresApproval?: boolean;
+  posterUrl?: string;
   creator: User;
-  location: Location;
+  location?: Location;
   tags?: Tag[];
 }
 
+export interface EventCategory {
+  name: string;
+  icon: string;
+  gradient: string;
+  description: string;
+}
 /**
  * User Model - Matches User.java
  */

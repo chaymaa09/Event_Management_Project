@@ -2,33 +2,40 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {AppEvent} from '../models/event.model'
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventService {
-  apiUrl = 'http://localhost:8080/api/events';
+  private baseUrl = `${environment.apiUrl}/events`;
 
   constructor(private http: HttpClient) {
   }
 
   getAllEvents(): Observable<AppEvent[]> {
-    return this.http.get<AppEvent[]>(`${this.apiUrl}/all`);
+    return this.http.get<AppEvent[]>(`${this.baseUrl}/all`);
   }
 
   getEventById(id: number): Observable<AppEvent> {
-    return this.http.get<AppEvent>(`${this.apiUrl}/${id}`);
+    return this.http.get<AppEvent>(`${this.baseUrl}/${id}`);
   }
 
   createEvent(createEvent: AppEvent): Observable<AppEvent> {
-    return this.http.post<AppEvent>(`${this.apiUrl}/add`, createEvent);
+    return this.http.post<AppEvent>(`${this.baseUrl}/add`, createEvent);
   }
   updateEvent(id: number, updateEvent: AppEvent): Observable<AppEvent> {
-    return this.http.put<AppEvent>(`${this.apiUrl}/${id}`, updateEvent);
+    return this.http.put<AppEvent>(`${this.baseUrl}/${id}`, updateEvent);
   }
 
   deleteEvent(id: number)  {
-    return this.http.delete<AppEvent>(`${this.apiUrl}/delete/${id}`);
+    return this.http.delete<AppEvent>(`${this.baseUrl}/delete/${id}`);
+  }
+
+  getTrending(limit = 3): Observable<AppEvent[]> {
+    return this.http.get<AppEvent[]>(`${this.baseUrl}/trending`, {
+      params: { limit }
+    });
   }
 
 

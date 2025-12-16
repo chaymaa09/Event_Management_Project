@@ -58,6 +58,18 @@ public class Event {
     @JoinColumn(name = "location_id")
     private Location location;
 
+    @Column(nullable = false)
+    private Double price = 0.0;
+
+    @Column(length = 50)
+    private String category; // Or use @Enumerated(EnumType.STRING) with an enum
+
+    @Column(name = "poster_url", length = 500)
+    private String posterUrl;
+
+    // For attendees count, Add a computed field based on Participation count
+    @Transient // if computed from participations
+    private Integer attendees;
     @ManyToMany()
     @JoinTable(name = "tag_events", // Junction table name
             joinColumns = @JoinColumn(name = "event_id"), // Column for Event

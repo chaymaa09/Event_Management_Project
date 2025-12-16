@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS event (
     capacity BIGINT,
     waiting_list_enabled BOOLEAN NOT NULL DEFAULT FALSE,
     requires_approval BOOLEAN NOT NULL DEFAULT FALSE,
+    price DOUBLE NOT NULL DEFAULT 0.0,
+    category VARCHAR(50),
+    poster_url VARCHAR(500),
     creator_id BIGINT NOT NULL,
     location_id BIGINT,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -18,7 +21,9 @@ CREATE TABLE IF NOT EXISTS event (
     FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE SET NULL,
     INDEX idx_creator (creator_id),
     INDEX idx_start_date (start_date),
-    INDEX idx_location (location_id)
+    INDEX idx_location (location_id),
+    INDEX idx_category (category),
+    INDEX idx_price (price)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
