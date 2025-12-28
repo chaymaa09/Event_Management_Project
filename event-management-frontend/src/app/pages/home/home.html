@@ -1,10 +1,13 @@
+<div class="relative">
 <!-- Hero Section -->
 <app-hero-section></app-hero-section>
 
-<!-- Infinite Marquee -->
-<div class="relative w-full overflow-hidden py-4 mb-16 bg-slate-100 -skew-y-1 transform origin-left z-20 border-y border-slate-100">
+<div
+  class="relative w-full overflow-hidden py-4 mb-16 bg-slate-100 -skew-y-1 transform origin-left z-0 border-y border-slate-100 pointer-events-none"
+>
   <div class="flex whitespace-nowrap animate-marquee">
-    <div *ngFor="let tag of hashtags" class="mx-4 md:mx-8 text-2xl md:text-3xl font-black font-outfit text-slate-300 hover:text-purple-500 transition-colors uppercase tracking-tighter cursor-default">
+    <div *ngFor="let tag of hashtags"
+         class="mx-4 md:mx-8 text-2xl md:text-3xl font-black font-outfit text-slate-300 hover:text-purple-500 transition-colors uppercase tracking-tighter cursor-default">
       {{ tag }}
     </div>
   </div>
@@ -27,7 +30,7 @@
     <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/60 to-transparent"></div>
   </div>
 
-  <div class="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+  <div class="relative z-0 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
         <div *ngFor="let category of categories"
           (click)="onCategoryClick(category)"
           class="group h-full bg-white  rounded-3xl p-6 flex flex-col items-center justify-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 relative overflow-hidden min-h-[180px]">
@@ -36,7 +39,7 @@
       <div [ngClass]="'absolute inset-0 bg-gradient-to-br ' + category.gradient + ' opacity-0 group-hover:opacity-50 transition-opacity duration-300'"></div>
 
       <!-- Content -->
-      <div class="relative z-10 text-center">
+      <div class="relative z-0 text-center">
         <svg class="w-16 h-16 mb-4 text-slate-900 group-hover:text-white group-hover:scale-110 transition-transform duration-300 mx-auto block" viewBox="0 0 24 24" aria-hidden="true">
           <ng-container *ngFor="let d of category.paths">
             <path [attr.d]="d" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -61,7 +64,7 @@
 </div>
 
 <!-- TRENDING THIS WEEK -->
-<section class="px-6 py-14 max-w-7xl mx-auto w-full relative z-10">
+<section class="px-6 py-14 max-w-7xl mx-auto w-full relative z-0">
   <div class="flex items-center justify-between gap-4 mb-8">
     <div>
       <h2 class="text-3xl md:text-4xl font-outfit font-bold text-slate-900">Trending This Week</h2>
@@ -91,7 +94,7 @@
 </section>
 
 <!-- Curated Collections -->
-<section class="px-6 py-14 max-w-7xl mx-auto w-full relative z-10">
+<section class="px-6 py-14 max-w-7xl mx-auto w-full relative z-0">
   <div class="mb-8">
     <h2 class="text-3xl md:text-4xl font-outfit font-bold text-slate-900 mb-2">Curated Collections</h2>
     <p class="text-slate-600 text-sm md:text-base">Discover events tailored to your interests</p>
@@ -110,7 +113,7 @@
              class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
         
         <!-- Overlay Gradient -->
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent pointer-events-none"></div>
         
         <!-- Content -->
         <div class="absolute inset-0 flex flex-col items-start justify-end p-4">
@@ -133,7 +136,7 @@
            class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
       
       <!-- Overlay Gradient -->
-      <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent pointer-events-none"></div>
       
       <!-- Content -->
       <div class="absolute inset-0 flex flex-col items-start justify-end p-4">
@@ -145,14 +148,14 @@
 </section>
 
 <!-- Featured Big Card -->
-<section class="px-6 pb-20 max-w-7xl mx-auto w-full relative z-10" *ngIf="featuredEvent">
+<section class="px-6 pb-20 max-w-7xl mx-auto w-full relative z-0" *ngIf="featuredEvent">
   <div class="group relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer">
     <img [src]="featuredEvent.posterUrl || 'https://th.bing.com/th/id/R.efa29289ef37decaba14062d9db4bb36?rik=Jylzb50H6EdxOg&pid=ImgRaw&r=0'" 
          [alt]="featuredEvent.title" 
          class="w-full h-80 md:h-[28rem] object-cover group-hover:scale-105 transition-transform duration-300" />
     
     <!-- Overlay Gradient -->
-    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent pointer-events-none"></div>
     
     <!-- Content -->
     <div class="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-12">
@@ -186,8 +189,8 @@
 </section>
 
 <!-- STATS -->
-<section class="py-20 bg-slate-900 text-white w-full relative z-10 overflow-hidden">
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-12 text-center relative z-10 max-w-5xl mx-auto px-6">
+<section class="py-20 bg-slate-900 text-white w-full relative z-0 overflow-hidden">
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-12 text-center relative z-0 max-w-5xl mx-auto px-6">
     <!-- Events Hosted -->
     <div>
       <mat-icon class="!w-12 !h-12 !text-5xl mx-auto mb-4 text-purple-400">event</mat-icon>
@@ -209,7 +212,7 @@
   </div>
 </section>
 <!-- NEWSLETTER -->
-<section class="py-16 px-6 bg-purple-50 text-purple-600 w-full relative z-10">
+<section class="py-16 px-6 bg-purple-50 text-purple-600 w-full relative z-0">
   <div class="max-w-3xl mx-auto text-center">
     <h2 class="text-3xl md:text-4xl font-outfit font-bold mb-4">Stay in the Loop!</h2>
     <p class="text-base md:text-lg mb-8">Subscribe to our newsletter for the latest events, tips, and exclusive offers.</p>
@@ -228,3 +231,4 @@
 
 <!-- Footer -->
 <app-footer></app-footer>
+</div>

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-event-details',
   imports: [],
   templateUrl: './event-details.html',
-  styleUrl: './event-details.css',
+  styleUrls: ['./event-details.css'],
 })
 export class EventDetails {
 

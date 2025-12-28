@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="20c9cfa5-14db-4e72-b3e2-9b3104239afe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventMangementProject/src/main/java/com/example/eventmangementproject/dao/entities/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventMangementProject/src/main/java/com/example/eventmangementproject/dao/entities/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventMangementProject/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/EventMangementProject/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/app.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/app.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/components/navbar/navbar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/components/navbar/navbar.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,22 +20,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Salwa08"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Salwa08&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/chaymaa09/Event_Management_Project.git",
-    "accountId": "f3aae2ed-18dc-4d1a-ace6-e58582170c0f"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/chaymaa09/Event_Management_Project.git&quot;,
+    &quot;accountId&quot;: &quot;f3aae2ed-18dc-4d1a-ace6-e58582170c0f&quot;
   }
-}]]></component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -48,7 +51,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/user/Desktop/CI-2/projet",
+    "last_opened_file_path": "C:/Users/user/Desktop/CI-2/projet/EventMangementProject",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -79,6 +82,7 @@
       <updated>1762389922263</updated>
       <workItem from="1762389923428" duration="96000" />
       <workItem from="1762419722096" duration="6284000" />
+      <workItem from="1766870364739" duration="1895000" />
     </task>
     <servers />
   </component>

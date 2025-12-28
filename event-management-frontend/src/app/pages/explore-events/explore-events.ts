@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-explore-events',
   imports: [],
   templateUrl: './explore-events.html',
-  styleUrl: './explore-events.css',
+  styleUrls: ['./explore-events.css'],
 })
 export class ExploreEvents {
 

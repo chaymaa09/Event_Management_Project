@@ -14,7 +14,7 @@ import {DatePipe, SlicePipe} from '@angular/common';
     DatePipe
   ],
   templateUrl: './event-list.html',
-  styleUrl: './event-list.css',
+  styleUrls: ['./event-list.css'],
 })
 export class EventList implements OnInit {
   events: AppEvent[] = [];

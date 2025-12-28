@@ -2,7 +2,7 @@ package com.example.eventmanagementproject.security;
 
 import com.example.eventmanagementproject.dao.entities.AuthType;
 import com.example.eventmanagementproject.dao.repositories.UserRepository;
-import com.example.eventmanagementproject.service.ParticipationService;import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.eventmanagementproject.dao.entities.User;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +17,7 @@ public class AuthenticationService {
     private UserRepository userRepository;
 
     @Autowired
-    private ParticipationService.JwtService jwtService;
+    private JwtService jwtService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

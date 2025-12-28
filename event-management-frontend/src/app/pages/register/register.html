@@ -1,0 +1,142 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
+  <div class="max-w-md w-full">
+    <!-- Logo and Title -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 mb-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+          <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 2v4"></path>
+            <path d="M16 2v4"></path>
+            <path d="M21 17V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11Z"></path>
+            <path d="M3 10h18"></path>
+            <path d="M15 22v-4a2 2 0 0 1 2-2h4"></path>
+          </svg>
+        </div>
+        <span class="font-outfit font-bold text-2xl text-slate-900">GATHER</span>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Créer un compte</h1>
+      <p class="text-gray-600">Rejoignez notre communauté d'événements</p>
+    </div>
+
+    <!-- Register Form -->
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+          {{ errorMessage }}
+        </div>
+
+        <!-- First Name and Last Name -->
+        <div class="mb-5">
+          <div>
+            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+              name
+            </label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+              [class.border-red-500]="name?.invalid && name?.touched"
+              placeholder="Dupont"
+            />
+            <div *ngIf="name?.invalid && name?.touched" class="mt-1 text-sm text-red-600">
+              <span *ngIf="name?.errors?.['required']">Requis</span>
+              <span *ngIf="name?.errors?.['minlength']">Min 2 caractères</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div class="mb-5">
+          <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+            [class.border-red-500]="email?.invalid && email?.touched"
+            placeholder="vous@exemple.com"
+          />
+          <div *ngIf="email?.invalid && email?.touched" class="mt-1 text-sm text-red-600">
+            <span *ngIf="email?.errors?.['required']">L'email est requis</span>
+            <span *ngIf="email?.errors?.['email']">Email invalide</span>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="mb-5">
+          <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+            Mot de passe
+          </label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+            [class.border-red-500]="password?.invalid && password?.touched"
+            placeholder="••••••••"
+          />
+          <div *ngIf="password?.invalid && password?.touched" class="mt-1 text-sm text-red-600">
+            <span *ngIf="password?.errors?.['required']">Le mot de passe est requis</span>
+            <span *ngIf="password?.errors?.['minlength']">Minimum 6 caractères</span>
+          </div>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="mb-6">
+          <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+            Confirmer le mot de passe
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+            [class.border-red-500]="confirmPassword?.invalid && confirmPassword?.touched"
+            placeholder="••••••••"
+          />
+          <div *ngIf="confirmPassword?.invalid && confirmPassword?.touched" class="mt-1 text-sm text-red-600">
+            <span *ngIf="confirmPassword?.errors?.['required']">Confirmation requise</span>
+            <span *ngIf="confirmPassword?.errors?.['passwordMismatch']">Les mots de passe ne correspondent pas</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid || isLoading"
+          class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95"
+        >
+          <span *ngIf="!isLoading">Créer mon compte</span>
+          <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Création...
+          </span>
+        </button>
+      </form>
+
+      <!-- Sign In Link -->
+      <div class="mt-6 text-center">
+        <p class="text-gray-600">
+          Vous avez déjà un compte ?
+          <a routerLink="/auth/login" class="text-purple-600 font-semibold hover:text-purple-700 transition-colors">
+            Se connecter
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="text-center mt-6">
+      <a routerLink="/" class="text-gray-600 hover:text-gray-900 transition-colors">
+        ← Retour à l'accueil
+      </a>
+    </div>
+  </div>
+</div>
