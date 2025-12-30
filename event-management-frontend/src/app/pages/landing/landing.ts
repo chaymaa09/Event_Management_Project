@@ -6,6 +6,7 @@ import { HeroSection } from '../../components/hero-section/hero-section';
 import { Footer } from '../../components/footer/footer';
 import { EventService } from '../../services/event';
 import { AppEvent } from '../../models/event.model';
+import { KeycloakService } from '../../services/keycloak/keycloak';
 
 
 @Component({
@@ -16,7 +17,11 @@ import { AppEvent } from '../../models/event.model';
   styleUrls: ['./landing.css']
 })
 export class Landing implements OnInit {
-  constructor(private router: Router, private eventService: EventService) {}
+  constructor(
+    private router: Router, 
+    private eventService: EventService,
+    private keycloakService: KeycloakService
+  ) {}
   
   hashtags = ['#LiveMusic', '#TechTalks', '#Nightlife', '#Gaming', '#Fitness', '#FoodFestival', '#ArtExhibition', '#Workshop', '#Networking', '#Travel', '#Comedy', '#Sports', '#BookClub', '#FilmScreening', '#Dance', '#Meditation', '#StartupMeet', '#Photography', '#Tech'];
   trendingEvents: AppEvent[] = [];
@@ -100,6 +105,11 @@ export class Landing implements OnInit {
   ];
 
   ngOnInit(): void {
+    // If user is already logged in, redirect to home
+    if (this.keycloakService.isAuthenticated()) {
+      this.router.navigate(['/home']);
+      return;
+    }
     this.loadTrendingEvents();
   }
 
@@ -124,5 +134,22 @@ export class Landing implements OnInit {
   onSubscribe(event: any): void {
     event.preventDefault();
     alert('Thanks for subscribing!');
+  }
+
+  // Keycloak methods
+  login(): void {
+    this.keycloakService.login(); 
+  }
+
+  logout(): void {
+    this.keycloakService.logout();
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.keycloakService.getToken();
+  }
+
+  getUsername(): string {
+    return this.keycloakService.getUsername();
   }
 }

@@ -1,21 +1,19 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http';
+import { KeycloakService } from '../services/keycloak/keycloak';
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const platformId = inject(PLATFORM_ID);
-  const isBrowser = isPlatformBrowser(platformId);
-  
-  const token = isBrowser ? localStorage.getItem('token') : null;
-  
-  if (token) {
-    const clonedRequest = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    return next(clonedRequest);
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  constructor(private keycloakService: KeycloakService) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const token = this.keycloakService.getToken();
+    if (token) {
+      const cloned = req.clone({
+        setHeaders: { Authorization: `Bearer ${token}` }
+      });
+      return next.handle(cloned);
+    }
+    return next.handle(req);
   }
-  
-  return next(req);
-};
+}

@@ -1,9 +1,7 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/user.model';
-import { Subscription } from 'rxjs';
+import { KeycloakService } from '../../services/keycloak/keycloak';
 
 @Component({
   selector: 'app-navbar',
@@ -12,23 +10,21 @@ import { Subscription } from 'rxjs';
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css'],
 })
-export class Navbar implements OnDestroy {
+export class Navbar {
   isMobileMenuOpen = false;
-  currentUser: User | null = null;
-  private userSub?: Subscription;
-  isLoggedIn: boolean = false;
 
   constructor(
     public router: Router,
-    public authService: AuthService
+    public keycloakService: KeycloakService
   ) {
-    this.userSub = this.authService.currentUser.subscribe(user => {
-      this.currentUser = user;
-    });
+    console.log('Navbar component initialized');
   }
 
+  testClick() {
+    console.log('TEST CLICK WORKS!');
+    alert('Button clicked!');
+  }
 
-  
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
@@ -42,26 +38,29 @@ export class Navbar implements OnDestroy {
   }
 
   isAuthenticated(): boolean {
-    return this.authService.isAuthenticated;
+    return this.keycloakService.isAuthenticated();
+  }
+
+  login(redirectPath?: string): void {
+    this.keycloakService.login(redirectPath);
   }
 
   logout(): void {
-    this.authService.logout();
-    this.closeMobileMenu();
+    this.keycloakService.logout();
+  }
+
+  getUsername(): string {
+    console.log('Fetching username from KeycloakService');
+    return this.keycloakService.getUsername();
   }
 
   getUserInitials(): string {
-    if (!this.currentUser) return 'U';
-    const initial = this.currentUser.name?.charAt(0) || '';
-    return initial.toUpperCase();
+    const username = this.getUsername();
+    if (!username) return 'U';
+    return username.charAt(0).toUpperCase();
   }
 
   isAuthPage(): boolean {
-    return this.router.url.startsWith('/auth');
-  }
-
-
-  ngOnDestroy(): void {
-    this.userSub?.unsubscribe();
+    return false; 
   }
 }

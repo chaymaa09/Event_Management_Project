@@ -1,6 +1,6 @@
  <!-- Desktop Navbar -->
-  <nav *ngIf="!isAuthPage()"
-     class="hidden md:flex fixed top-6 z-50 md:left-1/2 md:-translate-x-1/2 w-full md:w-[90%] rounded-full items-center justify-between gap-6 md:gap-32 px-4 md:px-12 py-2.5 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300">
+  <nav  *ngIf="!isAuthPage()"
+     class="pointer-events-auto hidden md:flex fixed top-6 z-50 md:left-1/2 md:-translate-x-1/2 w-full md:w-[90%] rounded-full items-center justify-between gap-6 md:gap-32 px-4 md:px-12 py-2.5 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300">
     <a routerLink="/" class="hover:scale-105 transition-transform flex-shrink-0 flex items-center gap-2 font-outfit font-bold text-xl text-slate-900 group">
       <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
         <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -15,22 +15,20 @@
     </a>
     
     <!-- Navigation Links & Buttons - Right Side -->
-    <div class="ml-auto flex gap-6 items-center">
-      <!-- Show different buttons based on page -->
-      <ng-container *ngIf="!authService.isAuthenticated">
-        <a routerLink="/auth/login">
-          <button class="text-gray-700 font-semibold px-6 py-2.5 rounded-full">
-            Sign In
-          </button>
-        </a>
-        <a routerLink="/auth/register">
-          <button class="bg-black text-white px-6 py-2.5 rounded-full font-semibold">
-            Sign Up
-          </button>
-        </a>
+    <div class="ml-auto flex gap-6 items-center pointer-events-auto">
+      <!-- Show different buttons based on authentication -->
+      <ng-container *ngIf="!isAuthenticated()">
+          <button (click)="login()" 
+        class="text-gray-700 font-semibold px-6 py-2.5 rounded-full cursor-pointer">
+          Sign In
+        </button>
+
+        <button (click)="login()" class="bg-black text-white px-6 py-2.5 rounded-full font-semibold cursor-pointer">
+          Get Started
+        </button>
       </ng-container>
 
-      <ng-container *ngIf="authService.isAuthenticated">
+      <ng-container *ngIf="isAuthenticated()">
 
         <a routerLink="/events"
           [ngClass]="{'font-semibold text-gray-900': router.url.includes('/events')}">
@@ -50,10 +48,11 @@
           </button>
         </a>
 
-        <!-- Avatar -->
-        <div class="cursor-pointer" (click)="authService.logout()">
+        <!-- User info & Logout -->
+        <span class="text-gray-700 font-medium">{{ getUsername() }}</span>
+        <button (click)="logout()" class="text-gray-700 hover:text-red-600 font-semibold px-4 py-2 rounded-full transition-colors">
           Logout
-        </div>
+        </button>
 
       </ng-container>
     </div>
@@ -101,11 +100,11 @@
      id="mobile-menu"
      class="fixed top-24 right-4 w-48 rounded-2xl p-3 shadow-2xl flex flex-col gap-1.5 bg-white z-[9999] text-sm border border-gray-100 animate-slideIn pointer-events-auto">
 
-     <ng-container *ngIf="!authService.isAuthenticated">
+     <ng-container *ngIf="!isAuthenticated()">
     <!--  mobile menu -->
-    <a routerLink="/auth/login" 
-       (click)="closeMobileMenu()"
-       class="group relative overflow-hidden text-base font-semibold py-3.5 px-5 rounded-2xl text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-lg hover:shadow-2xl">
+    <button 
+       (click)="login(); closeMobileMenu()"
+       class="group relative overflow-hidden text-base font-semibold py-3.5 px-5 rounded-2xl text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-lg hover:shadow-2xl cursor-pointer w-full">
       <span class="relative z-10 flex items-center justify-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
@@ -113,20 +112,20 @@
         Sign In
       </span>
       <div class="absolute inset-0 bg-gradient-to-r from-slate-700 to-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    </a>
+    </button>
     
-    <a routerLink="/auth/register" 
-       (click)="closeMobileMenu()"
-       class="group relative overflow-hidden text-base font-semibold py-3.5 px-5 rounded-2xl text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] bg-white text-slate-900 shadow-md hover:shadow-xl border-2 border-slate-900 hover:bg-gray-50">
+    <button 
+       (click)="login(); closeMobileMenu()"
+       class="group relative overflow-hidden text-base font-semibold py-3.5 px-5 rounded-2xl text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] bg-white text-slate-900 shadow-md hover:shadow-xl border-2 border-slate-900 hover:bg-gray-50 cursor-pointer w-full">
       <span class="relative z-10 flex items-center justify-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
         </svg>
-        Sign Up
+        Get Started
       </span>
-    </a>
+    </button>
   </ng-container>
-  <ng-container *ngIf="authService.isAuthenticated">
+  <ng-container *ngIf="isAuthenticated()">
     <!-- Regular pages mobile menu -->
     <a routerLink="/home" 
        (click)="closeMobileMenu()" 
@@ -177,7 +176,7 @@
     </a>
 
     <!-- Logout button for mobile -->
-    <button class="w-full text-red-600 font-medium py-2.5 px-4 rounded-xl text-center text-sm hover:bg-red-50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" (click)="authService.logout(); closeMobileMenu()">
+    <button class="w-full text-red-600 font-medium py-2.5 px-4 rounded-xl text-center text-sm hover:bg-red-50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" (click)="logout(); closeMobileMenu()">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
       </svg>

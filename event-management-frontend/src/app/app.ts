@@ -1,6 +1,7 @@
 import {Component, OnInit, signal} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {Navbar} from './components/navbar/navbar';
+import { KeycloakService } from './services/keycloak/keycloak';
 
 
 @Component({
@@ -12,5 +13,29 @@ import {Navbar} from './components/navbar/navbar';
 })
 export class App {
   protected readonly title = signal('event-management-frontend');
+  username = '';
 
+  constructor(private keycloakService: KeycloakService) {
+    this.username = this.keycloakService.getUsername();
+  }
+
+  logout() {
+    this.keycloakService.logout();
+  }
+
+  isAuthenticated(): boolean {
+    return this.keycloakService.isAuthenticated();
+  }
+
+  getUsername(): string {
+    return this.keycloakService.getUsername();
+  }
+  login(): void {
+    this.keycloakService.login();
+  }
+
+  
 }
+
+
+
