@@ -31,24 +31,16 @@ export class KeycloakService {
       return this.keycloak.authenticated || false;
     }
     
-    try {
-      const authenticated = await this.keycloak.init({
-        onLoad: 'check-sso',
-        checkLoginIframe: false,
-        silentCheckSsoRedirectUri:
-          window.location.origin + '/assets/silent-check-sso.html',
-      });
-
-      this.initialized = true;
-      console.log('Keycloak initialized, authenticated:', authenticated);
-      return authenticated;
-    } catch (error) {
-      // IMPORTANT: don't reject the app initializer; otherwise Angular may never bootstrap
-      // and click handlers won't be wired up.
-      console.error('Keycloak init failed:', error);
-      this.initialized = true;
-      return false;
-    }
+    const authenticated = await this.keycloak.init({
+      onLoad: 'check-sso',
+      checkLoginIframe: false,
+      silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html'
+    });
+    
+    this.initialized = true;
+    console.log('Keycloak initialized, authenticated:', authenticated);
+    console.log('browser environment:', this.isBrowser);
+    return authenticated;
   }
 
   getToken(): string | undefined {
@@ -61,26 +53,15 @@ export class KeycloakService {
     return this.keycloak.authenticated || false;
   }
 
-  async login(redirectPath?: string): Promise<void> {
-    if (!this.isBrowser) {
-      console.warn('Keycloak login ignored (not in browser)');
-      return;
-    }
-
-    const redirectUri = redirectPath
-      ? window.location.origin + redirectPath
+  login(redirectPath?: string): void {    
+    const redirectUri = redirectPath 
+      ? window.location.origin + redirectPath 
       : window.location.origin + '/home';
-
-    try {
-      if (!this.initialized) {
-        await this.init();
-      }
-
-      console.log('Starting Keycloak login redirect:', { redirectUri });
-      await this.keycloak.login({ redirectUri });
-    } catch (error) {
-      console.error('Error calling keycloak login:', error);
-    }
+     try {
+    this.keycloak.login({ redirectUri });
+  } catch (error) {
+    console.error('🔴 Error calling keycloak login:', error);
+  }
   }
 
   logout(): void {
