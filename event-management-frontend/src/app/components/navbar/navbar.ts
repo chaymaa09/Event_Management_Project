@@ -1,9 +1,7 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/user.model';
-import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth/auth.sevice';
 
 @Component({
   selector: 'app-navbar',
@@ -12,23 +10,19 @@ import { Subscription } from 'rxjs';
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css'],
 })
-export class Navbar implements OnDestroy {
+export class Navbar {
+  username: string = '';
   isMobileMenuOpen = false;
-  currentUser: User | null = null;
-  private userSub?: Subscription;
-  isLoggedIn: boolean = false;
 
   constructor(
     public router: Router,
     public authService: AuthService
   ) {
-    this.userSub = this.authService.currentUser.subscribe(user => {
-      this.currentUser = user;
-    });
+    console.log('Navbar component initialized');
   }
 
-
   
+
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
@@ -41,27 +35,35 @@ export class Navbar implements OnDestroy {
     return this.router.url === '/';
   }
 
-  isAuthenticated(): boolean {
-    return this.authService.isAuthenticated;
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  login(redirectPath?: string): void {
+    this.authService.login();
   }
 
   logout(): void {
     this.authService.logout();
-    this.closeMobileMenu();
+  }
+
+  getUsername(): string {
+    this.username = this.authService.getUsername();
+    return this.username;
   }
 
   getUserInitials(): string {
-    if (!this.currentUser) return 'U';
-    const initial = this.currentUser.name?.charAt(0) || '';
-    return initial.toUpperCase();
+    const username = this.getUsername();
+    if (!username) return 'U';
+    return username.charAt(0).toUpperCase();
   }
 
   isAuthPage(): boolean {
-    return this.router.url.startsWith('/auth');
+    return false; 
   }
 
-
-  ngOnDestroy(): void {
-    this.userSub?.unsubscribe();
+  register(redirectPath?: string): void {
+    this.authService.register(redirectPath);
   }
+
 }

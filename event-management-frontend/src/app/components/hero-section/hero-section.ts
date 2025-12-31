@@ -14,4 +14,6 @@ export class HeroSection {
   isLandingPage(): boolean {
     return this.router.url === '/';
   }
+
+
 }

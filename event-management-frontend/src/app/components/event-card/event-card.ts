@@ -4,7 +4,6 @@ import { RouterLink } from '@angular/router';
 import { AppEvent } from '../../models/event.model';
 import { MOCK_EVENTS } from '../../mocks/mock-events';
 import {MatIconModule} from '@angular/material/icon';
-
 @Component({
   selector: 'app-event-card',
   standalone: true,
