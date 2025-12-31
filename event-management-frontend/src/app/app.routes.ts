@@ -5,12 +5,17 @@ import {Home} from './pages/home/home'
 import { Landing } from './pages/landing/landing';
 import { ExploreEvents } from './pages/explore-events/explore-events';
 import { EventDetails } from './pages/event-details/event-details';
+import { Login } from './pages/login/login';
+import { Register } from './pages/register/register';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  {path: '', component: Landing},  // Landing page with login/register
-  {path: 'home', component: Home},  // Home page (after login)
-  { path: 'events', component: ExploreEvents },
-  { path: 'events/:id', component: EventDetails },
+  {path: '', component: Landing},  // Landing page
+  {path: 'home', component: Home},  // Landing page
+  {path: 'auth/login', component: Login},  // Login page
+  {path: 'auth/register', component: Register},  // Register page
+  { path: 'events', component: ExploreEvents},
+  { path: 'events/:id', component: EventDetails},
   { path: '**', redirectTo: '' }
 ];
 

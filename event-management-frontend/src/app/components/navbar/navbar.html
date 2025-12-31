@@ -1,5 +1,6 @@
-<!-- Desktop Navbar -->
- <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex rounded-full items-center justify-between gap-32 px-12 py-2.5 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 min-w-[900px]">
+ <!-- Desktop Navbar -->
+  <nav *ngIf="!isAuthPage()"
+     class="hidden md:flex fixed top-6 z-50 md:left-1/2 md:-translate-x-1/2 w-full md:w-[90%] rounded-full items-center justify-between gap-6 md:gap-32 px-4 md:px-12 py-2.5 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300">
     <a routerLink="/" class="hover:scale-105 transition-transform flex-shrink-0 flex items-center gap-2 font-outfit font-bold text-xl text-slate-900 group">
       <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
         <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -16,60 +17,54 @@
     <!-- Navigation Links & Buttons - Right Side -->
     <div class="ml-auto flex gap-6 items-center">
       <!-- Show different buttons based on page -->
-      <ng-container *ngIf="isLandingPage()">
-        <!-- Landing page buttons -->
+      <ng-container *ngIf="!authService.isAuthenticated">
         <a routerLink="/auth/login">
-          <button class="text-gray-700 hover:text-gray-900 font-semibold px-6 py-2.5 rounded-full transition-colors text-sm">
+          <button class="text-gray-700 font-semibold px-6 py-2.5 rounded-full">
             Sign In
           </button>
         </a>
         <a routerLink="/auth/register">
-          <button class="bg-black text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition-all active:scale-95 text-sm">
+          <button class="bg-black text-white px-6 py-2.5 rounded-full font-semibold">
             Sign Up
           </button>
         </a>
       </ng-container>
 
-      <ng-container *ngIf="!isLandingPage()">
-        <!-- Regular pages navigation -->
+      <ng-container *ngIf="authService.isAuthenticated">
+
         <a routerLink="/events"
-           class="text-gray-500 hover:text-gray-900 transition-colors text-base font-medium"
-           [ngClass]="{'text-gray-900 font-semibold': router.url.includes('/events')}">
+          [ngClass]="{'font-semibold text-gray-900': router.url.includes('/events')}">
           Explore
         </a>
+
         <a routerLink="/communities"
-           class="text-gray-500 hover:text-gray-900 transition-colors text-base font-medium"
-           [ngClass]="{'text-gray-900 font-semibold': router.url.includes('/communities')}">
+          [ngClass]="{'font-semibold text-gray-900': router.url.includes('/communities')}">
           Communities
         </a>
-        
-        <!-- Divider -->
+
         <div class="h-6 w-px bg-gray-300"></div>
         
-        <!-- Create Button -->
         <a routerLink="/create-event">
-          <button class="bg-black text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition-all active:scale-95 text-sm flex items-center gap-2">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M12 8v8"></path>
-              <path d="M8 12h8"></path>
-            </svg>
+          <button class="bg-black text-white px-6 py-2.5 rounded-full">
             Create
           </button>
         </a>
-        
+
         <!-- Avatar -->
-        <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-slate-200 transition-all">
-          <svg class="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+        <div class="cursor-pointer" (click)="authService.logout()">
+          Logout
         </div>
+
       </ng-container>
     </div>
   </nav>
 
   <!-- Mobile Navbar -->
-  <nav class="md:hidden fixed top-0 left-0 right-0 z-50 p-4">
-    <div class="flex justify-between items-center glass-nav p-4 rounded-3xl shadow-lg">
-      <a routerLink="/" class="flex items-center gap-2 font-outfit font-bold text-xl text-white">
+<nav *ngIf="!isAuthPage()"
+     class="md:hidden fixed top-0 left-0 right-0 z-[9999] isolate p-4 pointer-events-auto">
+
+    <div class="flex justify-between items-center bg-white p-4 rounded-3xl shadow-lg">
+      <a routerLink="/" class="flex items-center gap-2 font-outfit font-bold text-xl text-slate-900">
         <div class="w-8 h-8 bg-gradient-to-br from-gather-purple to-gather-pink rounded-lg flex items-center justify-center">
           <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M8 2v4"></path>
@@ -81,7 +76,7 @@
         </div>
         GATHER
       </a>
-      <button (click)="toggleMobileMenu()" class="text-slate-800 p-2">
+      <button (click)="toggleMobileMenu()" class="text-slate-800 p-2" aria-controls="mobile-menu" [attr.aria-expanded]="isMobileMenuOpen">
         <svg *ngIf="!isMobileMenuOpen" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="4" y1="6" x2="20" y2="6"></line>
           <line x1="4" y1="12" x2="20" y2="12"></line>
@@ -94,45 +89,102 @@
       </button>
     </div>
 
-    <!-- Mobile Menu Dropdown -->
-    <div *ngIf="isMobileMenuOpen" class="absolute top-24 left-4 right-4 glass-nav rounded-3xl p-6 shadow-2xl flex flex-col gap-4 animate-float bg-white/95">
-      <ng-container *ngIf="isLandingPage()">
-        <!-- Landing page mobile menu -->
-        <a routerLink="/auth/login" (click)="closeMobileMenu()">
-          <button class="w-full text-gray-700 font-medium p-3 rounded-xl text-center transition-colors hover:bg-gray-100">
-            Sign In
-          </button>
-        </a>
-        <a routerLink="/auth/register" (click)="closeMobileMenu()">
-          <button class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">
-            Sign Up
-          </button>
-        </a>
-      </ng-container>
-
-      <ng-container *ngIf="!isLandingPage()">
-        <!-- Regular pages mobile menu -->
-        <a routerLink="/" (click)="closeMobileMenu()" 
-           class="text-lg font-medium p-3 rounded-xl text-center transition-colors"
-           [ngClass]="{'bg-slate-100 text-slate-900': router.url === '/', 'text-slate-500': router.url !== '/'}">
-          Home
-        </a>
-        <a routerLink="/events" (click)="closeMobileMenu()" 
-           class="text-lg font-medium p-3 rounded-xl text-center transition-colors"
-           [ngClass]="{'bg-slate-100 text-slate-900': router.url.includes('/events'), 'text-slate-500': !router.url.includes('/events')}">
-          Explore
-        </a>
-        <a routerLink="/communities" (click)="closeMobileMenu()" 
-           class="text-lg font-medium p-3 rounded-xl text-center transition-colors"
-           [ngClass]="{'bg-slate-100 text-slate-900': router.url.includes('/communities'), 'text-slate-500': !router.url.includes('/communities')}">
-          Communities
-        </a>
-
-        <a routerLink="/create-event" (click)="closeMobileMenu()">
-          <button class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold mt-2 hover:bg-slate-800 transition-colors">
-            Create Event
-          </button>
-        </a>
-      </ng-container>
+    <!-- Backdrop (blocks page overlays & allows click-outside close) -->
+    <div *ngIf="isMobileMenuOpen"
+        class="fixed inset-0 z-[9998]"
+        (click)="closeMobileMenu()">
     </div>
+
+
+    <!-- Mobile Menu Dropdown -->
+   <div *ngIf="isMobileMenuOpen" 
+     id="mobile-menu"
+     class="fixed top-24 right-4 w-48 rounded-2xl p-3 shadow-2xl flex flex-col gap-1.5 bg-white z-[9999] text-sm border border-gray-100 animate-slideIn pointer-events-auto">
+
+     <ng-container *ngIf="!authService.isAuthenticated">
+    <!--  mobile menu -->
+    <a routerLink="/auth/login" 
+       (click)="closeMobileMenu()"
+       class="group relative overflow-hidden text-base font-semibold py-3.5 px-5 rounded-2xl text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-lg hover:shadow-2xl">
+      <span class="relative z-10 flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+        </svg>
+        Sign In
+      </span>
+      <div class="absolute inset-0 bg-gradient-to-r from-slate-700 to-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </a>
+    
+    <a routerLink="/auth/register" 
+       (click)="closeMobileMenu()"
+       class="group relative overflow-hidden text-base font-semibold py-3.5 px-5 rounded-2xl text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] bg-white text-slate-900 shadow-md hover:shadow-xl border-2 border-slate-900 hover:bg-gray-50">
+      <span class="relative z-10 flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+        </svg>
+        Sign Up
+      </span>
+    </a>
+  </ng-container>
+  <ng-container *ngIf="authService.isAuthenticated">
+    <!-- Regular pages mobile menu -->
+    <a routerLink="/home" 
+       (click)="closeMobileMenu()" 
+       class="text-base font-medium py-2.5 px-4 rounded-xl text-center transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+       [ngClass]="{'bg-slate-900 text-white shadow-md': router.url === '/home', 'text-slate-700 hover:bg-slate-50': router.url !== '/home'}">
+      <span class="flex items-center justify-center gap-2">
+        <svg *ngIf="router.url === '/home'" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+        Home
+      </span>
+    </a>
+
+    <a routerLink="/events" 
+       (click)="closeMobileMenu()" 
+       class="text-base font-medium py-2.5 px-4 rounded-xl text-center transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+       [ngClass]="{'bg-slate-900 text-white shadow-md': router.url.includes('/events'), 'text-slate-700 hover:bg-slate-50': !router.url.includes('/events')}">
+      <span class="flex items-center justify-center gap-2">
+        <svg *ngIf="router.url.includes('/events')" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+        </svg>
+        Explore
+      </span>
+    </a>
+
+    <a routerLink="/communities" 
+       (click)="closeMobileMenu()" 
+       class="text-base font-medium py-2.5 px-4 rounded-xl text-center transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+       [ngClass]="{'bg-slate-900 text-white shadow-md': router.url.includes('/communities'), 'text-slate-700 hover:bg-slate-50': !router.url.includes('/communities')}">
+      <span class="flex items-center justify-center gap-2">
+        <svg *ngIf="router.url.includes('/communities')" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+        </svg>
+        Communities
+      </span>
+    </a>
+
+    <!-- Divider -->
+    <div class="h-px bg-gray-200 my-1"></div>
+
+    <a routerLink="/create-event" (click)="closeMobileMenu()">
+      <button class="w-full text-slate-700 font-medium py-2.5 px-4 rounded-xl text-center text-sm hover:bg-slate-50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Create Event
+      </button>
+    </a>
+
+    <!-- Logout button for mobile -->
+    <button class="w-full text-red-600 font-medium py-2.5 px-4 rounded-xl text-center text-sm hover:bg-red-50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" (click)="authService.logout(); closeMobileMenu()">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+      </svg>
+      Logout
+    </button>
+  </ng-container>
+</div>
+
+
   </nav>

@@ -10,7 +10,7 @@ import {MatIconModule} from '@angular/material/icon';
   standalone: true,
   imports: [CommonModule, DatePipe, MatIconModule, RouterLink],
   templateUrl: './event-card.html',
-  styleUrl: './event-card.css',
+  styleUrls: ['./event-card.css'],
 })
 export class EventCard {
 

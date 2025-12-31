@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-hero-section',
   imports: [RouterLink, CommonModule],
   templateUrl: './hero-section.html',
-  styleUrl: './hero-section.css',
+  styleUrls: ['./hero-section.css'],
 })
 export class HeroSection {
   constructor(public router: Router) {}

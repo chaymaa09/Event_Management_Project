@@ -2,9 +2,9 @@ package com.example.eventmanagementproject.dao.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -76,6 +76,6 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"), // Column for Event
             inverseJoinColumns = @JoinColumn(name = "tag_id") // Column for Tag
     )
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
 }
