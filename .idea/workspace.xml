@@ -5,12 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="20c9cfa5-14db-4e72-b3e2-9b3104239afe" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/event-management-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/event-management-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/app.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/app.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/app.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/components/navbar/navbar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/components/navbar/navbar.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventMangementProject/src/main/java/com/example/eventmanagementproject/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventMangementProject/src/main/java/com/example/eventmanagementproject/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/components/event-card/event-card.html" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/components/event-card/event-card.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/components/event-card/event-card.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/components/event-card/event-card.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/pages/event-details/event-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/pages/event-details/event-details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/pages/event-details/event-details.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/pages/event-details/event-details.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,11 +47,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.EventManagementProjectApplication.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/user/Desktop/CI-2/projet/EventMangementProject",
+    "last_opened_file_path": "C:/Users/user/Desktop/CI-2/projet",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,7 +83,6 @@
       <updated>1762389922263</updated>
       <workItem from="1762389923428" duration="96000" />
       <workItem from="1762419722096" duration="6284000" />
-      <workItem from="1766870364739" duration="1895000" />
     </task>
     <servers />
   </component>

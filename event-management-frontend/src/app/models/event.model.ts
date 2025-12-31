@@ -66,7 +66,7 @@ export interface Location {
  */
 export interface Tag {
   id?: number;
-  tagName: string;
+  name: string;
 }
 
 /**
@@ -83,12 +83,16 @@ export interface Notification {
 /**
  * Participation Model - Matches Participation.java
  */
-export interface Participation {
+export interface ParticipationDTO {
   id?: number;
-  user: User;
-  event: AppEvent;
+  userId: number;
+  userName: string;
+  userEmail: string;
+  userAvatarUrl?: string;
+  eventId: number;
+  eventTitle: string;
+  status: ParticipationStatus;
   registrationDate?: string;
-  status?: ParticipationStatus;
 }
 
 /**

@@ -70,7 +70,8 @@ public class Event {
     // For attendees count, Add a computed field based on Participation count
     @Transient // if computed from participations
     private Integer attendees;
-    @ManyToMany()
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tag_events", // Junction table name
             joinColumns = @JoinColumn(name = "event_id"), // Column for Event
             inverseJoinColumns = @JoinColumn(name = "tag_id") // Column for Tag

@@ -1,1 +1,343 @@
-<p>event-details works!</p>
+
+
+
+<div class="relative min-h-screen overflow-hidden">
+  <!-- Animated colored blobs background -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <!-- 6 animated blobs, using all category colors -->
+    <div class="absolute -left-24 top-10 w-80 h-80 rounded-full blur-3xl opacity-70 animate-blob1"
+      [ngClass]="getCategoryBlobClass(event?.category, 0)"></div>
+    <div class="absolute right-0 top-1/3 w-96 h-96 rounded-full blur-3xl opacity-70 animate-blob2"
+      [ngClass]="getCategoryBlobClass(event?.category, 1)"></div>
+    <div class="absolute left-1/2 bottom-0 w-[30rem] h-[30rem] -translate-x-1/2 rounded-full blur-3xl opacity-60 animate-blob3"
+      [ngClass]="getCategoryBlobClass(event?.category, 2)"></div>
+    <div class="absolute left-10 bottom-1/4 w-72 h-72 rounded-full blur-3xl opacity-60 animate-blob4"
+      [ngClass]="getCategoryBlobClass(event?.category, 3)"></div>
+    <div class="absolute right-24 bottom-10 w-64 h-64 rounded-full blur-3xl opacity-60 animate-blob5"
+      [ngClass]="getCategoryBlobClass(event?.category, 4)"></div>
+    <div class="absolute left-1/3 top-0 w-60 h-60 rounded-full blur-3xl opacity-50 animate-blob6"
+      [ngClass]="getCategoryBlobClass(event?.category, 5)"></div>
+    <!-- Fade edges to avoid hard lines -->
+    <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white via-white/60 to-transparent"></div>
+    <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/60 to-transparent"></div>
+  </div>
+
+
+
+  <!-- Error State -->
+    <div *ngIf="error && !loading" class="text-center py-20">
+    <p class="text-red-500 text-lg">{{ error }}</p>
+  </div>
+
+  <!-- Event Content -->
+    <div *ngIf="event !== null && !loading">
+
+    <div class="max-w-6xl mx-auto px-6 pt-24 pb-16 z-10 relative">
+      <!-- ========== POSTER IMAGE ========== -->
+      <section class="mb-8">
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img 
+            [src]="event.posterUrl" 
+            [alt]="event.title"
+            class="w-full h-64 md:h-80 lg:h-[400px] object-cover"
+          >
+        </div>
+      </section>
+
+      <!-- ========== EVENT HEADER ========== -->
+      <section class="mb-10">
+        
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span *ngFor="let tag of event.tags"
+                class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">
+            #{{ tag.name }}
+          </span>
+          <span *ngIf="event.isVirtual" 
+                class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+            Virtual
+          </span>
+          <span *ngIf="event.isPrivate" 
+                class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-medium">
+            Private
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-3xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4">
+          {{ event.title }}
+        </h1>
+
+        <!-- Location (Only for in-person events) -->
+        <div *ngIf="!event.isVirtual" class="flex items-center gap-2 text-gray-600">
+          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span>{{ event.location?.city }}, {{ event.location?.country }}</span>
+        </div>
+
+        <!-- Online Event Indicator (Only for virtual events) -->
+        <div *ngIf="event.isVirtual" class="flex items-center gap-2 text-blue-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+          <span>Online Event</span>
+        </div>
+      </section>
+
+      <!-- ========== MAIN CONTENT GRID ========== -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left Column -->
+        <main class="lg:col-span-2 space-y-8">
+
+          <!-- About -->
+          <section class="p-6">
+            <h2 class="text-xl font-bold text-gray-900 pb-3 border-b border-gray-200 mb-4">About this event</h2>
+            <p class="text-gray-600 leading-relaxed whitespace-pre-line">
+              {{ event.description }}
+            </p>
+          </section>
+
+          <!-- Organizer -->
+          <section class="p-6">
+            <h2 class="text-xl font-bold text-gray-900 pb-3 border-b border-gray-200 mb-4">Organized by</h2>
+            <div class="flex items-center gap-4">
+              <img 
+                [src]="event.creator.avatarUrl || 'assets/default-avatar.png'" 
+                [alt]="event.creator.name"
+                class="w-14 h-14 rounded-full object-cover border-2 border-gray-100"
+              >
+              <div class="flex-1">
+                <p class="font-semibold text-gray-900">{{ event.creator.name }}</p>
+                <p class="text-sm text-gray-500">{{ event.creator.email }}</p>
+              </div>
+              <button class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition-colors">
+                Contact
+              </button>
+            </div>
+          </section>
+
+          <!-- Location (Only for in-person events) -->
+          <section class="p-6" *ngIf="!event.isVirtual">
+            <h2 class="text-xl font-bold text-gray-900 pb-3 border-b border-gray-200 mb-4">Location</h2>
+            <div class="space-y-2 mb-4">
+              <p class="font-semibold text-gray-900">{{ event.location?.name }}</p>
+              <p class="text-gray-600">
+                {{ event.location?.street }}<br>
+                {{ event.location?.city }}, {{ event.location?.postalCode }}<br>
+                {{ event.location?.country }}
+              </p>
+            </div>
+            
+            <!-- Map -->
+            <div class="rounded-xl overflow-hidden">
+              <iframe
+                *ngIf="mapUrl"
+                class="w-full h-64"
+                style="border:0"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                [src]="mapUrl">
+              </iframe>
+              
+              <div *ngIf="!mapUrl"
+                   class="h-48 bg-gray-100 flex items-center justify-center text-gray-400">
+                 <mat-icon class="mr-2 text-purple-500">location_on</mat-icon> Map not available
+              </div>
+            </div>
+            
+            <!-- Open in Google Maps link -->
+            <a *ngIf="event.location?.latitude && event.location?.longitude"
+               [href]="getGoogleMapsLink()"
+               target="_blank"
+               class="inline-flex items-center gap-2 mt-3 text-purple-600 hover:text-purple-700 text-sm font-medium">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+              Open in Google Maps
+            </a>
+          </section>
+
+          <!-- How to Join (Only for virtual events) -->
+          <section class="p-6" *ngIf="event.isVirtual">
+            <h2 class="text-xl font-bold text-gray-900 pb-3 border-b border-gray-200 mb-4">How to Join</h2>
+            
+            <div class="bg-blue-50 rounded-xl p-6 space-y-4">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-900 mb-1">This is an online event</h3>
+                  <p class="text-gray-600 text-sm">
+                    Join from anywhere! The link will be shared with registered participants before the event starts.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Show virtual link if available and user is registered  (CHECK THAT LATER) -->
+              <div *ngIf="event.virtualLink" class="pt-4 border-t border-blue-200">
+                <p class="text-sm text-gray-600 mb-2">Event link:</p>
+                <a [href]="event.virtualLink" 
+                   target="_blank"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                  Join Event Online
+                </a>
+              </div>
+
+              <!-- Message if no link yet -->
+              <div *ngIf="!event.virtualLink" class="pt-4 border-t border-blue-200">
+                <p class="text-sm text-gray-500 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Link will be available after registration
+                </p>
+              </div>
+            </div>
+          </section>
+
+        </main>
+
+        <!-- Right Column: Sticky Card -->
+        <aside class="lg:col-span-1">
+          <div class="sticky top-24 bg-[rgba(125,117,61,0.08)] backdrop-blur-md rounded-2xl p-6 border border-gray-200 shadow-sm space-y-6">
+
+            <!-- Date & Time -->
+            <div class="space-y-3">
+              <h3 class="text-lg font-bold text-gray-900 pb-2 border-b border-gray-200">Date & Time</h3>
+              <div class="text-gray-600 space-y-2">
+                <p class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  {{ event.startDate | date:'EEEE, MMMM d, y' }}
+                </p>
+                <p class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  {{ event.startDate | date:'h:mm a' }} - {{ event.endDate | date:'h:mm a' }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Event Type Indicator -->
+            <div *ngIf="event.isVirtual" class="p-3 bg-blue-50 rounded-lg">
+              <p class="text-sm text-blue-700 flex items-center gap-2 font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Online Event - Join from anywhere!
+              </p>
+            </div>
+
+            <!-- Capacity -->
+            <div class="space-y-3">
+              <h3 class="text-lg font-bold text-gray-900 pb-2 border-b border-gray-200">Capacity</h3>
+              
+              <div class="flex justify-between items-center">
+                <p class="text-gray-600">{{ spotsLeft }} spots left</p>
+                <p class="text-sm text-gray-400">{{ participantsCount }} / {{ event.capacity }}</p>
+              </div>
+
+              <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                    class="h-full rounded-full transition-all duration-300" 
+                    [ngClass]="{
+                        'bg-purple-600': capacityPercentage < 80,
+                        'bg-amber-500': capacityPercentage >= 80 && capacityPercentage < 95,
+                        'bg-red-500': capacityPercentage >= 95
+                    }"
+                    [style.width.%]="capacityPercentage">
+                </div>
+              </div>
+            </div>
+
+            <!-- Warning Badges -->
+            <div *ngIf="isSellingFast && !isSoldOut" 
+                class="flex items-center gap-2 text-amber-600 text-sm">
+                <mat-icon class="animate-pulse text-amber-600">whatshot</mat-icon>
+                <span>Selling fast! Only {{ spotsLeft }} spots left</span>
+            </div>
+            
+            <div *ngIf="isSoldOut" 
+                class="flex items-center gap-2 text-red-600 text-sm font-medium">
+                <mat-icon class="text-red-600">block</mat-icon>
+                <span>Sold out</span>
+            </div>
+            
+            <!-- Join Button -->
+            <button 
+              [disabled]="isSoldOut"
+              [ngClass]="{
+                'bg-purple-600 hover:bg-purple-700': !isSoldOut,
+                'bg-gray-300 cursor-not-allowed': isSoldOut
+              }"
+              class="w-full py-3 px-6 rounded-xl text-white font-semibold transition-colors">
+              {{ isSoldOut ? 'Sold Out' : 'Join Event' }}
+            </button>
+
+            <!-- Secondary Actions -->
+            <div class="flex gap-2">
+            <button 
+              (click)="toggleSave()"
+              class="flex-1 py-3 px-4 rounded-xl border border-gray-200 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-200 group"
+              [ngClass]="{
+                'bg-pink-50 border-pink-200 text-pink-600': isSaved,
+                'bg-white text-gray-600 hover:bg-pink-50 hover:border-pink-200 hover:text-pink-600': !isSaved
+              }">
+              <mat-icon 
+                class="text-xl transition-all duration-200"
+                [ngClass]="{
+                  'text-pink-500': isSaved,
+                  'text-gray-400 group-hover:text-pink-500': !isSaved
+                }">
+                {{ isSaved ? 'favorite' : 'favorite_border' }}
+              </mat-icon>
+              <span>{{ isSaved ? 'Saved' : 'Save' }}</span>
+            </button>
+            <button 
+              (click)="shareEvent()"
+              [disabled]="isSharing"
+              class="flex-1 py-3 px-4 rounded-xl border border-gray-200 bg-white flex items-center justify-center gap-2 text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 group"
+              [ngClass]="{'opacity-50 cursor-wait': isSharing}">
+              <mat-icon 
+                class="text-xl text-gray-400 transition-all duration-200 group-hover:text-blue-500">
+                share
+              </mat-icon>
+              <span>{{ isSharing ? 'Sharing...' : 'Share' }}</span>
+            </button>
+          </div>
+
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+</div>
