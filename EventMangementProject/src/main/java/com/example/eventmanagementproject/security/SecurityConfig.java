@@ -68,13 +68,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
+                        .requestMatchers("/error").permitAll() // Spring error page
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/auth/**").permitAll() // Login/Register
-                        .requestMatchers("/assets/**").permitAll() // Static assets (images, etc.)
-
-                        // Protected endpoints (change to .authenticated() when ready)
                         .requestMatchers("/api/**").permitAll() // ⚠️ TODO: Change to .authenticated()
-
+                        .requestMatchers("/assets/**").permitAll() // Static assets (images, etc.)
                         .anyRequest().authenticated())
 
                 .formLogin(form -> form.disable())

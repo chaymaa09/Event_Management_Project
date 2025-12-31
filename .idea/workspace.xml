@@ -5,9 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="20c9cfa5-14db-4e72-b3e2-9b3104239afe" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventMangementProject/src/main/java/com/example/eventmangementproject/dao/entities/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventMangementProject/src/main/java/com/example/eventmangementproject/dao/entities/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventMangementProject/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/EventMangementProject/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventMangementProject/src/main/java/com/example/eventmanagementproject/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventMangementProject/src/main/java/com/example/eventmanagementproject/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/components/event-card/event-card.html" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/components/event-card/event-card.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/components/event-card/event-card.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/components/event-card/event-card.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/pages/event-details/event-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/pages/event-details/event-details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-management-frontend/src/app/pages/event-details/event-details.ts" beforeDir="false" afterPath="$PROJECT_DIR$/event-management-frontend/src/app/pages/event-details/event-details.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,22 +20,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Salwa08"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Salwa08&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/chaymaa09/Event_Management_Project.git",
-    "accountId": "f3aae2ed-18dc-4d1a-ace6-e58582170c0f"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/chaymaa09/Event_Management_Project.git&quot;,
+    &quot;accountId&quot;: &quot;f3aae2ed-18dc-4d1a-ace6-e58582170c0f&quot;
   }
-}]]></component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -44,11 +47,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.EventManagementProjectApplication.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/user/Desktop/CI-2/projet",
+    "last_opened_file_path": "C:/Users/Salwa Khattami/IAGI/CI-2/JEE/Event_Management_Project",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -79,6 +83,7 @@
       <updated>1762389922263</updated>
       <workItem from="1762389923428" duration="96000" />
       <workItem from="1762419722096" duration="6284000" />
+      <workItem from="1766948870261" duration="107000" />
     </task>
     <servers />
   </component>

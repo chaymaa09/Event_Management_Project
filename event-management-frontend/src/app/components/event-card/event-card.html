@@ -1,5 +1,5 @@
-<div class="group relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-	<div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
+<a [routerLink]="['/events', event.id]" class="block group relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer">
+	<div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
 	<div class="relative">
 		<img 
 			[src]="event.posterUrl || 'https://placehold.co/800x600/e2e8f0/64748b?text=No+Image'" 
@@ -44,4 +44,4 @@
 		</div>
 
 	</div>
-</div>
+</a>

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { AppEvent } from '../../models/event.model';
 import { MOCK_EVENTS } from '../../mocks/mock-events';
 import {MatIconModule} from '@angular/material/icon';
@@ -7,7 +8,7 @@ import {MatIconModule} from '@angular/material/icon';
 @Component({
   selector: 'app-event-card',
   standalone: true,
-  imports: [CommonModule, DatePipe, MatIconModule],
+  imports: [CommonModule, DatePipe, MatIconModule, RouterLink],
   templateUrl: './event-card.html',
   styleUrl: './event-card.css',
 })

@@ -25,7 +25,7 @@ export const MOCK_EVENTS: AppEvent[] = [
       country: 'USA',
       postalCode: '94102'
     },
-    tags: [{ tagName: 'concert' }, { tagName: 'music' }, { tagName: 'live' }]
+    tags: [{ name: 'concert' }, { name: 'music' }, { name: 'live' }]
   },
   {
     id: 2,
@@ -45,7 +45,7 @@ export const MOCK_EVENTS: AppEvent[] = [
       name: 'Noah Lee',
       email: 'noah@example.com'
     },
-    tags: [{ tagName: 'networking' }, { tagName: 'startup' }]
+    tags: [{ name: 'networking' }, { name: 'startup' }]
   },
   {
     id: 3,
@@ -70,6 +70,6 @@ export const MOCK_EVENTS: AppEvent[] = [
       country: 'USA',
       postalCode: '73301'
     },
-    tags: [{ tagName: 'art' }, { tagName: 'coding' }]
+    tags: [{ name: 'art' }, { name: 'coding' }]
   }
 ];
