@@ -35,6 +35,7 @@
     "@angular/ssr": "^20.3.8",
     "express": "^5.1.0",
     "heroicons": "^2.2.0",
+    "keycloak-angular": "^20.0.0",
     "keycloak-js": "^26.2.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

@@ -7,7 +7,7 @@ import {User} from '../models/event.model';
   providedIn: 'root',
 })
 export class UserService {
-  apiUrl = 'http://localhost:8080/api/users';
+  apiUrl = 'http://localhost:8081/api/users';
 
   constructor(private http: HttpClient) { }
 

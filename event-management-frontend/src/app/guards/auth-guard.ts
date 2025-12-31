@@ -1,29 +1,40 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { KeycloakService } from '../services/keycloak/keycloak';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
 
 @Injectable({
   providedIn: 'root'
 })
-export class authGuard implements CanActivate {
+export class AuthGuard extends KeycloakAuthGuard {
   constructor(
-    private keycloakService: KeycloakService,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+    protected override readonly router: Router,
+    protected readonly keycloak: KeycloakService,
+    @Inject(PLATFORM_ID) private platformId: object
+  ) {
+    super(router, keycloak);
+  }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const isBrowser = isPlatformBrowser(this.platformId);
-
-    if (!isBrowser) {
+  async isAccessAllowed(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Promise<boolean | UrlTree> {
+    if (!isPlatformBrowser(this.platformId)) {
       return true;
     }
 
-    if (this.keycloakService.isAuthenticated()) {
-      return true;
-    } else {
-      this.keycloakService.login(state.url);
+    const isAuth = await this.keycloak.isLoggedIn();
+    if (!isAuth) {
+      // Store intended destination and redirect to root to avoid server 404
+      try {
+        sessionStorage.setItem('auth_redirect', state.url);
+      } catch { }
+      await this.keycloak.login({ redirectUri: window.location.origin + '/' });
       return false;
     }
+    return true;
+
+
+  
   }
 }

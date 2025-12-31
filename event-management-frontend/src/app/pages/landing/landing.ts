@@ -6,8 +6,7 @@ import { HeroSection } from '../../components/hero-section/hero-section';
 import { Footer } from '../../components/footer/footer';
 import { EventService } from '../../services/event';
 import { AppEvent } from '../../models/event.model';
-import { KeycloakService } from '../../services/keycloak/keycloak';
-
+import { AuthService } from '../../services/auth/auth.sevice';
 
 @Component({
   selector: 'app-landing',
@@ -20,7 +19,7 @@ export class Landing implements OnInit {
   constructor(
     private router: Router, 
     private eventService: EventService,
-    private keycloakService: KeycloakService
+    private authService: AuthService
   ) {}
   
   hashtags = ['#LiveMusic', '#TechTalks', '#Nightlife', '#Gaming', '#Fitness', '#FoodFestival', '#ArtExhibition', '#Workshop', '#Networking', '#Travel', '#Comedy', '#Sports', '#BookClub', '#FilmScreening', '#Dance', '#Meditation', '#StartupMeet', '#Photography', '#Tech'];
@@ -106,7 +105,7 @@ export class Landing implements OnInit {
 
   ngOnInit(): void {
     // If user is already logged in, redirect to home
-    if (this.keycloakService.isAuthenticated()) {
+    if (this.authService.isLoggedIn()) {
       this.router.navigate(['/home']);
       return;
     }
@@ -138,18 +137,18 @@ export class Landing implements OnInit {
 
   // Keycloak methods
   login(): void {
-    this.keycloakService.login(); 
+    this.authService.login(); 
   }
 
   logout(): void {
-    this.keycloakService.logout();
+    this.authService.logout();
   }
 
   isLoggedIn(): boolean {
-    return !!this.keycloakService.getToken();
+    return this.authService.isLoggedIn();
   }
 
   getUsername(): string {
-    return this.keycloakService.getUsername();
+    return this.authService.getUsername();
   }
 }

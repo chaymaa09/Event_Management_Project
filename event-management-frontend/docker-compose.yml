@@ -1,0 +1,8 @@
+services:
+  keycloak:
+    image: keycloak/keycloak:24.0.1
+    command: ["start-dev"]
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak-themes:/opt/keycloak/themes

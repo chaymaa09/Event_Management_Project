@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { KeycloakService } from '../../services/keycloak/keycloak';
+import { AuthService } from '../../services/auth/auth.sevice';
 
 @Component({
   selector: 'app-navbar',
@@ -11,19 +11,17 @@ import { KeycloakService } from '../../services/keycloak/keycloak';
   styleUrls: ['./navbar.css'],
 })
 export class Navbar {
+  username: string = '';
   isMobileMenuOpen = false;
 
   constructor(
     public router: Router,
-    public keycloakService: KeycloakService
+    public authService: AuthService
   ) {
     console.log('Navbar component initialized');
   }
 
-  testClick() {
-    console.log('TEST CLICK WORKS!');
-    alert('Button clicked!');
-  }
+  
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
@@ -37,21 +35,21 @@ export class Navbar {
     return this.router.url === '/';
   }
 
-  isAuthenticated(): boolean {
-    return this.keycloakService.isAuthenticated();
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
   }
 
   login(redirectPath?: string): void {
-    this.keycloakService.login(redirectPath);
+    this.authService.login();
   }
 
   logout(): void {
-    this.keycloakService.logout();
+    this.authService.logout();
   }
 
   getUsername(): string {
-    console.log('Fetching username from KeycloakService');
-    return this.keycloakService.getUsername();
+    this.username = this.authService.getUsername();
+    return this.username;
   }
 
   getUserInitials(): string {
@@ -63,4 +61,9 @@ export class Navbar {
   isAuthPage(): boolean {
     return false; 
   }
+
+  register(redirectPath?: string): void {
+    this.authService.register(redirectPath);
+  }
+
 }
