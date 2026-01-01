@@ -1,6 +1,6 @@
 import { ApplicationConfig, APP_INITIALIZER, PLATFORM_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { routes } from './app.routes';
@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
       multi: true,
-      deps: [KeycloakService, PLATFORM_ID]
+      deps: [KeycloakService, PLATFORM_ID, HttpClient]
     },
     {
       provide: HTTP_INTERCEPTORS,

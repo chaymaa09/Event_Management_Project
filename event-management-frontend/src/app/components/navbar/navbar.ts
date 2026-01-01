@@ -40,7 +40,7 @@ export class Navbar {
   }
 
   login(redirectPath?: string): void {
-    this.authService.login();
+    this.authService.login(redirectPath);
   }
 
   logout(): void {
