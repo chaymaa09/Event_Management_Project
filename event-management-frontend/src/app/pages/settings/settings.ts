@@ -34,6 +34,7 @@ export class Settings implements OnInit {
   saveError: string = '';
   showAddEmailModal: boolean = false;
   newEmailAddress: string = '';
+  showDeleteModal: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -154,21 +155,31 @@ export class Settings implements OnInit {
   }
 
   deleteAccount(): void {
-    if (confirm('Are you sure you want to permanently delete your account? This action cannot be undone.')) {
-      this.isLoading = true;
-      this.userService.deleteAccount().subscribe({
-        next: () => {
-          console.log('Account deleted successfully');
-          // Redirect to home or login page
-          this.authService.logout();
-        },
-        error: (err) => {
-          console.error('Failed to delete account', err);
-          this.saveError = 'Failed to delete account. Please try again.';
-          this.isLoading = false;
-        }
-      });
-    }
+    this.showDeleteModal = true;
+  }
+
+  confirmDeleteAccount(): void {
+    this.isLoading = true;
+    this.saveError = '';
+
+    this.userService.deleteAccount().subscribe({
+      next: () => {
+        console.log('Account deleted successfully');
+        this.isLoading = false;
+        this.showDeleteModal = false;
+        this.authService.logout();
+      },
+      error: (err) => {
+        console.error('Failed to delete account', err);
+        this.saveError = 'Failed to delete account. Please try again.';
+        this.isLoading = false;
+        this.showDeleteModal = false;
+      }
+    });
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
   }
 
   handleAvatarUpload(event: any): void {

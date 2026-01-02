@@ -18,6 +18,7 @@ public interface UserService {
      User updateUserProfile(Jwt jwt, User user);
      User addEmailToUser(Jwt jwt, String email);
      User removeEmailFromUser(Jwt jwt, int index);
+      boolean deleteCurrentUser(Jwt jwt);
 
      /**
       * Creates or updates the local User record for the currently authenticated Keycloak user.

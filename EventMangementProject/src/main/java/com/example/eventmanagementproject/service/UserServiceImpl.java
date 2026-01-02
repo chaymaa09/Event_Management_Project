@@ -165,4 +165,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return user;
     }
 
+    @Override
+    @Transactional
+    public boolean deleteCurrentUser(Jwt jwt) {
+        if (jwt == null) {
+            return false;
+        }
+        String keycloakId = jwt.getSubject();
+        if (keycloakId == null || keycloakId.isBlank()) {
+            return false;
+        }
+
+        return userRepository.findByKeycloakId(keycloakId)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return true;
+                })
+                .orElse(false);
+    }
+
 }

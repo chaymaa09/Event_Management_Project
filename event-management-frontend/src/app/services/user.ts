@@ -29,7 +29,7 @@ export class UserService {
   }
 
   deleteAccount(): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete`);
+    return this.http.delete(`${this.apiUrl}/me/delete`);
   }
 
   uploadAvatar(file: File): Observable<any> {
