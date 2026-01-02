@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -75,6 +76,13 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/me/avatar")
+    public ResponseEntity<User> uploadAvatar(@AuthenticationPrincipal Jwt jwt,
+                                             @RequestPart("avatar") MultipartFile avatar) {
+        User updated = userService.updateAvatar(jwt, avatar);
+        return ResponseEntity.ok(updated);
     }
 
 }

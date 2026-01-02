@@ -19,6 +19,7 @@ public interface UserService {
      User addEmailToUser(Jwt jwt, String email);
      User removeEmailFromUser(Jwt jwt, int index);
       boolean deleteCurrentUser(Jwt jwt);
+      User updateAvatar(Jwt jwt, org.springframework.web.multipart.MultipartFile avatar);
 
      /**
       * Creates or updates the local User record for the currently authenticated Keycloak user.

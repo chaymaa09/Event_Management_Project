@@ -11,7 +11,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +25,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final KeycloakAdminService keycloakAdminService;
+
+    @org.springframework.beans.factory.annotation.Value("${app.user-avatar-dir:assets/userUploads}")
+    private String avatarDir;
 
     @Override
     public User addUser(User user) {
@@ -186,6 +195,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    @Transactional
+    public User updateAvatar(Jwt jwt, org.springframework.web.multipart.MultipartFile avatar) {
+        User user = ensureUserExists(jwt);
+
+        try {
+            Path uploadPath = Paths.get(avatarDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String originalFilename = Optional.ofNullable(avatar.getOriginalFilename()).orElse("avatar");
+            String extension = "";
+            int dotIndex = originalFilename.lastIndexOf('.');
+            if (dotIndex != -1) {
+                extension = originalFilename.substring(dotIndex);
+            }
+
+            String filename = "avatar-" + user.getId() + extension;
+            Path targetFile = uploadPath.resolve(filename);
+            Files.copy(avatar.getInputStream(), targetFile, StandardCopyOption.REPLACE_EXISTING);
+
+            String urlPath = "/" + avatarDir.replace("\\", "/") + "/" + filename;
+            user.setAvatarUrl(urlPath);
+            return userRepository.save(user);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store avatar", e);
+        }
     }
 
 }
