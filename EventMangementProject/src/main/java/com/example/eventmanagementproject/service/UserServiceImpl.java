@@ -18,6 +18,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final KeycloakAdminService keycloakAdminService;
 
     @Override
     public User addUser(User user) {
@@ -175,7 +176,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (keycloakId == null || keycloakId.isBlank()) {
             return false;
         }
+        // Try to delete from Keycloak first (best effort)
+        keycloakAdminService.deleteUserById(keycloakId);
 
+        // Then delete from local database
         return userRepository.findByKeycloakId(keycloakId)
                 .map(user -> {
                     userRepository.delete(user);
