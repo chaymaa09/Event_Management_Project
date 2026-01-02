@@ -2,6 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { KeycloakService } from 'keycloak-angular';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export function initializeKeycloak(keycloak: KeycloakService, platformId: object, http: HttpClient) {
   return () => {
@@ -29,11 +30,12 @@ export function initializeKeycloak(keycloak: KeycloakService, platformId: object
       try {
         const isLoggedIn = await keycloak.isLoggedIn();
         if (isLoggedIn) {
-          await firstValueFrom(http.post('/api/users/sync-me', {}));
+          // Backend creates/updates the user from the JWT claims
+          await firstValueFrom(http.get(`${environment.apiUrl}/users/me`));
         }
       } catch (e) {
         // Do not block app startup if backend is unavailable.
-        console.warn('⚠️ User DB sync failed', e);
+        console.warn('User DB sync failed', e);
       }
       return ok;
     });

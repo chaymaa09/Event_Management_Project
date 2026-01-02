@@ -3,7 +3,6 @@ package com.example.eventmanagementproject.web;
 import com.example.eventmanagementproject.dao.entities.User;
 import com.example.eventmanagementproject.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -16,8 +15,7 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
@@ -53,14 +51,22 @@ public class UserController {
         return userService.ensureUserExists(jwt);
     }
 
+    @PutMapping("/me/update")
+    public User updateProfile(@AuthenticationPrincipal Jwt jwt, @RequestBody User updates) {
+        return userService.updateUserProfile(jwt, updates);
+    }
 
+    @PostMapping("/me/emailsup/add")
+    public ResponseEntity<User> addEmail(@AuthenticationPrincipal Jwt jwt, @RequestBody String email) {
+        User updatedUser = userService.addEmailToUser(jwt, email);
+        return ResponseEntity.ok(updatedUser);
+    }
 
-
-
-
-
-
-
+    @DeleteMapping("/me/emailsup/delete/{index}")
+    public ResponseEntity<User> removeEmail(@AuthenticationPrincipal Jwt jwt, @PathVariable int index) {
+        User updatedUser = userService.removeEmailFromUser(jwt, index);
+        return ResponseEntity.ok(updatedUser);
+    }
 
 }
 

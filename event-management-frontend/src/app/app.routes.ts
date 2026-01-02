@@ -3,6 +3,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {EventList} from './components/event-list/event-list';
 import {Home} from './pages/home/home'
 import { Landing } from './pages/landing/landing';
+import { Settings } from './pages/settings/settings';
+import { Profile } from './pages/profile/profile';
 import { ExploreEvents } from './pages/explore-events/explore-events';
 import { EventDetails } from './pages/event-details/event-details';
 import { AuthGuard } from './guards/auth-guard';
@@ -12,6 +14,8 @@ export const routes: Routes = [
   {path: 'home', component: Home, canActivate: [AuthGuard]},  // Protected
   { path: 'events', component: ExploreEvents, canActivate: [AuthGuard]},  // Protected
   { path: 'events/:id', component: EventDetails, canActivate: [AuthGuard]},  // Protected
+  { path: 'settings', component: Settings, canActivate: [AuthGuard]},  // Protected
+  { path: 'profile', component: Profile, canActivate: [AuthGuard]},  // Protected
   { path: '**', redirectTo: '' }
 ];
 

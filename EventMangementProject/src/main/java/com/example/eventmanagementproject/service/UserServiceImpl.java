@@ -91,6 +91,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 jwt.getClaimAsString("username"));
 
         String idp = jwt.getClaimAsString("idp");
+        String providerId = keycloakId;
 
         if (keycloakId == null || keycloakId.isBlank()) {
             throw new IllegalArgumentException("Missing 'sub' claim");
@@ -101,22 +102,34 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             u.setKeycloakId(keycloakId);
             u.setAuthType(AuthType.OAUTH);
             u.setEnabled(true);
-            // local password is not used for Keycloak users
-            u.setPassword("");
+            u.setPassword("oauth");  // Required non-null field
+            // Set defaults on creation with proper fallbacks
+            u.setEmail(email != null && !email.isBlank() ? email : (keycloakId + "@keycloak.local"));
+            u.setName(name != null && !name.isBlank() ? name : keycloakId);
+            // Set default avatar only on creation
+            u.setAvatarUrl("https://cdn-icons-png.flaticon.com/512/6780/6780628.png");
+            // Set provider info on creation
+            if (idp != null && !idp.isBlank()) {
+                u.setProvider(idp);
+                u.setProviderId(providerId);
+            }
             return u;
         });
 
-        if (email != null && !email.isBlank()) {
+        // Update email if provided and different
+        if (email != null && !email.isBlank() && !email.equals(user.getEmail())) {
             user.setEmail(email);
         }
-        if (name != null && !name.isBlank()) {
+        // Update name if provided and different
+        if (name != null && !name.isBlank() && !name.equals(user.getName())) {
             user.setName(name);
         }
+        // Update provider/providerId if provided
         if (idp != null && !idp.isBlank()) {
             user.setProvider(idp);
+            user.setProviderId(providerId);
         }
 
-        user.setAvatarUrl("https://commons.wikimedia.org/wiki/File:Unknown_person.jpg");
         return userRepository.save(user);
     }
 
@@ -124,4 +137,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         for (String v : values) if (v != null && !v.isBlank()) return v;
         return null;
     }
+
+    //a changer
+    public User updateUserProfile(Jwt jwt, User user){
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public User addEmailToUser(Jwt jwt, String email) {
+        User user = ensureUserExists(jwt);
+        if (user.getEmailSup() == null) {
+            user.setEmailSup(new java.util.ArrayList<>());
+        }
+        user.getEmailSup().add(email);
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public User removeEmailFromUser(Jwt jwt, int index) {
+        User user = ensureUserExists(jwt);
+        if (user.getEmailSup() != null && index >= 0 && index < user.getEmailSup().size()) {
+            user.getEmailSup().remove(index);
+            return userRepository.save(user);
+        }
+        return user;
+    }
+
 }

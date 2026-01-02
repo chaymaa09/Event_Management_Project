@@ -42,7 +42,11 @@ export class App implements OnInit {
         } catch { }
 
         // Default post-login landing
-        if (this.router.url === '/' || this.router.url === '') {
+        // Only redirect to /home when the *actual* browser URL is root.
+        // On deep-link refresh (e.g. /profile), Router may briefly report '/'
+        // during bootstrap; do not override the intended route.
+        const browserPath = window.location.pathname;
+        if ((this.router.url === '/' || this.router.url === '') && (browserPath === '/' || browserPath === '')) {
           this.router.navigateByUrl('/home');
         }
       }

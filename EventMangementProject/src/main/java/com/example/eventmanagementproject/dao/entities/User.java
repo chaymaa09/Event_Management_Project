@@ -1,14 +1,36 @@
 package com.example.eventmanagementproject.dao.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import lombok.*;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -18,7 +40,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties({ "createdEvents", "participations", "password", "authorities", "accountNonExpired",
-        "accountNonLocked", "credentialsNonExpired" })
+    "accountNonLocked", "credentialsNonExpired" })
 @Table(name = "user",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email"),
@@ -42,6 +64,25 @@ public class User implements UserDetails {
 
     @Column(nullable=false, unique=true)
     private String keycloakId;
+
+    private String bio;
+    private String phone;
+    private String instagramAccount;
+    private String youtubeAccount;
+    private String linkedinAccount;
+
+    @JsonProperty("xAccount")
+    @Column(name = "x_account")
+    private String xAccount;
+    private String website;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_email_sup",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "email")
+    private List<String> emailSup;
 
     private String provider;
     private String providerId;

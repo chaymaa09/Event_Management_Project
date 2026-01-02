@@ -4,11 +4,15 @@ import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
 import { UserService } from '../user';
 import { firstValueFrom } from 'rxjs';
+import { User } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private cachedUser: User | null = null;
+  private loadUserPromise: Promise<User | null> | null = null;
+
   constructor(
     private keycloakService: KeycloakService,
     @Inject(PLATFORM_ID) private platformId: object,
@@ -34,10 +38,7 @@ export class AuthService {
     }
   }
 
-  public async loadUserProfile(): Promise<KeycloakProfile> {
-    return await this.keycloakService.loadUserProfile();
-  }
-
+  
   public login(redirectPath: string = '/'): void {
     const redirectUri = window.location.origin + redirectPath;
     this.keycloakService.login({ redirectUri });
@@ -60,20 +61,64 @@ export class AuthService {
   async loadUser() {
     if (!isPlatformBrowser(this.platformId)) return null;
 
-    const isLoggedIn = await this.keycloakService.isLoggedIn();
-    if (!isLoggedIn) return null;
+    if (this.loadUserPromise) {
+      return this.loadUserPromise;
+    }
 
-    const tokenParsed: any = this.keycloakService.getKeycloakInstance().tokenParsed;
+    this.loadUserPromise = (async () => {
+      const isLoggedIn = await this.keycloakService.isLoggedIn();
+      if (!isLoggedIn) return null;
 
-    const keycloakId = tokenParsed?.sub;
-    const email = tokenParsed?.email;
-    const name = tokenParsed?.name ?? tokenParsed?.preferred_username ?? tokenParsed?.username;
-    const idp = tokenParsed?.idp;
+      const tokenParsed: any = this.keycloakService.getKeycloakInstance().tokenParsed;
+      const keycloakId = tokenParsed?.sub;
+      const email = tokenParsed?.email;
+      const name = tokenParsed?.name ?? tokenParsed?.preferred_username ?? tokenParsed?.username;
+      const idp = tokenParsed?.idp;
 
-    console.log('User Info:', { keycloakId, email, name, idp });
-    await firstValueFrom(this.userService.syncUserToDb());
+      try {
+        this.cachedUser = await firstValueFrom(this.userService.syncUserToDb());
+        console.log('Synced User from backend:', this.cachedUser);
+        return this.cachedUser;
+      } catch (e) {
+        console.warn('⚠️ User DB sync failed', e);
+        return null;
+      }
+    })().finally(() => {
+      this.loadUserPromise = null;
+    });
 
-    return { keycloakId, email, name, idp };
+    return this.loadUserPromise;
 
+  }
+
+  getCurrentUser(): User | null {
+    return this.cachedUser;
+  }
+
+  getCurrentUserName(): string {
+    return this.cachedUser?.name ?? this.getUsername();
+  }
+
+  getCurrentUserEmail(): string {
+    const cachedEmail = this.cachedUser?.email;
+    if (cachedEmail) return cachedEmail;
+    try {
+      const tokenParsed: any = this.keycloakService.getKeycloakInstance().tokenParsed;
+      return tokenParsed?.email ?? '';
+    } catch {
+      return '';
+    }
+  }
+
+  getCurrentUserAvatarUrl(): string {
+    return this.cachedUser?.avatarUrl ?? '';
+  }
+
+  openAccountManagement(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      this.keycloakService.getKeycloakInstance().accountManagement();
+    } catch {
+    }
   }
 }
