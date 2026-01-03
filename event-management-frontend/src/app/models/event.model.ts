@@ -12,6 +12,7 @@ export interface AppEvent {
   isVirtual?: boolean;
   virtualLink?: string;
   price: number;
+  currency?: string;
   category: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect';
   capacity: number;
   attendees?: number;
@@ -105,4 +106,17 @@ export enum ParticipationStatus {
   PENDING = 'PENDING',
   BLOCKED = 'BLOCKED',
   ATTENDED = 'ATTENDED'
+}
+
+
+export interface TimezoneOption {
+  name: string;
+  offset: string;
+  city: string;
+}
+
+export interface CurrencyOption {
+  code: string;
+  name: string;
+  symbol: string;
 }

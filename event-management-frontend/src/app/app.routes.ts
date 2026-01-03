@@ -7,6 +7,7 @@ import { Settings } from './pages/settings/settings';
 import { Profile } from './pages/profile/profile';
 import { ExploreEvents } from './pages/explore-events/explore-events';
 import { EventDetails } from './pages/event-details/event-details';
+import { CreateEvent } from './pages/create-event/create-event';
 import { AuthGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'events/:id', component: EventDetails, canActivate: [AuthGuard]},  // Protected
   { path: 'settings', component: Settings, canActivate: [AuthGuard]},  // Protected
   { path: 'profile', component: Profile, canActivate: [AuthGuard]},  // Protected
+  { path: 'create-event', component: CreateEvent, canActivate: [AuthGuard]},  // Protected
   { path: '**', redirectTo: '' }
 ];
 

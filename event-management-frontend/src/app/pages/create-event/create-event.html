@@ -1,0 +1,794 @@
+<div class="relative min-h-screen bg-gradient-to-b from-white via-purple-50/30 to-white text-slate-900 px-4 sm:px-6 pt-24 pb-16 overflow-hidden">
+  <!-- Background blobs -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute -top-24 left-8 w-72 h-72 bg-purple-200/60 blur-3xl rounded-full"></div>
+    <div class="absolute top-32 right-0 w-80 h-80 bg-blue-200/50 blur-3xl rounded-full"></div>
+    <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-pink-200/40 blur-3xl rounded-full"></div>
+    <!-- Grid pattern -->
+    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle, #a855f7 1px, transparent 1px); background-size: 40px 40px;"></div>
+  </div>
+
+  <div class="max-w-5xl mx-auto">
+    <!-- Main card -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-purple-200/30 border border-purple-100/50 p-6 md:p-10">
+      <div class="flex flex-col lg:flex-row gap-8">
+        
+        <!-- Left side - Image upload -->
+        <div class="lg:w-80 flex-shrink-0">
+          <div 
+            class="relative w-full aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100 cursor-pointer group"
+            (click)="triggerFileInput()"
+          >
+            <img 
+              *ngIf="posterPreview" 
+              [src]="posterPreview" 
+              class="w-full h-full object-cover"
+              alt="Event poster"
+            />
+            <div *ngIf="!posterPreview" class="absolute inset-0 flex flex-col items-center justify-center text-purple-400">
+              <svg class="w-16 h-16 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span class="text-sm font-medium">Ajouter une image</span>
+            </div>
+            <!-- Upload button overlay -->
+            <button 
+              *ngIf="posterPreview"
+              type="button"
+              class="absolute bottom-4 right-4 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-purple-700 transition-colors"
+              (click)="triggerFileInput(); $event.stopPropagation()"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+            <input 
+              #fileInput
+              type="file" 
+              class="hidden" 
+              accept="image/*"
+              (change)="handleImageUpload($event)"
+            />
+          </div>
+          
+          <!-- Remove image button -->
+          <button 
+            *ngIf="posterPreview"
+            type="button"
+            class="mt-3 w-full py-2 text-sm text-red-500 hover:text-red-600 transition-colors"
+            (click)="removeImage()"
+          >
+            Supprimer l'image
+          </button>
+        </div>
+
+        <!-- Right side - Form fields -->
+        <div class="flex-1 space-y-6">
+          
+          <!-- Event name -->
+          <input 
+            type="text"
+            [(ngModel)]="eventName"
+            placeholder="Nom de l'événement"
+            class="w-full text-3xl md:text-4xl font-outfit font-bold bg-transparent border-none outline-none placeholder-purple-300 text-purple-900"
+          />
+
+          <!-- Date & Time section -->
+          <div class="w-full flex items-center justify-between bg-purple-50/30 rounded-2xl px-6 py-5">
+            <!-- Left side: dots and labels -->
+            <div class="flex items-start gap-5">
+              <!-- Dots with dashed line -->
+              <div class="flex flex-col items-center pt-1">
+                <div class="w-3 h-3 rounded-full bg-purple-400"></div>
+                <div class="w-px h-8 border-l border-dashed border-slate-300"></div>
+                <div class="w-3 h-3 rounded-full border-2 border-slate-300 bg-white"></div>
+              </div>
+              
+              <!-- Labels -->
+              <div class="flex flex-col gap-5">
+                <span class="text-slate-500 text-sm py-0.5">Début</span>
+                <span class="text-slate-500 text-sm py-0.5">Fin</span>
+              </div>
+            </div>
+            
+            <!-- Center: Date and Time inputs -->
+            <div class="flex flex-col gap-3">
+              <!-- Start date row -->
+              <div class="flex items-center gap-3">
+                <!-- Date picker button -->
+                <div class="relative calendar-dropdown">
+                  <button 
+                    type="button"
+                    class="px-5 py-2 bg-white rounded-xl text-slate-700 font-medium hover:bg-slate-50 transition-colors min-w-[140px] text-center"
+                    (click)="openStartCalendar(); $event.stopPropagation()"
+                  >
+                    {{ formatDateDisplay(startDate) }}
+                  </button>
+                  
+                  <!-- Custom Calendar Dropdown -->
+                  <div 
+                    *ngIf="showStartCalendar"
+                    class="absolute left-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-purple-100 z-50 p-4 w-72"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <!-- Calendar header -->
+                    <div class="flex items-center justify-between mb-4">
+                      <span class="font-semibold text-slate-800 capitalize">{{ monthName }}</span>
+                      <div class="flex items-center gap-1">
+                        <button 
+                          type="button"
+                          class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-100 text-slate-500 transition-colors"
+                          (click)="prevMonth()"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <div class="flex gap-1">
+                          <div class="w-2 h-2 rounded-full" [class.bg-purple-500]="true" [class.bg-slate-300]="false"></div>
+                          <div class="w-2 h-2 rounded-full bg-slate-300"></div>
+                        </div>
+                        <button 
+                          type="button"
+                          class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-100 text-slate-500 transition-colors"
+                          (click)="nextMonth()"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <!-- Days of week header -->
+                    <div class="grid grid-cols-7 gap-1 mb-2">
+                      <div *ngFor="let day of ['L', 'M', 'M', 'J', 'V', 'S', 'D']" 
+                           class="text-center text-xs font-medium text-slate-400 py-1">
+                        {{ day }}
+                      </div>
+                    </div>
+                    
+                    <!-- Calendar days -->
+                    <div class="grid grid-cols-7 gap-1">
+                      <!-- Previous month days -->
+                      <div *ngFor="let day of previousMonthDays" 
+                           class="text-center py-2 text-sm text-slate-300">
+                        {{ day }}
+                      </div>
+                      
+                      <!-- Current month days -->
+                      <ng-container *ngFor="let day of calendarDays; let i = index">
+                        <button 
+                          *ngIf="day !== null && i >= previousMonthDays.length"
+                          type="button"
+                          class="w-9 h-9 flex items-center justify-center rounded-xl text-sm font-medium transition-all"
+                          [class.bg-purple-600]="isSelectedDate(day, true)"
+                          [class.text-white]="isSelectedDate(day, true)"
+                          [class.text-slate-700]="!isSelectedDate(day, true)"
+                          [class.hover:bg-purple-100]="!isSelectedDate(day, true)"
+                          [class.ring-2]="isToday(day) && !isSelectedDate(day, true)"
+                          [class.ring-purple-300]="isToday(day) && !isSelectedDate(day, true)"
+                          (click)="selectDate(day, true)"
+                        >
+                          {{ day }}
+                        </button>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Time input -->
+                <input 
+                  type="text"
+                  [(ngModel)]="startTime"
+                  class="w-[70px] px-3 py-2 bg-white rounded-xl text-slate-700 font-medium text-center focus:outline-none hover:bg-slate-50 transition-colors"
+                  placeholder="00:30"
+                />
+              </div>
+              
+              <!-- End date row -->
+              <div class="flex items-center gap-3">
+                <!-- Date picker button -->
+                <div class="relative calendar-dropdown">
+                  <button 
+                    type="button"
+                    class="px-5 py-2 bg-white rounded-xl text-slate-700 font-medium hover:bg-slate-50 transition-colors min-w-[140px] text-center"
+                    (click)="openEndCalendar(); $event.stopPropagation()"
+                  >
+                    {{ formatDateDisplay(endDate) }}
+                  </button>
+                  
+                  <!-- Custom Calendar Dropdown for End Date -->
+                  <div 
+                    *ngIf="showEndCalendar"
+                    class="absolute left-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-purple-100 z-50 p-4 w-72"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <!-- Calendar header -->
+                    <div class="flex items-center justify-between mb-4">
+                      <span class="font-semibold text-slate-800 capitalize">{{ monthName }}</span>
+                      <div class="flex items-center gap-1">
+                        <button 
+                          type="button"
+                          class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-100 text-slate-500 transition-colors"
+                          (click)="prevMonth()"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <div class="flex gap-1">
+                          <div class="w-2 h-2 rounded-full" [class.bg-purple-500]="true" [class.bg-slate-300]="false"></div>
+                          <div class="w-2 h-2 rounded-full bg-slate-300"></div>
+                        </div>
+                        <button 
+                          type="button"
+                          class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-100 text-slate-500 transition-colors"
+                          (click)="nextMonth()"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <!-- Days of week header -->
+                    <div class="grid grid-cols-7 gap-1 mb-2">
+                      <div *ngFor="let day of ['L', 'M', 'M', 'J', 'V', 'S', 'D']" 
+                           class="text-center text-xs font-medium text-slate-400 py-1">
+                        {{ day }}
+                      </div>
+                    </div>
+                    
+                    <!-- Calendar days -->
+                    <div class="grid grid-cols-7 gap-1">
+                      <!-- Previous month days -->
+                      <div *ngFor="let day of previousMonthDays" 
+                           class="text-center py-2 text-sm text-slate-300">
+                        {{ day }}
+                      </div>
+                      
+                      <!-- Current month days -->
+                      <ng-container *ngFor="let day of calendarDays; let i = index">
+                        <button 
+                          *ngIf="day !== null && i >= previousMonthDays.length"
+                          type="button"
+                          class="w-9 h-9 flex items-center justify-center rounded-xl text-sm font-medium transition-all"
+                          [class.bg-purple-600]="isSelectedDate(day, false)"
+                          [class.text-white]="isSelectedDate(day, false)"
+                          [class.text-slate-700]="!isSelectedDate(day, false)"
+                          [class.hover:bg-purple-100]="!isSelectedDate(day, false)"
+                          [class.ring-2]="isToday(day) && !isSelectedDate(day, false)"
+                          [class.ring-purple-300]="isToday(day) && !isSelectedDate(day, false)"
+                          (click)="selectDate(day, false)"
+                        >
+                          {{ day }}
+                        </button>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Time input -->
+                <input 
+                  type="text"
+                  [(ngModel)]="endTime"
+                  class="w-[70px] px-3 py-2.5 bg-white border border-purple-200 rounded-xl text-purple-900 font-medium text-center focus:outline-none focus:border-purple-400 shadow-sm"
+                  placeholder="01:30"
+                />
+              </div>
+            </div>
+
+            <!-- Timezone - aligned to the right -->
+            <div class="relative timezone-dropdown self-start">
+              <button 
+                type="button"
+                class="flex items-center gap-3 px-4 py-3 bg-white border border-purple-200 rounded-xl hover:bg-purple-50 transition-colors shadow-sm"
+                (click)="showTimezoneDropdown = !showTimezoneDropdown"
+              >
+                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="text-left">
+                  <div class="text-xs text-purple-500 font-medium">{{ selectedTimezone.offset }}</div>
+                  <div class="text-sm font-semibold text-purple-700">{{ selectedTimezone.city }}</div>
+                </div>
+              </button>
+              
+              <!-- Timezone dropdown -->
+              <div 
+                *ngIf="showTimezoneDropdown"
+                class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-purple-100 z-50 overflow-hidden"
+              >
+                <div class="p-3 border-b border-purple-100">
+                  <input 
+                    type="text"
+                    [(ngModel)]="timezoneSearch"
+                    placeholder="Rechercher un fuseau horaire"
+                    class="w-full px-3 py-2 bg-purple-50/50 border border-purple-200 rounded-lg text-sm focus:outline-none focus:border-purple-400"
+                  />
+                </div>
+                <div class="max-h-60 overflow-y-auto">
+                  <button 
+                    *ngFor="let tz of filteredTimezones"
+                    type="button"
+                    class="w-full px-4 py-3 flex items-center justify-between hover:bg-purple-50 transition-colors text-left"
+                    (click)="selectTimezone(tz)"
+                  >
+                    <span class="text-sm text-slate-700">{{ tz.name }} - {{ tz.city }}</span>
+                    <span class="text-sm text-slate-400">{{ tz.offset }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event Type Dropdown -->
+          <div class="relative eventtype-dropdown">
+            <button 
+              type="button"
+              class="w-full flex items-center gap-3 px-4 py-4 bg-white border border-slate-200 rounded-2xl hover:border-purple-200 hover:bg-purple-50/30 transition-colors text-left"
+              (click)="showEventTypeDropdown = !showEventTypeDropdown"
+            >
+              <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path *ngIf="eventType === 'virtual'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                <path *ngIf="eventType === 'in-person'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path *ngIf="eventType === 'in-person'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <div>
+                <div class="font-medium text-slate-700">{{ eventType === 'virtual' ? 'Événement virtuel' : 'Événement présentiel' }}</div>
+                <div class="text-sm text-slate-500">{{ eventType === 'virtual' ? 'Lien Zoom ou Google Meet' : 'Lieu physique' }}</div>
+              </div>
+              <svg class="w-5 h-5 text-slate-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <!-- Event type dropdown options -->
+            <div 
+              *ngIf="showEventTypeDropdown"
+              class="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-purple-100 z-50 overflow-hidden"
+            >
+              <button 
+                type="button"
+                class="w-full px-4 py-3 flex items-center gap-3 hover:bg-purple-50 transition-colors text-left"
+                [class.bg-purple-50]="eventType === 'in-person'"
+                (click)="selectEventType('in-person')"
+              >
+                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <div>
+                  <div class="font-medium text-slate-700">Présentiel</div>
+                  <div class="text-sm text-slate-500">Événement dans un lieu physique</div>
+                </div>
+              </button>
+              <button 
+                type="button"
+                class="w-full px-4 py-3 flex items-center gap-3 hover:bg-purple-50 transition-colors text-left"
+                [class.bg-purple-50]="eventType === 'virtual'"
+                (click)="selectEventType('virtual')"
+              >
+                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <div>
+                  <div class="font-medium text-slate-700">Virtuel</div>
+                  <div class="text-sm text-slate-500">Événement en ligne via Zoom, Meet, etc.</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Virtual Link  -->
+          <div *ngIf="eventType === 'virtual'" class="space-y-2">
+            <div class="flex items-center gap-3 px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              <input 
+                type="url"
+                [(ngModel)]="virtualLink"
+                placeholder="Lien Zoom, Google Meet, Teams..."
+                class="flex-1 bg-transparent border-none outline-none text-slate-700 placeholder-slate-400"
+              />
+            </div>
+          </div>
+
+          <!-- Location  -->
+          <div *ngIf="eventType === 'in-person'" class="space-y-3">
+            <!-- Location dropdown -->
+            <div class="relative location-dropdown">
+              <!-- Location input field -->
+              <div 
+                class="flex items-center gap-3 px-4 py-4 rounded-xl transition-colors"
+                [class.bg-slate-50]="!selectedLocation"
+                [class.border]="!selectedLocation"
+                [class.border-slate-200]="!selectedLocation"
+                [class.bg-purple-50]="selectedLocation"
+                [class.border-purple-200]="selectedLocation"
+                [class.ring-2]="showLocationDropdown" 
+                [class.ring-purple-500]="showLocationDropdown" 
+                [class.border-transparent]="showLocationDropdown"
+              >
+                <svg class="w-5 h-5 text-purple-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <div class="flex-1 min-w-0">
+                  <input 
+                    type="text"
+                    [(ngModel)]="locationSearch"
+                    (input)="searchLocations()"
+                    (focus)="showLocationDropdown = true"
+                    [placeholder]="selectedLocation ? selectedLocation.street : 'Rechercher une adresse...'"
+                    class="w-full bg-transparent border-none outline-none placeholder-slate-400"
+                    [class.text-slate-700]="!selectedLocation"
+                    [class.text-purple-700]="selectedLocation"
+                    [class.placeholder-purple-600]="selectedLocation"
+                  />
+                </div>
+                <!-- Loading spinner -->
+                <svg *ngIf="isSearchingLocation" class="animate-spin h-5 w-5 text-purple-500 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <!-- Clear button when location selected -->
+                <button 
+                  *ngIf="selectedLocation && !isSearchingLocation"
+                  type="button"
+                  (click)="selectedLocation = null; locationSearch = ''; $event.stopPropagation()"
+                  class="p-1 hover:bg-slate-200 rounded-full transition-colors flex-shrink-0"
+                >
+                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <!-- Location dropdown panel -->
+              <div 
+                *ngIf="showLocationDropdown"
+                class="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden calendar-dropdown-animation"
+              >
+                <!-- Empty state - no search -->
+                <div *ngIf="!isSearchingLocation && locationSearch.length < 1" class="px-4 py-6 text-center text-slate-500">
+                  <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <span class="text-sm">Commencez à taper pour rechercher</span>
+                </div>
+
+                <!-- Searching state -->
+                <div *ngIf="isSearchingLocation" class="px-4 py-6 text-center text-slate-500">
+                  <span class="text-sm">Recherche en cours...</span>
+                </div>
+
+                <!-- No results -->
+                <div *ngIf="!isSearchingLocation && locationSearch.length >= 1 && locationResults.length === 0" class="px-4 py-6 text-center text-slate-500">
+                  <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  </svg>
+                  <span class="text-sm">Aucun résultat trouvé</span>
+                </div>
+                
+                <!-- Location results -->
+                <div *ngIf="!isSearchingLocation && locationResults.length > 0" class="max-h-64 overflow-y-auto">
+                  <button 
+                    *ngFor="let loc of locationResults"
+                    type="button"
+                    class="w-full px-4 py-3 flex items-start gap-3 hover:bg-purple-50 transition-colors text-left border-b border-slate-100 last:border-b-0"
+                    (click)="selectLocation(loc)"
+                  >
+                    <svg class="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    </svg>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-medium text-slate-700">{{ loc.name }}</div>
+                      <div class="text-sm text-slate-500 truncate">{{ loc.address }}</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Additional location info -->
+            <div class="flex items-start gap-3 px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <svg class="w-5 h-5 text-slate-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <textarea 
+                [(ngModel)]="additionalLocationInfo"
+                placeholder="Informations supplémentaires (étage, bâtiment, indications...)"
+                rows="2"
+                class="flex-1 bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 resize-none"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="flex items-start gap-3 px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <svg class="w-5 h-5 text-purple-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <textarea 
+              [(ngModel)]="description"
+              placeholder="Ajouter une description"
+              rows="3"
+              class="flex-1 bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 resize-none"
+            ></textarea>
+          </div>
+
+          <!-- Options section -->
+          <div class="pt-4 border-t border-slate-200">
+            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Options de l'événement</h3>
+            
+            <div class="space-y-1">
+              <!-- Price -->
+              <button 
+                type="button"
+                class="w-full flex items-center justify-between px-4 py-4 hover:bg-slate-50 rounded-xl transition-colors"
+                (click)="openPriceModal()"
+              >
+                <div class="flex items-center gap-3">
+                  <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                  </svg>
+                  <span class="text-slate-700">Prix du billet</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-purple-600 font-medium">{{ priceDisplay }}</span>
+                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Validation required -->
+              <div class="flex items-center justify-between px-4 py-4 hover:bg-slate-50 rounded-xl transition-colors">
+                <div class="flex items-center gap-3">
+                  <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span class="text-slate-700">Validation requise</span>
+                </div>
+                <button 
+                  type="button"
+                  class="relative w-12 h-7 rounded-full transition-colors duration-200"
+                  [class.bg-purple-500]="requiresApproval"
+                  [class.bg-slate-300]="!requiresApproval"
+                  (click)="requiresApproval = !requiresApproval"
+                >
+                  <div 
+                    class="absolute top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+                    [class.left-1]="!requiresApproval"
+                    [class.left-6]="requiresApproval"
+                  ></div>
+                </button>
+              </div>
+
+              <!-- Capacity -->
+              <button 
+                type="button"
+                class="w-full flex items-center justify-between px-4 py-4 hover:bg-slate-50 rounded-xl transition-colors"
+                (click)="openCapacityModal()"
+              >
+                <div class="flex items-center gap-3">
+                  <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                  </svg>
+                  <span class="text-slate-700">Capacité</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-purple-600 font-medium">{{ capacityDisplay }}</span>
+                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Create button -->
+          <button 
+            type="button"
+            class="w-full py-4 bg-purple-600 hover:bg-purple-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold rounded-2xl transition-colors shadow-lg shadow-purple-200"
+            [disabled]="!isFormValid"
+            (click)="createEvent()"
+          >
+            Créer un événement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Price Modal -->
+<div 
+  *ngIf="showPriceModal"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+  (click)="closePriceModal()"
+>
+  <div 
+    class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold text-slate-900">Prix du billet</h3>
+        <p class="text-sm text-slate-500">Définissez le prix de participation</p>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <!-- Price input with currency -->
+      <div class="flex gap-3">
+        <div class="relative flex-1">
+          <input 
+            type="number"
+            [(ngModel)]="price"
+            min="0"
+            step="0.01"
+            placeholder="0"
+            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-lg font-semibold focus:outline-none focus:border-purple-400"
+          />
+        </div>
+        
+        <!-- Currency dropdown -->
+        <div class="relative currency-dropdown">
+          <button 
+            type="button"
+            class="h-full px-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2 hover:bg-slate-100 transition-colors"
+            (click)="showCurrencyDropdown = !showCurrencyDropdown; $event.stopPropagation()"
+          >
+            <span class="font-medium">{{ currency.code }}</span>
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          <div 
+            *ngIf="showCurrencyDropdown"
+            class="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden"
+          >
+            <div class="p-2 border-b border-slate-100">
+              <input 
+                type="text"
+                [(ngModel)]="currencySearch"
+                placeholder="Rechercher..."
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-purple-400"
+                (click)="$event.stopPropagation()"
+              />
+            </div>
+            <div class="max-h-48 overflow-y-auto">
+              <button 
+                *ngFor="let c of filteredCurrencies"
+                type="button"
+                class="w-full px-4 py-2.5 flex items-center justify-between hover:bg-purple-50 transition-colors text-left"
+                (click)="selectCurrency(c); $event.stopPropagation()"
+              >
+                <span class="text-sm text-slate-700">{{ c.name }}</span>
+                <span class="text-sm font-medium text-slate-500">{{ c.symbol }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick options -->
+      <div class="flex gap-2">
+        <button 
+          type="button"
+          class="px-4 py-2 text-sm rounded-lg transition-colors"
+          [class.bg-purple-100]="price === 0"
+          [class.text-purple-700]="price === 0"
+          [class.bg-slate-100]="price !== 0"
+          [class.text-slate-600]="price !== 0"
+          (click)="price = 0"
+        >
+          Gratuit
+        </button>
+      </div>
+    </div>
+
+    <button 
+      type="button"
+      class="w-full mt-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-colors"
+      (click)="confirmPrice()"
+    >
+      Confirmer
+    </button>
+  </div>
+</div>
+
+<!-- Capacity Modal -->
+<div 
+  *ngIf="showCapacityModal"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+  (click)="closeCapacityModal()"
+>
+  <div 
+    class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold text-slate-900">Capacité maximale</h3>
+        <p class="text-sm text-slate-500">Fermer les inscriptions une fois la capacité atteinte.</p>
+      </div>
+    </div>
+
+    <div class="space-y-5">
+      <!-- Limit capacity toggle -->
+      <div class="flex items-center justify-between">
+        <span class="text-slate-700">Limiter la capacité de l'événement</span>
+        <button 
+          type="button"
+          class="relative w-12 h-7 rounded-full transition-colors duration-200"
+          [class.bg-slate-900]="tempCapacityLimited"
+          [class.bg-slate-300]="!tempCapacityLimited"
+          (click)="tempCapacityLimited = !tempCapacityLimited"
+        >
+          <div 
+            class="absolute top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+            [class.left-1]="!tempCapacityLimited"
+            [class.left-6]="tempCapacityLimited"
+          ></div>
+        </button>
+      </div>
+
+      <!-- Capacity number (shown when limited) -->
+      <div *ngIf="tempCapacityLimited" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-700">Capacité maximale</span>
+          <input 
+            type="number"
+            [(ngModel)]="tempCapacity"
+            min="1"
+            class="w-24 px-3 py-2 text-right bg-slate-50 border border-slate-200 rounded-lg font-semibold focus:outline-none focus:border-purple-400"
+          />
+        </div>
+
+        <!-- Waiting list toggle -->
+        <div class="flex items-center justify-between">
+          <span class="text-slate-700">Liste d'attente de surcapacité</span>
+          <button 
+            type="button"
+            class="relative w-12 h-7 rounded-full transition-colors duration-200"
+            [class.bg-slate-900]="tempWaitingList"
+            [class.bg-slate-300]="!tempWaitingList"
+            (click)="tempWaitingList = !tempWaitingList"
+          >
+            <div 
+              class="absolute top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+              [class.left-1]="!tempWaitingList"
+              [class.left-6]="tempWaitingList"
+            ></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button 
+      type="button"
+      class="w-full mt-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-colors"
+      (click)="confirmCapacity()"
+    >
+      Confirmer
+    </button>
+  </div>
+</div>
