@@ -7,13 +7,14 @@ import { AuthService } from '../../services/auth/auth.sevice';
 import { AppEvent, Location } from '../../models/event.model';
 import { CurrencyOption } from '../../models/event.model';
 import { TimezoneOption } from '../../models/event.model';
+import { CategoryIconComponent, CategoryType } from '../../components/category-icon/category-icon.component';
 
 
 
 
 @Component({
   selector: 'app-create-event',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CategoryIconComponent],
   templateUrl: './create-event.html',
   styleUrl: './create-event.css',
 })
@@ -79,15 +80,24 @@ export class CreateEvent implements OnInit {
   posterPreview = '';
   
   // Category
-  category: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect' = 'Party';
+  category: CategoryType = 'TECH';
   showCategoryDropdown = false;
-  categories: { value: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect'; label: string; description: string }[] = [
-    { value: 'Party',  label: 'Party',  description: 'Social events, nightlife, celebrations' },
-    { value: 'Learn',  label: 'Learn',  description: 'Workshops, talks, conferences' },
-    { value: 'Chill',  label: 'Chill',  description: 'Relaxed meetups, casual hangouts' },
-    { value: 'Active', label: 'Active', description: 'Sports, fitness, outdoor activities' },
-    { value: 'Create', label: 'Create', description: 'Art, music, coding, making things' },
-    { value: 'Connect',label: 'Connect',description: 'Networking, community, meet & greet' },
+  categories: {
+    value: CategoryType;
+    label: string;
+    description: string;
+    icon: string;
+    colorClass: string;
+  }[] = [
+    { value: 'TECH',          label: 'Tech',           description: 'Technology, dev, startups, innovation',        icon: 'computer',   colorClass: 'text-amber-400' },
+    { value: 'AI',            label: 'AI',             description: 'Artificial intelligence, data, ML',           icon: 'schema',     colorClass: 'text-pink-400' },
+    { value: 'ART_CULTURE',   label: 'Arts & Culture', description: 'Design, music, arts, culture',               icon: 'palette',    colorClass: 'text-green-400' },
+    { value: 'CLIMATE',       label: 'Climate',        description: 'Environment, climate, sustainability',       icon: 'public',     colorClass: 'text-lime-400' },
+    { value: 'WELLNESS',      label: 'Wellness',       description: 'Health, mindfulness, wellbeing',             icon: 'spa',        colorClass: 'text-teal-400' },
+    { value: 'CYBER_SECURITY',label: 'Cyber Security', description: 'Security, privacy, hacking, blue team',      icon: 'shield',     colorClass: 'text-sky-400' },
+    { value: 'FITNESS',       label: 'Fitness',        description: 'Sport, fitness, movement',                   icon: 'directions_run', colorClass: 'text-orange-400' },
+    { value: 'PARTY',         label: 'Party',          description: 'Nightlife, socials, celebrations',           icon: 'celebration',colorClass: 'text-rose-400' },
+    { value: 'CRYPTO',        label: 'Crypto',         description: 'Blockchain, web3, crypto meetups',          icon: 'currency_bitcoin', colorClass: 'text-purple-400' },
   ];
   
   // Timezones list - dynamically generated
@@ -116,7 +126,7 @@ export class CreateEvent implements OnInit {
     this.detectUserTimezone();
   }
 
-  selectCategory(value: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect'): void {
+  selectCategory(value: CategoryType): void {
     this.category = value;
     this.showCategoryDropdown = false;
   }
@@ -671,6 +681,9 @@ export class CreateEvent implements OnInit {
     const target = event.target as HTMLElement;
     if (!target.closest('.timezone-dropdown')) {
       this.showTimezoneDropdown = false;
+    }
+    if (!target.closest('.category-dropdown')) {
+      this.showCategoryDropdown = false;
     }
     if (!target.closest('.category-dropdown')) {
       this.showCategoryDropdown = false;

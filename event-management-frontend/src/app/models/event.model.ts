@@ -13,7 +13,8 @@ export interface AppEvent {
   virtualLink?: string;
   price: number;
   currency?: string;
-  category: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect';
+  // Matches backend Category enum: TECH, AI, ART_CULTURE, CLIMATE, WELLNESS, CYBER_SECURITY, FITNESS, PARTY, CRYPTO
+  category: 'TECH' | 'AI' | 'ART_CULTURE' | 'CLIMATE' | 'WELLNESS' | 'CYBER_SECURITY' | 'FITNESS' | 'PARTY' | 'CRYPTO';
   capacity: number;
   attendees?: number;
   waitingListEnabled?: boolean;

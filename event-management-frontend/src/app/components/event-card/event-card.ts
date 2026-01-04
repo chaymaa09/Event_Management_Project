@@ -17,12 +17,15 @@ export class EventCard {
 
   get categoryBadge() {
     const colorByCategory: Record<AppEvent['category'], string> = {
-      Party: 'bg-gradient-to-r from-pink-500 to-purple-500',
-      Learn: 'bg-gradient-to-r from-indigo-500 to-blue-500',
-      Chill: 'bg-gradient-to-r from-emerald-500 to-teal-500',
-      Active: 'bg-gradient-to-r from-amber-500 to-orange-500',
-      Create: 'bg-gradient-to-r from-purple-500 to-pink-500',
-      Connect: 'bg-gradient-to-r from-yellow-500 to-amber-500'
+      TECH: 'bg-gradient-to-r from-amber-500 to-yellow-400',
+      AI: 'bg-gradient-to-r from-pink-500 to-rose-500',
+      ART_CULTURE: 'bg-gradient-to-r from-green-500 to-emerald-500',
+      CLIMATE: 'bg-gradient-to-r from-lime-500 to-green-400',
+      WELLNESS: 'bg-gradient-to-r from-teal-500 to-cyan-500',
+      CYBER_SECURITY: 'bg-gradient-to-r from-sky-500 to-blue-600',
+      FITNESS: 'bg-gradient-to-r from-orange-500 to-red-500',
+      PARTY: 'bg-gradient-to-r from-purple-500 to-pink-500',
+      CRYPTO: 'bg-gradient-to-r from-violet-500 to-indigo-500'
     };
     return colorByCategory[this.event.category] ?? 'bg-gradient-to-r from-slate-500 to-slate-700';
   }
