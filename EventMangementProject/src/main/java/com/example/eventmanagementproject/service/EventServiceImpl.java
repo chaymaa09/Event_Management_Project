@@ -4,6 +4,7 @@ import com.example.eventmanagementproject.dao.entities.Category;
 import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.dao.entities.Location;
 import com.example.eventmanagementproject.dao.entities.User;
+import com.example.eventmanagementproject.dao.repositories.CategoryRepository;
 import com.example.eventmanagementproject.dao.repositories.EventRepository;
 import com.example.eventmanagementproject.dao.repositories.LocationRepository;
 import com.example.eventmanagementproject.dao.repositories.UserRepository;
@@ -22,34 +23,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
-
-    private Category mapCategory(String categoryValue) {
-        if (categoryValue == null || categoryValue.isBlank()) {
-            return null;
-        }
-
-        String normalized = categoryValue.trim().toLowerCase();
-        switch (normalized) {
-            case "party":
-                return Category.PARTY;
-            case "learn":
-                return Category.TECH;
-            case "chill":
-                return Category.WELLNESS;
-            case "active":
-                return Category.FITNESS;
-            case "create":
-                return Category.ART_CULTURE;
-            case "connect":
-                return Category.TECH;
-            default:
-                try {
-                    return Category.valueOf(categoryValue.toUpperCase());
-                } catch (IllegalArgumentException ex) {
-                    return null;
-                }
-        }
-    }
+    private final CategoryRepository categoryRepository;
 
     @Override
     public Event addEvent(EventCreateDTO dto, String creatorEmail) {
@@ -77,7 +51,17 @@ public class EventServiceImpl implements EventService {
         event.setRequiresApproval(dto.getRequiresApproval() != null ? dto.getRequiresApproval() : false);
         event.setPrice(dto.getPrice() != null ? dto.getPrice() : 0.0);
         event.setCurrency(dto.getCurrency() != null ? dto.getCurrency() : "USD");
-        event.setCategory(mapCategory(dto.getCategory()));
+
+        // Directly map the incoming category string to an existing Category entity
+        if (dto.getCategory() != null && !dto.getCategory().isBlank()) {
+            String code = dto.getCategory().trim().toUpperCase();
+
+            Category category = categoryRepository
+                    .findByNameIgnoreCase(code)
+                    .orElseThrow(() -> new RuntimeException("Category not found: " + code));
+
+            event.setCategory(category);
+        }
         event.setPosterUrl(dto.getPosterUrl());
 
         // Handle location - create new or use existing

@@ -68,7 +68,8 @@ public class Event {
     @Column(length = 10)
     private String currency = "USD";
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @Column(name = "poster_url", length = 500)

@@ -29,7 +29,7 @@ public class EventMapper {
         dto.setRequiresApproval(event.getRequiresApproval());
         dto.setPrice(event.getPrice());
         dto.setCurrency(event.getCurrency());
-        dto.setCategory(event.getCategory() != null ? event.getCategory().name() : null);
+        dto.setCategory(event.getCategory() != null ? event.getCategory().getName() : null);
         dto.setPosterUrl(event.getPosterUrl());
         dto.setCreationDate(event.getCreationDate());
         // Map creator (avoid lazy loading issues)

@@ -56,7 +56,7 @@ public class EventController {
 
     @PostMapping("/add")
     public ResponseEntity<Event> addEvent(
-            @RequestBody Event event,
+            @RequestBody EventCreateDTO dto,
             @AuthenticationPrincipal Jwt jwt) {
 
         if (jwt == null) {
@@ -65,51 +65,6 @@ public class EventController {
 
         var creator = userService.ensureUserExists(jwt);
         String creatorEmail = creator.getEmail();
-
-        // Create DTO from Event entity
-        EventCreateDTO dto = new EventCreateDTO();
-        dto.setTitle(event.getTitle());
-        dto.setDescription(event.getDescription());
-        dto.setStartDate(event.getStartDate());
-        dto.setEndDate(event.getEndDate());
-        dto.setCapacity(event.getCapacity());
-        dto.setIsPrivate(event.getIsPrivate());
-        dto.setIsVirtual(event.getIsVirtual());
-        dto.setVirtualLink(event.getVirtualLink());
-        dto.setWaitingListEnabled(event.getWaitingListEnabled());
-        dto.setRequiresApproval(event.getRequiresApproval());
-        dto.setPrice(event.getPrice());
-        dto.setCurrency(event.getCurrency());
-        dto.setCategory(event.getCategory().toString());
-        dto.setPosterUrl(event.getPosterUrl());
-
-        // Handle location - create LocationCreateDTO from nested location
-        if (event.getLocation() != null) {
-            Location loc = event.getLocation();
-            if (loc.getId() != null) {
-                dto.setLocationId(loc.getId());
-            } else {
-                // Create new location from provided data
-                EventCreateDTO.LocationCreateDTO locDto = new EventCreateDTO.LocationCreateDTO();
-                locDto.setName(loc.getName());
-                locDto.setStreet(loc.getStreet());
-                locDto.setCity(loc.getCity());
-                locDto.setRegion(loc.getRegion());
-                locDto.setCountry(loc.getCountry());
-                locDto.setPostalCode(loc.getPostalCode());
-                locDto.setLatitude(loc.getLatitude());
-                locDto.setLongitude(loc.getLongitude());
-                locDto.setTimezone(loc.getTimezone());
-                locDto.setAdditionalInfos(loc.getAdditionalInfos());
-                dto.setLocation(locDto);
-            }
-        }
-        
-        if (event.getTags() != null && !event.getTags().isEmpty()) {
-            dto.setTagIds(event.getTags().stream()
-                    .map(tag -> tag.getId())
-                    .collect(java.util.stream.Collectors.toSet()));
-        }
 
         Event savedEvent = eventService.addEvent(dto, creatorEmail);
 
