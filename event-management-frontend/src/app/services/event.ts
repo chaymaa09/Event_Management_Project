@@ -38,5 +38,11 @@ export class EventService {
     });
   }
 
+  uploadPoster(file: File): Observable<{ posterUrl: string }> {
+    const formData = new FormData();
+    formData.append('poster', file);
+    return this.http.post<{ posterUrl: string }>(`${this.baseUrl}/upload-poster`, formData);
+  }
+
 
 }

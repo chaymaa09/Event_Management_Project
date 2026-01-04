@@ -1,18 +1,28 @@
 package com.example.eventmanagementproject.web;
 
 import com.example.eventmanagementproject.dao.entities.Event;
+import com.example.eventmanagementproject.dao.entities.Location;
 import com.example.eventmanagementproject.dto.EventCreateDTO;
 import com.example.eventmanagementproject.dto.EventResponseDTO;
 import com.example.eventmanagementproject.mapper.EventMapper;
 import com.example.eventmanagementproject.service.EventService;
+import com.example.eventmanagementproject.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,6 +32,10 @@ public class EventController {
 
     private final EventService eventService;
     private final EventMapper eventMapper;
+    private final UserService userService;
+
+    @Value("${app.upload.dir:${user.dir}/assets/userUploads}")
+    private String uploadDir;
 
     @GetMapping("/all")
     public ResponseEntity<List<EventResponseDTO>> getAllEvents() {
@@ -43,11 +57,14 @@ public class EventController {
     @PostMapping("/add")
     public ResponseEntity<Event> addEvent(
             @RequestBody Event event,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal Jwt jwt) {
 
-        String creatorEmail = (userDetails != null)
-                ? userDetails.getUsername()
-                : "alice@example.com";
+        if (jwt == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        var creator = userService.ensureUserExists(jwt);
+        String creatorEmail = creator.getEmail();
 
         // Create DTO from Event entity
         EventCreateDTO dto = new EventCreateDTO();
@@ -59,14 +76,35 @@ public class EventController {
         dto.setIsPrivate(event.getIsPrivate());
         dto.setIsVirtual(event.getIsVirtual());
         dto.setVirtualLink(event.getVirtualLink());
+        dto.setWaitingListEnabled(event.getWaitingListEnabled());
+        dto.setRequiresApproval(event.getRequiresApproval());
         dto.setPrice(event.getPrice());
-        dto.setCategory(event.getCategory());
+        dto.setCurrency(event.getCurrency());
+        dto.setCategory(event.getCategory().toString());
         dto.setPosterUrl(event.getPosterUrl());
 
-        // Extract IDs from nested objects
+        // Handle location - create LocationCreateDTO from nested location
         if (event.getLocation() != null) {
-            dto.setLocationId(event.getLocation().getId());
+            Location loc = event.getLocation();
+            if (loc.getId() != null) {
+                dto.setLocationId(loc.getId());
+            } else {
+                // Create new location from provided data
+                EventCreateDTO.LocationCreateDTO locDto = new EventCreateDTO.LocationCreateDTO();
+                locDto.setName(loc.getName());
+                locDto.setStreet(loc.getStreet());
+                locDto.setCity(loc.getCity());
+                locDto.setRegion(loc.getRegion());
+                locDto.setCountry(loc.getCountry());
+                locDto.setPostalCode(loc.getPostalCode());
+                locDto.setLatitude(loc.getLatitude());
+                locDto.setLongitude(loc.getLongitude());
+                locDto.setTimezone(loc.getTimezone());
+                locDto.setAdditionalInfos(loc.getAdditionalInfos());
+                dto.setLocation(locDto);
+            }
         }
+        
         if (event.getTags() != null && !event.getTags().isEmpty()) {
             dto.setTagIds(event.getTags().stream()
                     .map(tag -> tag.getId())
@@ -86,6 +124,40 @@ public class EventController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteEventBId(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.deleteEvent(id));
+    }
+
+    @PostMapping("/upload-poster")
+    public ResponseEntity<Map<String, String>> uploadPoster(@RequestParam("poster") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "No file provided"));
+        }
+
+        try {
+            // Create upload directory if it doesn't exist
+            Path uploadPath = Paths.get(uploadDir, "posters");
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            // Generate unique filename
+            String originalFilename = file.getOriginalFilename();
+            String extension = originalFilename != null && originalFilename.contains(".") 
+                ? originalFilename.substring(originalFilename.lastIndexOf(".")) 
+                : ".jpg";
+            String filename = UUID.randomUUID().toString() + extension;
+
+            // Save file
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(file.getInputStream(), filePath);
+
+            // Return relative URL (without base URL)
+            String posterUrl = "/assets/userUploads/posters/" + filename;
+            return ResponseEntity.ok(Map.of("posterUrl", posterUrl));
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to upload file: " + e.getMessage()));
+        }
     }
 
 }

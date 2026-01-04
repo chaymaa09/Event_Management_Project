@@ -73,12 +73,22 @@ export class CreateEvent implements OnInit {
   tempCapacityLimited = false;
   
   // Image
+  defaultPosterUrl = 'assets/pablo-heimplatz-ZODcBkEohk8-unsplash.jpg';
   posterUrl = '';
   posterFile: File | null = null;
   posterPreview = '';
   
   // Category
   category: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect' = 'Party';
+  showCategoryDropdown = false;
+  categories: { value: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect'; label: string; description: string }[] = [
+    { value: 'Party',  label: 'Party',  description: 'Social events, nightlife, celebrations' },
+    { value: 'Learn',  label: 'Learn',  description: 'Workshops, talks, conferences' },
+    { value: 'Chill',  label: 'Chill',  description: 'Relaxed meetups, casual hangouts' },
+    { value: 'Active', label: 'Active', description: 'Sports, fitness, outdoor activities' },
+    { value: 'Create', label: 'Create', description: 'Art, music, coding, making things' },
+    { value: 'Connect',label: 'Connect',description: 'Networking, community, meet & greet' },
+  ];
   
   // Timezones list - dynamically generated
   timezones: TimezoneOption[] = [];
@@ -104,6 +114,11 @@ export class CreateEvent implements OnInit {
     
     // Detect user's timezone
     this.detectUserTimezone();
+  }
+
+  selectCategory(value: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect'): void {
+    this.category = value;
+    this.showCategoryDropdown = false;
   }
 
   generateTimezones(): void {
@@ -228,13 +243,13 @@ export class CreateEvent implements OnInit {
     if (!dateStr) return '';
     const date = new Date(dateStr);
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
-    return date.toLocaleDateString('fr-FR', options);
+    return date.toLocaleDateString('en-US', options);
   }
 
   // Calendar methods
   get monthName(): string {
     const date = new Date(this.calendarYear, this.calendarMonth);
-    return date.toLocaleDateString('fr-FR', { month: 'long' });
+    return date.toLocaleDateString('en-US', { month: 'long' });
   }
 
   get calendarDays(): (number | null)[] {
@@ -403,7 +418,7 @@ export class CreateEvent implements OnInit {
         const query = encodeURIComponent(this.locationSearch);
         // Using Photon API - faster than Nominatim
         const response = await fetch(
-          `https://photon.komoot.io/api/?q=${query}&limit=5&lang=fr`
+          `https://photon.komoot.io/api/?q=${query}&limit=5&lang=en`
         );
         
         if (!response.ok) throw new Error('Location search failed');
@@ -467,7 +482,7 @@ export class CreateEvent implements OnInit {
   }
 
   get priceDisplay(): string {
-    if (this.price === 0) return 'Gratuit';
+    if (this.price === 0) return 'Free';
     return `${this.currency.symbol}${this.price}`;
   }
 
@@ -487,8 +502,8 @@ export class CreateEvent implements OnInit {
 
   // Capacity methods
   get capacityDisplay(): string {
-    if (!this.isCapacityLimited || this.capacity === null) return 'Illimité';
-    return `${this.capacity} places`;
+    if (!this.isCapacityLimited || this.capacity === null) return 'Unlimited';
+    return `${this.capacity} seats`;
   }
 
   openCapacityModal(): void {
@@ -542,15 +557,72 @@ export class CreateEvent implements OnInit {
     );
   }
 
-  // Create event
-  async createEvent(): Promise<void> {
-    if (!this.isFormValid) return;
+  isSubmitting = false;
 
-    const startDateTime = `${this.startDate}T${this.startTime}:00${this.selectedTimezone.offset.replace('GMT', '')}`;
-    const endDateTime = `${this.endDate}T${this.endTime}:00${this.selectedTimezone.offset.replace('GMT', '')}`;
+  // Create event
+  createEvent(): void {
+    console.log('Create event clicked');
+    console.log('Form valid:', this.isFormValid);
+    console.log('Event name:', this.eventName);
+    console.log('Start date:', this.startDate);
+    console.log('End date:', this.endDate);
+    console.log('Event type:', this.eventType);
+    console.log('Selected location:', this.selectedLocation);
+    console.log('Virtual link:', this.virtualLink);
+    
+    if (!this.isFormValid) {
+      console.log('Form is not valid');
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    // Format timezone offset properly (e.g., "GMT+1" -> "+01:00", "GMT+05:30" -> "+05:30")
+    const formatOffset = (offset: string): string => {
+      // Remove "GMT" prefix
+      let cleanOffset = offset.replace('GMT', '');
+      if (!cleanOffset || cleanOffset === '') return '+00:00';
+      
+      // Handle formats like "+1", "+01", "+1:00", "+01:00"
+      const match = cleanOffset.match(/^([+-])(\d{1,2})(?::(\d{2}))?$/);
+      if (match) {
+        const sign = match[1];
+        const hours = match[2].padStart(2, '0');
+        const minutes = match[3] || '00';
+        return `${sign}${hours}:${minutes}`;
+      }
+      return cleanOffset;
+    };
+
+    const timezoneOffset = formatOffset(this.selectedTimezone.offset);
+    const startDateTime = `${this.startDate}T${this.startTime}:00${timezoneOffset}`;
+    const endDateTime = `${this.endDate}T${this.endTime}:00${timezoneOffset}`;
 
     const currentUser = this.authService.getCurrentUser();
-    
+    console.log('Current user:', currentUser);
+    console.log('Start datetime:', startDateTime);
+    console.log('End datetime:', endDateTime);
+
+    // If there's a poster file, upload it first
+    if (this.posterFile) {
+      this.eventService.uploadPoster(this.posterFile).subscribe({
+        next: (response) => {
+          console.log('Poster uploaded:', response);
+          this.submitEvent(startDateTime, endDateTime, currentUser, response.posterUrl);
+        },
+        error: (err) => {
+          console.error('Failed to upload poster:', err);
+          this.isSubmitting = false;
+          alert('Error uploading image: ' + (err.error?.message || err.message || 'Unknown error'));
+        }
+      });
+    } else {
+      // No uploaded poster: use the default poster URL so it is persisted in backend
+      this.submitEvent(startDateTime, endDateTime, currentUser, this.defaultPosterUrl);
+    }
+  }
+
+  private submitEvent(startDateTime: string, endDateTime: string, currentUser: any, posterUrl: string): void {
     const event: AppEvent = {
       title: this.eventName,
       description: this.description,
@@ -564,7 +636,7 @@ export class CreateEvent implements OnInit {
       capacity: this.isCapacityLimited && this.capacity ? this.capacity : 0,
       waitingListEnabled: this.waitingListEnabled,
       requiresApproval: this.requiresApproval,
-      posterUrl: this.posterPreview || '',
+      posterUrl: posterUrl,
       creator: {
         id: currentUser?.id || 0,
         name: currentUser?.name || '',
@@ -577,12 +649,18 @@ export class CreateEvent implements OnInit {
       } : undefined,
     };
 
+    console.log('Sending event:', event);
+
     this.eventService.createEvent(event).subscribe({
       next: (created) => {
+        console.log('Event created:', created);
+        this.isSubmitting = false;
         this.router.navigate(['/events', created.id]);
       },
       error: (err) => {
         console.error('Failed to create event:', err);
+        this.isSubmitting = false;
+        alert('Error creating event: ' + (err.error?.message || err.message || 'Unknown error'));
       }
     });
   }
@@ -593,6 +671,9 @@ export class CreateEvent implements OnInit {
     const target = event.target as HTMLElement;
     if (!target.closest('.timezone-dropdown')) {
       this.showTimezoneDropdown = false;
+    }
+    if (!target.closest('.category-dropdown')) {
+      this.showCategoryDropdown = false;
     }
     if (!target.closest('.eventtype-dropdown')) {
       this.showEventTypeDropdown = false;

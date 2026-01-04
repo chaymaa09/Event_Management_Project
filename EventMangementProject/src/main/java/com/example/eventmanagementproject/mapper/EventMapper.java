@@ -25,11 +25,13 @@ public class EventMapper {
         dto.setIsPrivate(event.getIsPrivate());
         dto.setIsVirtual(event.getIsVirtual());
         dto.setVirtualLink(event.getVirtualLink());
+        dto.setWaitingListEnabled(event.getWaitingListEnabled());
+        dto.setRequiresApproval(event.getRequiresApproval());
         dto.setPrice(event.getPrice());
-        dto.setCategory(event.getCategory());
+        dto.setCurrency(event.getCurrency());
+        dto.setCategory(event.getCategory() != null ? event.getCategory().name() : null);
         dto.setPosterUrl(event.getPosterUrl());
         dto.setCreationDate(event.getCreationDate());
-
         // Map creator (avoid lazy loading issues)
         if (event.getCreator() != null) {
             EventResponseDTO.UserBasicDTO userDTO = new EventResponseDTO.UserBasicDTO();

@@ -24,25 +24,7 @@ public class EventManagementProjectApplication implements CommandLineRunner {
     @Override
     @Transactional  // keeps the session open for lazy loading
     public void run(String... args) throws Exception {
-        
-        Stream.of("ev1", "ev2", "ev3").forEach( title -> {
-            Event event = new Event();
-            event.setTitle(title);
-            event.setDescription(title.toLowerCase() + "Descreption");
-            event.setCreationDate(ZonedDateTime.now());
-            event.setStartDate(null);
-            event.setEndDate(null);
-            eventRepository.save(event);
-        });
 
-        
-        eventRepository.findAll().forEach(event ->
-            System.out.println("event created: ID=" + event.getId() +
-                             ", title=" + event.getTitle() +
-                             ", descreption=" + event.getDescription())
-        );
-        
-        System.out.println("Test data created successfully!");
         System.out.println("app running successfully!");
     }
 }
