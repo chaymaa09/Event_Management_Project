@@ -26,6 +26,9 @@ export class App implements OnInit {
     this.isLoggedIn = this.authService.isLoggedIn();
     if (this.isLoggedIn) {
       this.username = this.authService.getUsername();
+
+      // Ensure Keycloak user also exists in backend DB
+      void this.authService.loadUser();
       
       // Navigate to stored destination after successful login
       if (isPlatformBrowser(this.platformId)) {
@@ -34,8 +37,14 @@ export class App implements OnInit {
           if (redirect && redirect !== this.router.url) {
             sessionStorage.removeItem('auth_redirect');
             this.router.navigateByUrl(redirect);
+            return;
           }
         } catch { }
+
+        // Default post-login landing
+        if (this.router.url === '/' || this.router.url === '') {
+          this.router.navigateByUrl('/home');
+        }
       }
     }
   }

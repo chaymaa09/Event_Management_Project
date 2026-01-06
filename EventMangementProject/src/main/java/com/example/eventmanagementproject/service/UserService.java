@@ -1,8 +1,9 @@
 package com.example.eventmanagementproject.service;
 
-import com.example.eventmanagementproject.dao.entities.User;
-
 import java.util.List;
+
+import com.example.eventmanagementproject.dao.entities.User;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface UserService {
 
@@ -12,5 +13,8 @@ public interface UserService {
      boolean deleteUser(User user);
      List<User> getAllUsers();
      User getUserById(Long userId);
+     User ensureUserExists(Jwt jwt);
+
+     
 
 }

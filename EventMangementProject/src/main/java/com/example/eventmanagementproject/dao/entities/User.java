@@ -19,18 +19,29 @@ import java.util.List;
 @Builder
 @JsonIgnoreProperties({ "createdEvents", "participations", "password", "authorities", "accountNonExpired",
         "accountNonLocked", "credentialsNonExpired" })
+@Table(name = "user",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email"),
+                @UniqueConstraint(columnNames = "keycloakId")
+        })
+
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable=false)
     private String name;
+    @Column(nullable=false, unique=true)
     private String email;
+    @Column(nullable=false)
     private String password;
 
     @Enumerated(EnumType.STRING)
     private AuthType authType;
+
+    @Column(nullable=false, unique=true)
+    private String keycloakId;
 
     private String provider;
     private String providerId;
