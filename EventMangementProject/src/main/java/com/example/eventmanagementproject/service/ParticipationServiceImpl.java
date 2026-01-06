@@ -73,7 +73,7 @@ public class ParticipationServiceImpl implements ParticipationService {
             throw new RuntimeException("Cannot confirm a cancelled participation");
         }
 
-        if (currentStatus == ParticipationStatus.ATTENDED && newStatus == ParticipationStatus.PENDING) {
+        if (currentStatus == ParticipationStatus.JOINED && newStatus == ParticipationStatus.PENDING) {
             throw new RuntimeException("Cannot change attended participation back to pending");
         }
 

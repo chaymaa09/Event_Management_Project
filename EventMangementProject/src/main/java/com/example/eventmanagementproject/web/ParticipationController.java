@@ -62,7 +62,7 @@ public class ParticipationController {
         List<Participation> participations = participationService.getEventParticipations(event);
         long confirmedCount = participations.stream()
                 .filter(p -> p.getStatus() == ParticipationStatus.CONFIRMED || 
-                            p.getStatus() == ParticipationStatus.ATTENDED)
+                            p.getStatus() == ParticipationStatus.JOINED)
                 .count();
         
         return ResponseEntity.ok(confirmedCount);

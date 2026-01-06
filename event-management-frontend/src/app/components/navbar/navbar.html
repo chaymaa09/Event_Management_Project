@@ -28,7 +28,7 @@
 
       <ng-container *ngIf="isLoggedIn()">
 
-        <a routerLink="/events"
+        <a routerLink="/explore"
           [ngClass]="{'font-semibold text-gray-900': router.url.includes('/events')}">
           Explore
         </a>
@@ -196,12 +196,12 @@
         </span>
       </a>
 
-      <a routerLink="/events" 
+      <a routerLink="/explore" 
         (click)="closeMobileMenu()" 
         class="text-base font-medium py-2.5 px-4 rounded-xl text-center transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-        [ngClass]="{'bg-slate-900 text-white shadow-md': router.url.includes('/events'), 'text-slate-700 hover:bg-slate-50': !router.url.includes('/events')}">
+        [ngClass]="{'bg-slate-900 text-white shadow-md': router.url.includes('/explore'), 'text-slate-700 hover:bg-slate-50': !router.url.includes('/explore')}">
         <span class="flex items-center justify-center gap-2">
-          <svg *ngIf="router.url.includes('/events')" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <svg *ngIf="router.url.includes('/explore')" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
           </svg>
           Explore

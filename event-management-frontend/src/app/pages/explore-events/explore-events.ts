@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { City } from '../../models/city.model';
+import { Category } from '../../models/category.model';
 import { CityService } from '../../services/city.service';
+import { CategoryService } from '../../services/category.service';
 
 @Component({
   selector: 'app-explore-events',
@@ -15,6 +17,10 @@ export class ExploreEvents implements OnInit {
   cities: City[] = [];
   isLoadingCities = false;
   citiesError?: string;
+
+  categories: Category[] = [];
+  isLoadingCategories = false;
+  categoriesError?: string;
   
  cityColors: string[] = [
   'bg-rose-500',
@@ -37,14 +43,14 @@ export class ExploreEvents implements OnInit {
   'bg-slate-500',
 ];
 
-
-
-
-
-  constructor(private cityService: CityService) {}
+  constructor(
+    private cityService: CityService,
+    private categoryService: CategoryService
+  ) {}
 
   ngOnInit(): void {
     this.loadCitiesForContinent(this.activeContinent);
+    this.loadCategories();
   }
 
   setActiveContinent(continent: string): void {
@@ -72,4 +78,22 @@ export class ExploreEvents implements OnInit {
       },
     });
   }
+
+  private loadCategories(): void {
+    this.isLoadingCategories = true;
+    this.categoriesError = undefined;
+
+    this.categoryService.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories ?? [];
+        this.isLoadingCategories = false;
+      },
+      error: () => {
+        this.categories = [];
+        this.isLoadingCategories = false;
+        this.categoriesError = 'Failed to load categories.';
+      },
+    });
+  }
+
 }

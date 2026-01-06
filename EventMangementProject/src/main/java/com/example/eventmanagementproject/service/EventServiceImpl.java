@@ -111,4 +111,9 @@ public class EventServiceImpl implements EventService {
         }
         return false;
     }
+
+    public List<Event> findEventsByCategory(String categoryName) {
+        return eventRepository.findByCategory_Name(categoryName);
+    }
+
 }

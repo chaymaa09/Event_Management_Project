@@ -1,7 +1,6 @@
 package com.example.eventmanagementproject.dao.entities;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -47,6 +46,9 @@ public class Category {
     @Column(name = "image_url", length = 500)
     private String imageUrl;
 
+    @Column(name = "logo_url", length = 500)
+    private String logoUrl;
+
     // Users subscribed to this category
     @ManyToMany(mappedBy = "subscribedCategories")
     @JsonIgnore
@@ -55,5 +57,6 @@ public class Category {
     // Events that belong to this category
     @OneToMany(mappedBy = "category")
     @JsonIgnore
-    private Set<Event> events = new HashSet<>();
+    private Collection<Event> events;
+
 }

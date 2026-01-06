@@ -13,7 +13,7 @@ import { AuthGuard } from './guards/auth-guard';
 export const routes: Routes = [
   {path: '', component: Landing},  // Landing page
   {path: 'home', component: Home, canActivate: [AuthGuard]},  // Protected
-  { path: 'events', component: ExploreEvents, canActivate: [AuthGuard]},  // Protected
+  { path: 'explore', component: ExploreEvents, canActivate: [AuthGuard]},  // Protected
   { path: 'events/:id', component: EventDetails, canActivate: [AuthGuard]},  // Protected
   { path: 'settings', component: Settings, canActivate: [AuthGuard]},  // Protected
   { path: 'profile', component: Profile, canActivate: [AuthGuard]},  // Protected

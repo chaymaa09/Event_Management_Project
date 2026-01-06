@@ -1,6 +1,7 @@
 package com.example.eventmanagementproject.dao.entities;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -80,6 +81,8 @@ public class Event {
     private Integer attendees;
 
 
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tag_events", // Junction table name
             joinColumns = @JoinColumn(name = "event_id"), // Column for Event
@@ -89,6 +92,8 @@ public class Event {
 
     @ManyToOne
     private City city;
+
+
 
 
 }
