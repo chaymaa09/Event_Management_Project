@@ -1,11 +1,75 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { City } from '../../models/city.model';
+import { CityService } from '../../services/city.service';
 
 @Component({
   selector: 'app-explore-events',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './explore-events.html',
   styleUrls: ['./explore-events.css'],
 })
-export class ExploreEvents {
+export class ExploreEvents implements OnInit {
+  activeContinent: string = 'Europe';
+  cities: City[] = [];
+  isLoadingCities = false;
+  citiesError?: string;
+  
+ cityColors: string[] = [
+  'bg-rose-500',
+  'bg-pink-500',
+  'bg-violet-500',
+  'bg-indigo-500',
+  'bg-blue-500',
+  'bg-sky-500',
+  'bg-cyan-500',
+  'bg-teal-500',
+  'bg-emerald-500',
+  'bg-green-500',
+  'bg-lime-500',
+  'bg-yellow-500',
+  'bg-amber-500',
+  'bg-orange-500',
+  'bg-red-500',
+  'bg-stone-500',
+  'bg-neutral-500',
+  'bg-slate-500',
+];
 
+
+
+
+
+  constructor(private cityService: CityService) {}
+
+  ngOnInit(): void {
+    this.loadCitiesForContinent(this.activeContinent);
+  }
+
+  setActiveContinent(continent: string): void {
+    if (this.activeContinent === continent) {
+      return;
+    }
+    this.activeContinent = continent;
+    this.loadCitiesForContinent(continent);
+  }
+
+  private loadCitiesForContinent(continent: string): void {
+    this.isLoadingCities = true;
+    this.citiesError = undefined;
+
+    this.cityService.getCitiesByContinent(continent).subscribe({
+      next: (cities) => {
+        this.cities = cities;
+        this.isLoadingCities = false;
+        console.log(cities);
+      },
+      error: () => {
+        this.cities = [];
+        this.isLoadingCities = false;
+        this.citiesError = 'Failed to load cities.';
+      },
+    });
+  }
 }

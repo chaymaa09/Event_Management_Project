@@ -87,5 +87,8 @@ public class Event {
     )
     private Set<Tag> tags;
 
+    @ManyToOne
+    private City city;
+
 
 }

@@ -18,5 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
         String location = "file:" + (userAvatarDir.endsWith("/") ? userAvatarDir : userAvatarDir + "/");
         registry.addResourceHandler("/assets/userUploads/**")
                 .addResourceLocations(location);
+
+        registry.addResourceHandler("/assets/cities/**")
+                .addResourceLocations("file:assets/cities/");
     }
 }
