@@ -6,6 +6,7 @@ import { CategoryService } from '../../services/category.service';
 import { ParticipationService } from '../../services/participation.service';
 import { Category } from '../../models/category.model';
 import { User } from '../../models/user.model';
+import { truncate } from 'fs';
 
 @Component({
   selector: 'app-category-page',
@@ -22,6 +23,7 @@ export class CategoryPage implements OnInit{
   isLoadingCategory = false;
   category: Category | null = null;
   isSubscribed = false;
+  isEventExists = false;
 
   private cdr = inject(ChangeDetectorRef);
 
@@ -51,7 +53,10 @@ export class CategoryPage implements OnInit{
 
     this.categoryService.getEventsByCategory(category).subscribe({
       next: (events) => {
-        this.events = events;
+        if (events.length > 0) {
+          this.isEventExists = true;
+           this.events = events;
+        }
         this.isLoadingEvents = false;
         console.log('events : ', events);
       },
