@@ -46,6 +46,7 @@ export class AuthService {
 
   public logout(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+    localStorage.removeItem('currentUser');
     this.keycloakService.logout(window.location.origin);
   }
 
@@ -78,6 +79,9 @@ export class AuthService {
       try {
         this.cachedUser = await firstValueFrom(this.userService.syncUserToDb());
         console.log('Synced User from backend:', this.cachedUser);
+        if (isPlatformBrowser(this.platformId) && this.cachedUser) {
+          localStorage.setItem('currentUser', JSON.stringify(this.cachedUser));
+        }
         return this.cachedUser;
       } catch (e) {
         console.warn('⚠️ User DB sync failed', e);

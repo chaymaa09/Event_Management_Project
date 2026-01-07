@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface CategoryService {
     public Optional<Category> findByNameIgnoreCase(String name);
     public Boolean subscribeToCategory(Long categoryId, Long userId);
+    public Boolean unsubscribeFromCategory(Long categoryId, Long userId);
+    public Boolean isSubscribedToCategory(Long categoryId, Long userId);
 }

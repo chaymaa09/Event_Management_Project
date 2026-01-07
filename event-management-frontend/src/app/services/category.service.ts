@@ -29,4 +29,12 @@ export class CategoryService {
   subscribeToCategory(categoryId: number, userId: number): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/${categoryId}/subscribe/${userId}`, {});
 }
+
+  unsubscribeFromCategory(categoryId: number, userId: number): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/${categoryId}/unsubscribe/${userId}`, {});
+  }
+
+  isSubscribedToCategory(categoryId: number, userId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.baseUrl}/${categoryId}/is-subscribed/${userId}`);
+  }
 }

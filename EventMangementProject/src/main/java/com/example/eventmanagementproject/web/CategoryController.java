@@ -48,4 +48,14 @@ public class CategoryController {
     public Boolean subscribeToCategory(@PathVariable Long categoryId, @PathVariable Long userId) {
         return categoryService.subscribeToCategory(categoryId, userId);
     }
+
+    @PostMapping("/{categoryId}/unsubscribe/{userId}")
+    public Boolean unsubscribeFromCategory(@PathVariable Long categoryId, @PathVariable Long userId) {
+        return categoryService.unsubscribeFromCategory(categoryId, userId);
+    }
+
+    @GetMapping("/{categoryId}/is-subscribed/{userId}")
+    public Boolean verifySubscription(@PathVariable Long categoryId, @PathVariable Long userId) {
+        return categoryService.isSubscribedToCategory(categoryId, userId);
+    }
 }
