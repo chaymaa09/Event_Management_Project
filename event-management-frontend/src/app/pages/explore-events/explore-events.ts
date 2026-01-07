@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { City } from '../../models/city.model';
 import { Category } from '../../models/category.model';
 import { CityService } from '../../services/city.service';
@@ -8,7 +9,7 @@ import { CategoryService } from '../../services/category.service';
 @Component({
   selector: 'app-explore-events',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './explore-events.html',
   styleUrls: ['./explore-events.css'],
 })
@@ -49,8 +50,9 @@ export class ExploreEvents implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadCitiesForContinent(this.activeContinent);
     this.loadCategories();
+    this.loadCitiesForContinent(this.activeContinent);
+
   }
 
   setActiveContinent(continent: string): void {
@@ -94,6 +96,13 @@ export class ExploreEvents implements OnInit {
         this.categoriesError = 'Failed to load categories.';
       },
     });
+  }
+
+  formattedCategoryName(categoryName: string): string {
+    if (!categoryName) return '';
+    const name = categoryName.trim();
+    if (name.toLowerCase() === 'ai') return name.toUpperCase();
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   }
 
 }

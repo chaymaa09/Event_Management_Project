@@ -42,6 +42,8 @@ public class Category {
     @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
+    private String description;
+
     // Optional image/logo URL for this category
     @Column(name = "image_url", length = 500)
     private String imageUrl;

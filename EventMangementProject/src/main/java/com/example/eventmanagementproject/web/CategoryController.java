@@ -1,8 +1,10 @@
 package com.example.eventmanagementproject.web;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.eventmanagementproject.dao.entities.Event;
+import com.example.eventmanagementproject.service.CategoryService;
 import com.example.eventmanagementproject.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +25,27 @@ public class CategoryController {
     @Autowired
     private EventService eventService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @GetMapping("/all")
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
-    @PostMapping("/event/{name}")
+    @GetMapping("/events/{name}")
     public List<Event> getEventsByCategory(@PathVariable String name) {
         return eventService.findEventsByCategory(name);
+    }
+
+    @GetMapping("/{categoryName}")
+    public Optional<Category> getCategoryByName(@PathVariable String categoryName) {
+        return categoryService.findByNameIgnoreCase(categoryName);
+
+    }
+
+    @PostMapping("/{categoryId}/subscribe/{userId}")
+    public Boolean subscribeToCategory(@PathVariable Long categoryId, @PathVariable Long userId) {
+        return categoryService.subscribeToCategory(categoryId, userId);
     }
 }

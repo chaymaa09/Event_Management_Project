@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,6 +78,26 @@ public class ParticipationServiceImpl implements ParticipationService {
             throw new RuntimeException("Cannot change attended participation back to pending");
         }
 
-        // can add more transition rules here
+    }
+
+    public List<User> getEventSubscribers(Long eventId){
+        Event event = eventRepository.findEventById(eventId);
+        List<User> subscribers = new ArrayList<>();
+        if (event != null) {
+            List<Participation> participations = getEventParticipations(event);
+
+            if(participations != null || participations.size() > 0) {
+                for (Participation participation : participations) {
+                    if (participation.getStatus().equals(ParticipationStatus.JOINED)) {
+                        subscribers.add(participation.getUser());
+                    }
+                }
+            }else{
+                throw new RuntimeException("No participations found for event: " + eventId);
+            }
+        }else{
+            throw new RuntimeException("Event not found with id: " + eventId);
+        }
+        return subscribers;
     }
 }

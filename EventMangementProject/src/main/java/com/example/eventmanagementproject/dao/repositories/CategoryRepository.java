@@ -9,4 +9,5 @@ import com.example.eventmanagementproject.dao.entities.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByNameIgnoreCase(String name);
+
 }
