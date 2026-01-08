@@ -6,16 +6,21 @@ import { CategoryService } from '../../services/category.service';
 import { ParticipationService } from '../../services/participation.service';
 import { Category } from '../../models/category.model';
 import { User } from '../../models/user.model';
+import { SearchService } from '../../services/search.service';
+import { EventService } from '../../services/event';
+import { SearchModal } from '../../components/search-modal/search-modal';
 
 @Component({
   selector: 'app-category-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SearchModal],
   templateUrl: './category-page.html',
   styleUrls: ['./category-page.css'],
 })
 export class CategoryPage implements OnInit{
-  events: AppEvent[] = [];
+  nearbyEvents: AppEvent[] = [];
+  allEvents: AppEvent[] = [];
+  filteredResults: any[] = [];
   subscribers: Subscriber[] = [];
   isLoadingEvents = false;
   isLoadingSubscribers = false;
@@ -34,6 +39,8 @@ export class CategoryPage implements OnInit{
       private participationService: ParticipationService,
       private categoryService: CategoryService,
       private route: ActivatedRoute,
+      private eventService: EventService,
+      private searchService: SearchService,
       @Inject(PLATFORM_ID) private platformId: object
     ) {}
   ngOnInit(): void {
@@ -46,6 +53,12 @@ export class CategoryPage implements OnInit{
         this.loadEvents(category);
         this.getCurrentPositionAsync();
 
+        this.loadAllEvents();
+        
+        this.searchService.currentSearchTerm$.subscribe(term => {
+          this.performFiltering(term);
+        });
+
 
       }
     });
@@ -53,7 +66,7 @@ export class CategoryPage implements OnInit{
 
   private async loadEvents(category: string): Promise<void> {
     this.isLoadingEvents = true;
-    this.events = [];
+    this.nearbyEvents = [];
 
     // Get user location first (city/country) and try category+location endpoint.
     let userLocation: { city?: string; country?: string } = {};
@@ -84,7 +97,7 @@ export class CategoryPage implements OnInit{
       this.categoryService.getEventsByCategory(category).subscribe({
         next: (events) => {
           this.isEventExists = events.length > 0;
-          this.events = events;
+          this.nearbyEvents = events;
           this.isLoadingEvents = false;
           console.log('Loaded events (category fallback):', events);
           this.cdr.detectChanges();
@@ -103,7 +116,7 @@ export class CategoryPage implements OnInit{
           next: (events) => {
             if (events && events.length > 0) {
               this.isEventExists = true;
-              this.events = events;
+              this.nearbyEvents = events;
               this.isLoadingEvents = false;
               console.log('Loaded events (by location):', events);
               this.cdr.detectChanges();
@@ -140,7 +153,7 @@ export class CategoryPage implements OnInit{
 
 
   countEvents(): string {
-    const n = this.events ? this.events.length : 0;
+    const n = this.nearbyEvents ? this.nearbyEvents.length : 0;
     if (n >= 1000) {
       return (n / 1000).toFixed(1) + 'k Events';
     }
@@ -325,5 +338,28 @@ async showPosition(): Promise<void> {
   console.log('Longitude:', position.coords.longitude);
 }
 
+
+  performFiltering(term: string) {
+    if (!term.trim()) {
+      this.filteredResults = [];
+      return;
+    }
+    this.filteredResults = this.allEvents.filter(e => 
+      e.title.toLowerCase().includes(term.toLowerCase())
+    );
+  }
+
+
+  loadAllEvents(): void {
+    this.eventService.getAllEvents().subscribe({
+      next: (events) => {
+        this.allEvents = events;
+      },
+      error: (err) => {
+        console.error('Failed to load all events for search filtering:', err);
+      }
+    });
+    
+  }
 
 }
