@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth/auth.sevice';
 export class Navbar {
   username: string = '';
   isMobileMenuOpen = false;
+  isProfileMenuOpen = false;
 
   constructor(
     public router: Router,
@@ -45,6 +46,37 @@ export class Navbar {
 
   logout(): void {
     this.authService.logout();
+    this.isProfileMenuOpen = false;
+  }
+
+  toggleProfileMenu(): void {
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  closeProfileMenu(): void {
+    this.isProfileMenuOpen = false;
+  }
+
+  getDisplayName(): string {
+    return this.authService.getCurrentUserName() || this.getUsername();
+  }
+
+  getEmail(): string {
+    return this.authService.getCurrentUserEmail();
+  }
+
+  getAvatarUrl(): string {
+    return this.authService.getCurrentUserAvatarUrl();
+  }
+
+  viewProfile(): void {
+    this.router.navigateByUrl('/profile');
+    this.closeProfileMenu();
+  }
+
+  openSettings(): void {
+    this.router.navigateByUrl('/settings');
+    this.closeProfileMenu();
   }
 
   getUsername(): string {
@@ -53,7 +85,7 @@ export class Navbar {
   }
 
   getUserInitials(): string {
-    const username = this.getUsername();
+    const username = this.getDisplayName() || this.getUsername();
     if (!username) return 'U';
     return username.charAt(0).toUpperCase();
   }

@@ -3,6 +3,7 @@ package com.example.eventmanagementproject.service;
 import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.dao.entities.Participation;
 import com.example.eventmanagementproject.dao.entities.ParticipationStatus;
+import com.example.eventmanagementproject.dao.entities.User;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface ParticipationService {
     Boolean cancelParticipation(Long participationId);
     Participation registerForEvent(Long userId, Long eventId);
     Participation updateStatus(Long participationId, ParticipationStatus newStatus);
+    List<User> getEventSubscribers(Long eventId);
 }

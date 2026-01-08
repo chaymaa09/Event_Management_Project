@@ -4,6 +4,7 @@ package com.example.eventmanagementproject.web;
 import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.dao.entities.Participation;
 import com.example.eventmanagementproject.dao.entities.ParticipationStatus;
+import com.example.eventmanagementproject.dao.entities.User;
 import com.example.eventmanagementproject.dao.repositories.EventRepository;
 import com.example.eventmanagementproject.dto.ParticipationDTO;
 import com.example.eventmanagementproject.service.ParticipationService;
@@ -62,7 +63,7 @@ public class ParticipationController {
         List<Participation> participations = participationService.getEventParticipations(event);
         long confirmedCount = participations.stream()
                 .filter(p -> p.getStatus() == ParticipationStatus.CONFIRMED || 
-                            p.getStatus() == ParticipationStatus.ATTENDED)
+                            p.getStatus() == ParticipationStatus.JOINED)
                 .count();
         
         return ResponseEntity.ok(confirmedCount);
@@ -111,5 +112,10 @@ public class ParticipationController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("event/{eventId}/subscribers/")
+    public List<User> getEventSubscribers(@PathVariable Long eventId) {
+        return participationService.getEventSubscribers(eventId);
     }
 }

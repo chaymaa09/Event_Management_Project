@@ -1,0 +1,438 @@
+<div class="relative min-h-screen bg-gradient-to-b from-white via-slate-50 to-white text-slate-900 px-4 sm:px-6 pt-24 pb-16 overflow-hidden">
+  <!-- Soft ambient blobs to mirror the home page energy -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute -top-24 left-8 w-72 h-72 bg-purple-200/60 blur-3xl rounded-full"></div>
+    <div class="absolute top-32 right-0 w-80 h-80 bg-blue-200/50 blur-3xl rounded-full"></div>
+    <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-pink-200/40 blur-3xl rounded-full"></div>
+    <div class="absolute inset-x-0 top-20 h-24 bg-gradient-to-b from-white to-transparent"></div>
+    <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent"></div>
+  </div>
+
+  <div class="max-w-4xl mx-auto space-y-6">
+    <header class="text-center space-y-3">
+      <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+        <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+        Control Center
+      </p>
+      <h1 class="text-4xl font-outfit font-bold text-slate-900">Personal Settings</h1>
+      <p class="text-slate-500 text-base max-w-2xl mx-auto">
+        Keep your Gather identity consistent across every event. Update your profile, socials, and contact points in one clean view.
+      </p>
+    </header>
+    <!-- Profile Section -->
+    <section class="bg-white/90 border border-white/70 rounded-2xl p-6 shadow-lg shadow-slate-900/5 backdrop-blur-sm">
+      <div class="mb-4">
+        <h2 class="text-2xl font-semibold text-slate-900">Your Profile</h2>
+        <p class="text-slate-500 text-sm">Choose how you appear as a host or guest.</p>
+      </div>
+
+      <form class="flex flex-col gap-6">
+        <!-- Username and Avatar row -->
+        <div class="flex flex-col gap-6 md:flex-row md:items-end lg:gap-16">
+          <!-- Username -->
+          <div class="w-full md:w-64 flex flex-col gap-2">
+            <label for="username" class="text-sm text-slate-700 font-medium">Username</label>
+            <div class="flex items-center bg-slate-50 border border-slate-300 rounded-lg overflow-hidden">
+              <span class="px-3 text-slate-500">@</span>
+              <input
+                type="text"
+                id="username"
+                [(ngModel)]="user.name"
+                name="username"
+                class="flex-1 bg-transparent border-none py-2.5 pr-4 text-slate-900 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Profile Photo -->
+          <div class="flex flex-col gap-2 md:items-start">
+            <label class="text-sm text-slate-700 font-medium">Profile photo</label>
+            <div class="relative w-24 h-24 mx-auto md:mx-0">
+              <img
+                [src]="user.avatarUrl"
+                alt="Profile"
+                class="w-full h-full rounded-full object-cover"
+              />
+              <button type="button" class="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-slate-900 border-2 border-white flex items-center justify-center text-white hover:scale-110 transition-transform" (click)="fileInput.click()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <input
+                #fileInput
+                type="file"
+                accept="image/*"
+                class="hidden"
+                (change)="handleAvatarUpload($event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Bio -->
+        <div class="flex flex-col gap-2">
+          <label for="bio" class="text-sm text-slate-700 font-medium">Bio</label>
+          <textarea
+            id="bio"
+            [(ngModel)]="user.bio"
+            name="bio"
+            class="bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-500 transition-colors resize-y"
+            placeholder="Share a bit about your journey and interests."
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- Social Links -->
+        <div class="mt-4 pt-6 border-t border-slate-200">
+          <h3 class="text-lg font-semibold mb-4 text-slate-900">Social links</h3>
+
+          <!-- Social Links Grid - 2 columns -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Instagram -->
+            <div class="flex items-center gap-3">
+              <div class="w-5 h-5 text-slate-500 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </div>
+              <div class="flex-1 flex items-center bg-slate-50 border border-slate-300 rounded-lg overflow-hidden">
+                <span class="px-3 text-slate-500 text-sm whitespace-nowrap">instagram.com/</span>
+                <input
+                  type="text"
+                  [(ngModel)]="user.instagramAccount"
+                  name="instagram"
+                  placeholder="username"
+                  class="flex-1 bg-transparent border-none py-2 pr-3 text-slate-900 focus:outline-none placeholder-slate-400 text-sm"
+                />
+              </div>
+            </div>
+
+            <!-- X (Twitter) -->
+            <div class="flex items-center gap-3">
+              <div class="w-5 h-5 text-slate-500 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </div>
+              <div class="flex-1 flex items-center bg-slate-50 border border-slate-300 rounded-lg overflow-hidden">
+                <span class="px-3 text-slate-500 text-sm whitespace-nowrap">x.com/</span>
+                <input
+                  type="text"
+                  [(ngModel)]="user.xAccount"
+                  name="x"
+                  placeholder="username"
+                  class="flex-1 bg-transparent border-none py-2 pr-3 text-slate-900 focus:outline-none placeholder-slate-400 text-sm"
+                />
+              </div>
+            </div>
+
+            <!-- YouTube -->
+            <div class="flex items-center gap-3">
+              <div class="w-5 h-5 text-slate-500 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </div>
+              <div class="flex-1 flex items-center bg-slate-50 border border-slate-300 rounded-lg overflow-hidden">
+                <span class="px-3 text-slate-500 text-sm whitespace-nowrap">youtube.com/@</span>
+                <input
+                  type="text"
+                  [(ngModel)]="user.youtubeAccount"
+                  name="youtube"
+                  placeholder="username"
+                  class="flex-1 bg-transparent border-none py-2 pr-3 text-slate-900 focus:outline-none placeholder-slate-400 text-sm"
+                />
+              </div>
+            </div>
+
+            <!-- LinkedIn -->
+            <div class="flex items-center gap-3">
+              <div class="w-5 h-5 text-slate-500 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              </div>
+              <div class="flex-1 flex items-center bg-slate-50 border border-slate-300 rounded-lg overflow-hidden">
+                <span class="px-3 text-slate-500 text-sm whitespace-nowrap">linkedin.com</span>
+                <input
+                  type="text"
+                  [(ngModel)]="user.linkedinAccount"
+                  name="linkedin"
+                  placeholder="/in/identifier"
+                  class="flex-1 bg-transparent border-none py-2 pr-3 text-slate-900 focus:outline-none placeholder-slate-400 text-sm"
+                />
+              </div>
+            </div>
+
+            <!-- Website -->
+            <div class="flex items-center gap-3 col-span-2">
+              <div class="w-5 h-5 text-slate-500 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="2" y1="12" x2="22" y2="12"/>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+              </div>
+              <input
+                type="url"
+                [(ngModel)]="user.website"
+                name="website"
+                placeholder="Your website"
+                class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-500 transition-colors placeholder-slate-400 text-sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="flex items-center justify-center gap-2 bg-slate-900 text-white rounded-lg px-5 py-2.5 font-semibold hover:bg-slate-800 hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed mt-4 w-fit"
+          (click)="saveProfileChanges()"
+          [disabled]="isLoading"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          {{ isLoading ? 'Saving...' : 'Save changes' }}
+        </button>
+
+      </form>
+    </section>
+    
+    <!-- Floating notifications -->
+    <div *ngIf="saveSuccess" class="fixed inset-x-0 bottom-6 flex justify-center z-50">
+      <div class="max-w-xl w-full mx-4 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg shadow-lg shadow-emerald-100 flex items-start gap-3 px-4 py-3">
+        <div class="mt-0.5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-500">
+            <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="flex-1 text-sm">
+          Changes saved successfully!
+        </div>
+        <button type="button" class="text-emerald-500 hover:text-emerald-700" (click)="closeSuccess()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div *ngIf="saveError" class="fixed inset-x-0 bottom-6 flex justify-center z-40">
+      <div class="max-w-xl w-full mx-4 bg-red-50 text-red-800 border border-red-200 rounded-lg shadow-lg shadow-red-100 flex items-start gap-3 px-4 py-3">
+        <div class="mt-0.5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-red-500">
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="flex-1 text-sm">
+          {{ saveError }}
+        </div>
+        <button type="button" class="text-red-500 hover:text-red-700" (click)="saveError = ''">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Emails Section -->
+    <section class="bg-white/90 border border-white/70 rounded-2xl p-6 shadow-lg shadow-slate-900/5 backdrop-blur-sm">
+      <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-4">
+        <div>
+          <div class="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Contact Layer
+          </div>
+          <h2 class="text-2xl font-semibold mt-2 mb-1 text-slate-900">Emails</h2>
+          <p class="text-slate-500 text-sm">
+            Add supplementary email addresses to receive event invitations sent to these addresses.
+          </p>
+        </div>
+        <button type="button" class="flex items-center gap-2 bg-slate-900 text-white rounded-full px-4 py-2.5 font-medium hover:bg-slate-800 transition-all text-sm shadow-md shadow-slate-900/20 self-start" (click)="addEmail()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add an email
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-lg shadow-slate-900/30">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="text-base font-semibold">{{ user.email }}</span>
+              <span class="bg-white/15 text-white px-3 py-1 rounded-full text-xs font-medium">Primary</span>
+            </div>
+            <button type="button" class="text-white/70 hover:text-white p-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="19" r="2"/>
+              </svg>
+            </button>
+          </div>
+          <p class="text-white/80 text-sm mt-2">
+            This email address will be shared with event organizers when you register for their events.
+          </p>
+        </div>
+
+        <div *ngFor="let email of user.emailSup; let i = index" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4 shadow-sm">
+          <input
+            type="email"
+            [(ngModel)]="user.emailSup![i]"
+            [name]="'emailSup' + i"
+            class="flex-1 bg-transparent border-none text-slate-900 focus:outline-none"
+            placeholder="email@example.com"
+          />
+          <button type="button" class="text-slate-400 hover:text-red-500 p-2 transition-colors" (click)="removeEmail(i)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add Email Modal -->
+    <div *ngIf="showAddEmailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative text-slate-900">
+        <button type="button" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700" (click)="closeAddEmailModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
+        <div class="flex items-center justify-center mb-4">
+          <div class="w-12 h-12 rounded-full bg-slate-900/5 flex items-center justify-center text-slate-900">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="5" width="18" height="14" rx="2" ry="2"/>
+              <polyline points="3 7 12 13 21 7"/>
+            </svg>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-1 text-center">Add an email</h3>
+        <p class="text-sm text-slate-500 mb-4 text-center">
+          Add a secondary email address to receive event invitations.
+        </p>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">Email address</label>
+          <input
+            type="email"
+            [(ngModel)]="newEmailAddress"
+            name="newEmailAddress"
+            placeholder="you@email.com"
+            class="w-full rounded-lg bg-slate-50 border border-slate-300 px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:border-blue-500"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="w-full mt-2 bg-slate-900 text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-slate-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          (click)="confirmAddEmail()"
+        >
+          Save email
+        </button>
+      </div>
+    </div>
+
+    <!-- Phone Number Section -->
+    <section class="bg-white/90 border border-white/70 rounded-2xl p-6 shadow-lg shadow-slate-900/5 backdrop-blur-sm">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-2xl font-semibold text-slate-900">Phone number</h2>
+        <span class="text-xs uppercase tracking-[0.2em] text-slate-400">SMS Alerts</span>
+      </div>
+      <p class="text-slate-500 text-sm mb-4">
+        Manage the phone number you use to connect to Luma and receive SMS updates.
+      </p>
+
+      <div class="flex flex-col gap-2">
+        <label for="phone" class="text-sm text-slate-700 font-medium">Phone number</label>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <input
+            type="tel"
+            id="phone"
+            [(ngModel)]="user.phone"
+            name="phone"
+            class="w-full sm:w-56 bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-500 transition-colors"
+          />
+          <button type="button" class="bg-slate-900 text-white rounded-full px-5 py-2.5 font-medium hover:bg-slate-800 transition-colors shadow-md shadow-slate-900/20" (click)="updatePhone()">
+            Update
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Delete Account Section -->
+    <section class="bg-white/90 border border-red-200/60 rounded-2xl p-6 shadow-lg shadow-red-200/50 backdrop-blur-sm">
+      <h2 class="text-2xl font-semibold mb-2 text-slate-900">Delete account</h2>
+      <p class="text-slate-500 text-sm mb-4">
+        If you no longer wish to use Luma, you can permanently delete your account.
+      </p>
+
+      <button type="button" class="flex items-center gap-2 bg-red-600 text-white rounded-full px-5 py-2.5 font-semibold hover:bg-red-700 transition-colors shadow-md shadow-red-500/40" (click)="deleteAccount()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Delete my account
+      </button>
+    </section>
+ 
+    <!-- Delete Account Modal -->
+    <div *ngIf="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative text-slate-900">
+        <button type="button" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700" (click)="closeDeleteModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
+        <div class="flex items-center justify-center mb-4">
+          <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-2 text-center">Delete account</h3>
+        <p class="text-sm text-slate-500 mb-4 text-center">
+          This action is permanent. All your profile data and events will be removed. Are you sure you want to continue?
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-2">
+          <button
+            type="button"
+            class="flex-1 border border-slate-300 rounded-xl py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            (click)="closeDeleteModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="flex-1 bg-red-600 text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed"
+            (click)="confirmDeleteAccount()"
+          >
+            Delete account
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -6,6 +6,6 @@ public enum ParticipationStatus {
     CANCELLED,      // User cancelled
     PENDING,        // Il attent la confirmation de créateur
     BLOCKED,        // Organizer rejected or blocked
-    ATTENDED        // User attended the event
+    JOINED// User attended the event
 }
 

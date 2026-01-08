@@ -20,8 +20,7 @@ public class Participation {
     @Enumerated(EnumType.STRING)
     private ParticipationStatus status;
 
-    private
-    ZonedDateTime RegistrationDate = ZonedDateTime.now();
+    private ZonedDateTime RegistrationDate = ZonedDateTime.now();
 
 
     @ManyToOne

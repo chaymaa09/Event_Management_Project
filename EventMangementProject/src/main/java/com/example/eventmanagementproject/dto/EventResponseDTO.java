@@ -15,7 +15,10 @@ public class EventResponseDTO {
     private Boolean isPrivate;
     private Boolean isVirtual;
     private String virtualLink;
+    private Boolean waitingListEnabled;
+    private Boolean requiresApproval;
     private Double price;
+    private String currency;
     private String category;
     private String posterUrl;
     private ZonedDateTime creationDate;

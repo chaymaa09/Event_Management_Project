@@ -12,7 +12,9 @@ export interface AppEvent {
   isVirtual?: boolean;
   virtualLink?: string;
   price: number;
-  category: 'Party' | 'Learn' | 'Chill' | 'Active' | 'Create' | 'Connect';
+  currency?: string;
+  // Matches backend Category enum: TECH, AI, ART_CULTURE, CLIMATE, WELLNESS, CYBER_SECURITY, FITNESS, PARTY, CRYPTO
+  category: string;
   capacity: number;
   attendees?: number;
   waitingListEnabled?: boolean;
@@ -25,9 +27,27 @@ export interface AppEvent {
 
 export interface EventCategory {
   name: string;
-  icon: string;
-  gradient: string;
+  posterUrl?: string;
   description: string;
+  startDate: string;
+  endDate: string;
+  isPrivate?: boolean;
+  isVirtual?: boolean;
+  virtualLink?: string;
+  location?: Location;
+}
+
+export interface Participation {
+  event : AppEvent;
+  status: ParticipationStatus;
+  userId: number;
+}
+
+export interface Subscriber {
+  id: number;
+  name: string;
+  email: string;
+  avatarUrl?: string;
 }
 /**
  * User Model - Matches User.java
@@ -105,4 +125,17 @@ export enum ParticipationStatus {
   PENDING = 'PENDING',
   BLOCKED = 'BLOCKED',
   ATTENDED = 'ATTENDED'
+}
+
+
+export interface TimezoneOption {
+  name: string;
+  offset: string;
+  city: string;
+}
+
+export interface CurrencyOption {
+  code: string;
+  name: string;
+  symbol: string;
 }

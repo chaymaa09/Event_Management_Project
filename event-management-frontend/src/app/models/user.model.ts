@@ -3,6 +3,14 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
+  bio?: string;
+  phone?: string;
+  instagramAccount?: string;
+  xAccount?: string;
+  youtubeAccount?: string;
+  linkedinAccount?: string;
+  website?: string;
+  emailSup?: string[];
 }
 
 export interface LoginRequest {

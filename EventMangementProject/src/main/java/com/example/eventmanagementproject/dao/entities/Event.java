@@ -1,10 +1,15 @@
 package com.example.eventmanagementproject.dao.entities;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -61,8 +66,12 @@ public class Event {
     @Column(nullable = false)
     private Double price = 0.0;
 
-    @Column(length = 50)
-    private String category; // Or use @Enumerated(EnumType.STRING) with an enum
+    @Column(length = 10)
+    private String currency = "USD";
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "poster_url", length = 500)
     private String posterUrl;
@@ -71,11 +80,20 @@ public class Event {
     @Transient // if computed from participations
     private Integer attendees;
 
+
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tag_events", // Junction table name
             joinColumns = @JoinColumn(name = "event_id"), // Column for Event
             inverseJoinColumns = @JoinColumn(name = "tag_id") // Column for Tag
     )
     private Set<Tag> tags;
+
+    @ManyToOne
+    private City city;
+
+
+
 
 }

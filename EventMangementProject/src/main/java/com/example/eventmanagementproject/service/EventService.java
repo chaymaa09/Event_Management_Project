@@ -1,6 +1,8 @@
 package com.example.eventmanagementproject.service;
+import com.example.eventmanagementproject.dao.entities.Category;
 import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.dto.EventCreateDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -10,6 +12,8 @@ public interface EventService {
     Event updateEvent(Event event);
     boolean deleteEvent(Long eventId);
     Event addEvent(EventCreateDTO dto, String creatorEmail);
+    List<Event> findEventsByCategory(String categoryName);
+
 
     /// Additional methods we can add later ////////////////
 

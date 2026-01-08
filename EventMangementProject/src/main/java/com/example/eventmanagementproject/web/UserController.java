@@ -3,11 +3,11 @@ package com.example.eventmanagementproject.web;
 import com.example.eventmanagementproject.dao.entities.User;
 import com.example.eventmanagementproject.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,8 +16,7 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
@@ -52,6 +51,41 @@ public class UserController {
     public User me(@AuthenticationPrincipal Jwt jwt) {
         return userService.ensureUserExists(jwt);
     }
+
+    @PutMapping("/me/update")
+    public User updateProfile(@AuthenticationPrincipal Jwt jwt, @RequestBody User updates) {
+        return userService.updateUserProfile(jwt, updates);
+    }
+
+    @PostMapping("/me/emailsup/add")
+    public ResponseEntity<User> addEmail(@AuthenticationPrincipal Jwt jwt, @RequestBody String email) {
+        User updatedUser = userService.addEmailToUser(jwt, email);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/me/emailsup/delete/{index}")
+    public ResponseEntity<User> removeEmail(@AuthenticationPrincipal Jwt jwt, @PathVariable int index) {
+        User updatedUser = userService.removeEmailFromUser(jwt, index);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/me/delete")
+    public ResponseEntity<Void> deleteCurrentUser(@AuthenticationPrincipal Jwt jwt) {
+        boolean deleted = userService.deleteCurrentUser(jwt);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/me/avatar")
+    public ResponseEntity<User> uploadAvatar(@AuthenticationPrincipal Jwt jwt,
+                                             @RequestPart("avatar") MultipartFile avatar) {
+        User updated = userService.updateAvatar(jwt, avatar);
+        return ResponseEntity.ok(updated);
+    }
+
+}
 
     @PostMapping("/sync-me")
     public ResponseEntity<User> syncMe(@AuthenticationPrincipal Jwt jwt) {
