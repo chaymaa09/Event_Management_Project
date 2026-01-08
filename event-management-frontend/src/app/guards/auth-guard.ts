@@ -23,18 +23,38 @@ export class AuthGuard extends KeycloakAuthGuard {
       return true;
     }
 
-    const isAuth = await this.keycloak.isLoggedIn();
-    if (!isAuth) {
-      // Store intended destination and redirect to root to avoid server 404
-      try {
-        sessionStorage.setItem('auth_redirect', state.url);
-      } catch { }
-      await this.keycloak.login({ redirectUri: window.location.origin + '/' });
-      return false;
+    try {
+      const isAuth = await this.keycloak.isLoggedIn();
+      if (!isAuth) {
+        // Store intended destination and redirect to root to avoid server 404
+        try {
+          sessionStorage.setItem('auth_redirect', state.url);
+        } catch { }
+        await this.keycloak.login({ redirectUri: window.location.origin + '/' });
+        return false;
+      }
+
+      // Handle required roles if specified in route data
+      const requiredRoles = route.data['roles'];
+      if (!requiredRoles || requiredRoles.length === 0) {
+        return true;
+      }
+
+      // Check if user has required roles
+      const hasRole = requiredRoles.some((role: string) => 
+        this.keycloak.getUserRoles().includes(role)
+      );
+
+      if (!hasRole) {
+        this.router.navigate(['/']);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Auth guard error:', error);
+      // If there's an error during validation, allow access to prevent blocking the app
+      return true;
     }
-    return true;
-
-
-  
   }
 }

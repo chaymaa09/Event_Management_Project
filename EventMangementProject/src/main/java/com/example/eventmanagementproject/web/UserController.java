@@ -42,7 +42,7 @@ public class UserController {
     @DeleteMapping("/delete")
     public User deleteUser(@RequestBody User user) {
         boolean deleteUser = userService.deleteUser(user);
-        if(deleteUser) {
+        if (deleteUser) {
             return user;
         }
         return null;
@@ -53,14 +53,10 @@ public class UserController {
         return userService.ensureUserExists(jwt);
     }
 
-
-
-
-
-
-
-
-
+    @PostMapping("/sync-me")
+    public ResponseEntity<User> syncMe(@AuthenticationPrincipal Jwt jwt) {
+        User user = userService.ensureUserExists(jwt);
+        return ResponseEntity.ok(user);
+    }
 
 }
-
