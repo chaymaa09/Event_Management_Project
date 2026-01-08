@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Category } from '../models/category.model';
@@ -19,6 +19,27 @@ export class CategoryService {
 
   getEventsByCategory(categoryName: string): Observable<AppEvent[]> {
     return this.http.get<AppEvent[]>(`${this.baseUrl}/events/${categoryName}`);
+  }
+
+  getEventsByCategoryAndLocation(categoryName: string, city?: string | null, country?: string | null): Observable<AppEvent[]> {
+    let params = new HttpParams();
+    if (city) params = params.set('city', city);
+    if (country) params = params.set('country', country);
+    return this.http.get<AppEvent[]>(`${this.baseUrl}/events/${encodeURIComponent(categoryName)}/by-location`, { params });
+  }
+
+  /**
+   * Nearby events endpoint (backend may be at /api/events/nearby).
+   * If your backend exposes a different path, update accordingly.
+   */
+  getNearbyEvents(lat: number, lng: number, radiusKm = 50, category?: string | null): Observable<AppEvent[]> {
+    const url = `${environment.apiUrl}/events/nearby`;
+    let params = new HttpParams()
+      .set('lat', String(lat))
+      .set('lng', String(lng))
+      .set('radiusKm', String(radiusKm));
+    if (category) params = params.set('category', category);
+    return this.http.get<AppEvent[]>(url, { params });
   }
 
   getCategoryByName(categoryName: string): Observable<Category> {

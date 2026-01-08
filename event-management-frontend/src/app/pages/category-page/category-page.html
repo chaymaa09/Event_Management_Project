@@ -8,6 +8,19 @@
     <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle, #a855f7 1px, transparent 1px); background-size: 40px 40px;"></div>
   </div>
 
+  <!-- Toast notification -->
+  <div *ngIf="showToast" aria-live="polite" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[99999] pointer-events-auto">
+    <div class="w-auto bg-black text-white rounded-sm shadow-lg px-5 py-2 flex items-center gap-3 text-base whitespace-nowrap overflow-hidden">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <div class="overflow-hidden overflow-ellipsis whitespace-nowrap">
+        <div class="">{{ toastMessage }}</div>
+      </div>
+      <button (click)="closeToast()" class="ml-auto text-white/80 hover:text-white">
+        <svg class="w-4 h-4" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
   <div class="max-w-5xl mx-auto pt-28 pb-12 px-4 md:px-12">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
         <div class="p-">
@@ -49,15 +62,15 @@
             </button>
         </div>
 
-        <div class="relative bg-gray-100 rounded-2xl inline-flex items-center justify-center  mr-8">
-            <img [src]="category?.imageUrl" alt="Category Image" class="max-w-full max-h-full align-middle break-words  rounded-xl" />
+        <div class="relative bg-gray-100 rounded-2xl inline-flex items-center justify-center mr-8 hidden md:inline-flex">
+          <img [src]="category?.imageUrl" alt="Category Image" class="max-w-full max-h-full align-middle break-words rounded-xl" />
         </div>
     </div>
 
   <!-- Nearby events -->
     <hr class="mt-8 pt-8 border-t border-gray-200" />
 
-    <div class="relative flex items-center gap-12">
+    <div class="relative flex flex-col md:flex-row items-start md:items-center gap-12 mb-24">
         <!-- LEFT CONTENT -->
         <div class=" flex-1">
         <div class="mb-5 gap-2 flex items-center justify-between">
@@ -88,38 +101,58 @@
           </ng-container>
 
           <ng-container *ngIf="events.length > 0">
-            <div class="space-y-4">
-              <div *ngFor="let event of events" class="border rounded-xl p-5 shadow-sm flex items-start gap-6 bg-white">
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 text-sm text-orange-500 font-medium mb-1">
-                    <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-                    <span class="text-orange-500">LIVE</span>
-                    <span class="text-gray-400">·</span>
-                    <span class="text-gray-500">{{ event.startDate }}</span>
-                  </div>
-                  <h3 class="text-lg font-semibold">{{ event.title }}</h3>
-                  <p class="text-gray-500 text-sm mt-1">By mimi</p>
-                  <p class="text-gray-400 text-sm mt-1">📍 {{ event.location }}</p>
+          <div class="space-y-6">
+            <div *ngFor="let event of events" class="bg-white rounded-2xl p-6 shadow-sm border border-gray-50 flex flex-col md:flex-row items-start md:justify-between gap-4">
+          
+          <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z" />
+                  </svg>
+              <span class="text-gray-400 text-sm">{{ event.startDate | date:'dd MMMM yyyy' }} · {{ event.startDate | date:'HH:mm' }}</span>
+            </div>
 
-                  <div class="flex items-center mt-3">
-                    <div class="flex -space-x-2">
-                      <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-200 text-xs text-gray-600">A</span>
-                      <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-200 text-xs text-gray-600">B</span>
-                      <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-200 text-xs text-gray-600">C</span>
-                      <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-200 text-xs text-gray-600">D</span>
-                    </div>
-                    <div class="ml-3 text-sm text-gray-500">{{ event.attendees || 0 }} attendees</div>
-                  </div>
-                </div>
-                <img [src]="event?.posterUrl" class="w-32 h-24 rounded-lg object-cover" alt="Event poster" />
+            <h3 class="text-xl font-bold text-gray-900 leading-tight">
+              {{ event.title }} 
+            </h3>
+            
+            <div class="mt-2 space-y-1">
+              <div class="flex gap-2">
+                <img src="{{ event.creator.avatarUrl }}" class="w-6 h-6 rounded-full border-2 border-white object-cover" />
+                <p class="text-gray-500 text-sm flex items-center">
+                  By <span class="ml-1 text-gray-500">{{ event.creator.name }} </span>
+                </p>
+              </div>
+              
+              <p class="text-gray-400 text-sm flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                {{ event.location?.name }}, {{ event.location?.city }}, {{ event.location?.country }}
+              </p>
+            </div>
+
+            <div class="flex items-center mt-4 -space-x-2">
+              <img *ngFor="let i of [1,2,3,4]" src="https://ui-avatars.com/api/?name=User+{{i}}&background=random" class="w-7 h-7 rounded-full border-2 border-white object-cover" />
+              <div class="w-7 h-7 rounded-full border-2 border-white bg-orange-100 flex items-center justify-center text-[10px] font-bold text-orange-600">
+                +37
               </div>
             </div>
-          </ng-container>
+          </div>
+
+          <div class="shrink-0 mt-4 md:mt-0 flex items-center justify-center">
+            <img [src]="event?.posterUrl || 'assets/placeholder-map.png'"
+                 class="w-full md:w-36 h-44 md:h-36 rounded-xl object-cover border border-gray-100"
+                 alt="Event poster" />
+          </div>
+          
+        </div>
+      </div>
+    </ng-container>
         </div>
 
 
         <!-- RIGHT COLUMN -->
-        <aside class="flex-shrink-0 max-w-64">
+        <aside class="hidden md:block flex-shrink-0 max-w-64">
           <div class="flex flex-col gap-4 sticky top-4 box-border">
             <div class="w-12 h-12 flex items-center justify-center">
                 <img [src]="category?.logoUrl" alt="Category icon" class="object-contain" />

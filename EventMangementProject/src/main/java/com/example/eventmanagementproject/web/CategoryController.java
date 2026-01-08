@@ -38,6 +38,13 @@ public class CategoryController {
         return eventService.findEventsByCategory(name);
     }
 
+    @GetMapping("/events/{name}/by-location")
+    public List<Event> getEventsByCategoryAndLocation(@PathVariable String name,
+                                                      @RequestParam(required = false) String city,
+                                                      @RequestParam(required = false) String country) {
+        return eventService.findEventsByCategoryAndLocation(name, city, country);
+    }
+
     @GetMapping("/{categoryName}")
     public Optional<Category> getCategoryByName(@PathVariable String categoryName) {
         return categoryService.findByNameIgnoreCase(categoryName);

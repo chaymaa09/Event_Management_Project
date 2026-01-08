@@ -14,6 +14,12 @@ public interface EventService {
     Event addEvent(EventCreateDTO dto, String creatorEmail);
     List<Event> findEventsByCategory(String categoryName);
 
+    // Find events by category name and optional city/country (may return empty list)
+    List<Event> findEventsByCategoryAndLocation(String categoryName, String city, String country);
+
+    // Find events near a given lat/lng within radiusKm (optional category filter)
+    List<Event> findNearbyEvents(Double lat, Double lng, Double radiusKm, String categoryName);
+
 
     /// Additional methods we can add later ////////////////
 

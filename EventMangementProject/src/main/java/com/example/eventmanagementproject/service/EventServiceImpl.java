@@ -116,4 +116,53 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findByCategory_Name(categoryName);
     }
 
+    @Override
+    public List<Event> findEventsByCategoryAndLocation(String categoryName, String city, String country) {
+        if (city != null && country != null) {
+            List<Event> byLocation = eventRepository.findByCategory_NameAndLocation_CityAndLocation_Country(categoryName, city, country);
+            if (byLocation != null && !byLocation.isEmpty()) {
+                return byLocation;
+            }
+        }
+        // Fallback: return all events in the category
+        return findEventsByCategory(categoryName);
+    }
+
+    @Override
+    public List<Event> findNearbyEvents(Double lat, Double lng, Double radiusKm, String categoryName) {
+        // If categoryName provided, start from category set, otherwise take all with coordinates
+        List<Event> candidates;
+        if (categoryName != null && !categoryName.isBlank()) {
+            candidates = eventRepository.findByCategory_Name(categoryName);
+        } else {
+            candidates = eventRepository.findAllWithLocationCoordinates();
+        }
+
+        if (lat == null || lng == null || radiusKm == null) {
+            return candidates;
+        }
+
+        double r = radiusKm.doubleValue();
+        return candidates.stream()
+                .filter(e -> e.getLocation() != null && e.getLocation().getLatitude() != null && e.getLocation().getLongitude() != null)
+                .filter(e -> {
+                    double d = haversineDistanceKm(lat, lng, e.getLocation().getLatitude(), e.getLocation().getLongitude());
+                    return d <= r;
+                })
+                .toList();
+    }
+
+    // Haversine formula
+    private static double haversineDistanceKm(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Radius of the earth in km
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c;
+        return distance;
+    }
+
 }
