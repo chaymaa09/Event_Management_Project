@@ -11,7 +11,12 @@ export class CityService {
   private baseUrl = `${environment.apiUrl}/cities`;
 
   constructor(private http: HttpClient) {}
+  
   getCitiesByContinent(continent: string): Observable<City[]> {
-    return this.http.post<City[]>(`${this.baseUrl}/${continent}`, {});
+    return this.http.get<City[]>(`${this.baseUrl}/${continent}`);
+  }
+
+  getCityByName(cityName: string): Observable<City> {
+    return this.http.get<City>(`${this.baseUrl}/name/${cityName}`);
   }
 }

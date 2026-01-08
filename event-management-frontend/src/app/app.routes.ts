@@ -10,12 +10,14 @@ import { EventDetails } from './pages/event-details/event-details';
 import { CreateEvent } from './pages/create-event/create-event';
 import { AuthGuard } from './guards/auth-guard';
 import { CategoryPage } from './pages/category-page/category-page';
+import { CityEventsComponent } from './pages/city-events/city-events';
 
 export const routes: Routes = [
   {path: '', component: Landing},  // Landing page
   {path: 'home', component: Home, canActivate: [AuthGuard]},  // Protected
   { path: 'explore', component: ExploreEvents, canActivate: [AuthGuard]},
   { path: 'explore/:category', component: CategoryPage, canActivate: [AuthGuard]},  // Protected
+  { path: 'city/:cityName', component: CityEventsComponent, canActivate: [AuthGuard]},  // Protected
   { path: 'events/:id', component: EventDetails, canActivate: [AuthGuard]},  // Protected
   { path: 'settings', component: Settings, canActivate: [AuthGuard]},  // Protected
   { path: 'profile', component: Profile, canActivate: [AuthGuard]},  // Protected

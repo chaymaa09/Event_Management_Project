@@ -85,7 +85,7 @@ public class UserController {
         return ResponseEntity.ok(updated);
     }
 
-}
+
 
     @PostMapping("/sync-me")
     public ResponseEntity<User> syncMe(@AuthenticationPrincipal Jwt jwt) {

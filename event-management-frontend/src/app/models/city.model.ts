@@ -9,4 +9,5 @@ export interface City {
   logoUrl?: string;
   imageUrl?: string;
   continent?: ContinentRef;
+  eventCount?: number;
 }

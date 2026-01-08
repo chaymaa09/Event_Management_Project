@@ -88,14 +88,14 @@
         </div>
 
         <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
-            <a href = "#" *ngFor="let city of cities; let i = index" 
-            class="p-2 flex items-center gap-2 transition-all duration-200 hover:bg-gray-100 hoverborder rounded-md">
+            <a [routerLink]="['/city', city.name]" *ngFor="let city of cities; let i = index" 
+            class="p-2 flex items-center gap-2 transition-all duration-200 hover:bg-gray-100 hoverborder rounded-md cursor-pointer">
                 <div class="rounded-full" [ngClass]="cityColors[i % cityColors.length]" >
                     <img [src]="city.logoUrl" alt="{{city.name}}" class="w-10 h-10 rounded-md object-contain"/>
                 </div>
                 <div class="text-left">
                     <h3 class="text-md font-sans font-semibold text-slate-900">{{city.name}}</h3>
-                    <p class="text-gray-400 text-sm">1K Events</p>
+                    <p class="text-gray-400 text-sm">{{ city.eventCount || 0 }} {{ (city.eventCount || 0) === 1 ? 'Event' : 'Events' }}</p>
                 </div>
                 
             </a>

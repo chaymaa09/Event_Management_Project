@@ -82,7 +82,7 @@ public class EventServiceImpl implements EventService {
             event.setLocation(location);
         } else if (dto.getLocationId() != null) {
             locationRepository.findById(dto.getLocationId())
-                .ifPresent(event::setLocation);
+                    .ifPresent(event::setLocation);
         }
 
         return eventRepository.save(event);
@@ -114,6 +114,11 @@ public class EventServiceImpl implements EventService {
 
     public List<Event> findEventsByCategory(String categoryName) {
         return eventRepository.findByCategory_Name(categoryName);
+    }
+
+    @Override
+    public List<Event> findEventsByCity(String cityName) {
+        return eventRepository.findByLocation_City(cityName);
     }
 
 }
