@@ -22,6 +22,11 @@ export class CategoryPage implements OnInit{
   isLoadingCategory = false;
   category: Category | null = null;
   isSubscribed = false;
+  isEventExists = false;
+  // Toast notification
+  showToast = false;
+  toastMessage = '';
+  private toastTimer: any = null;
 
   private cdr = inject(ChangeDetectorRef);
 
@@ -39,28 +44,85 @@ export class CategoryPage implements OnInit{
         this.countEvents();
         this.countSubscribers();
         this.loadEvents(category);
+        this.getCurrentPositionAsync();
 
 
       }
     });
   }
 
-  private loadEvents(category: string): void {
+  private async loadEvents(category: string): Promise<void> {
     this.isLoadingEvents = true;
     this.events = [];
 
-    this.categoryService.getEventsByCategory(category).subscribe({
-      next: (events) => {
-        this.events = events;
-        this.isLoadingEvents = false;
-        console.log('events : ', events);
-      },
-      error: () => {
-      this.isLoadingEvents = false;
-      console.error('Failed to load events for category:');
+    // Get user location first (city/country) and try category+location endpoint.
+    let userLocation: { city?: string; country?: string } = {};
+
+    try {
+      const position = await this.getCurrentPositionAsync();
+      if (position) {
+        try {
+          const resp = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+          );
+          const data = await resp.json();
+          const addr = data?.address ?? {};
+          userLocation = {
+            city: addr.city || addr.town || addr.village,
+            country: addr.country,
+          };
+          console.log('User location:', userLocation);
+        } catch (geoErr) {
+          console.warn('Reverse geocode failed, will load by category only.', geoErr);
+        }
+      }
+    } catch (err) {
+      console.warn('Could not get user position, loading by category only.', err);
     }
-    });
-  }
+
+    const tryCategoryOnly = () => {
+      this.categoryService.getEventsByCategory(category).subscribe({
+        next: (events) => {
+          this.isEventExists = events.length > 0;
+          this.events = events;
+          this.isLoadingEvents = false;
+          console.log('Loaded events (category fallback):', events);
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.isLoadingEvents = false;
+          console.error('Failed to load events by category:', err);
+        }
+      });
+    };
+
+    // If we have both city and country, try the location-aware endpoint first
+    if (userLocation.city && userLocation.country) {
+      this.categoryService.getEventsByCategoryAndLocation(category, userLocation.city, userLocation.country)
+        .subscribe({
+          next: (events) => {
+            if (events && events.length > 0) {
+              this.isEventExists = true;
+              this.events = events;
+              this.isLoadingEvents = false;
+              console.log('Loaded events (by location):', events);
+              this.cdr.detectChanges();
+            } else {
+              // no events in same city/country -> fallback to category-wide
+              tryCategoryOnly();
+            }
+          },
+          error: (err) => {
+            console.warn('Category+location request failed, falling back to category-only.', err);
+            tryCategoryOnly();
+          }
+        });
+    } else {
+      // No usable location: load by category only
+      tryCategoryOnly();
+    }
+}
+
 
   loadSubscribers(eventId: number): void {
     this.participationService.getEventSubscribers(eventId).subscribe({
@@ -78,11 +140,11 @@ export class CategoryPage implements OnInit{
 
 
   countEvents(): string {
-    this.loadEvents;
-    if (this.events.length >= 1000) {
-      return (this.events.length / 1000).toFixed(1) + 'k Events';
+    const n = this.events ? this.events.length : 0;
+    if (n >= 1000) {
+      return (n / 1000).toFixed(1) + 'k Events';
     }
-    return this.events.length + ' Events';
+    return n + ' Events';
   }
 
   countSubscribers(): string {
@@ -141,15 +203,36 @@ export class CategoryPage implements OnInit{
       console.error('Category or user not available for subscription');
       return;
     }
+    // Optimistically update UI and show toast immediately
+    this.isSubscribed = true;
+    this.toastMessage = `You've subscribed to ${this.formattedCategoryName()}! We'll keep you updated for new events.`;
+    this.showToast = true;
+    this.cdr.detectChanges();
+    console.log('Toast shown:', this.toastMessage);
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => {
+      this.showToast = false;
+      this.cdr.detectChanges();
+    }, 4500);
+
     this.categoryService.subscribeToCategory(categoryId, userId).subscribe({
-      next: (check: Boolean) => {
-        this.isSubscribed = true;
-        this.cdr.detectChanges();
+      next: (_check: Boolean) => {
+        // server confirmed subscription; nothing else to do
       },
       error: (error) => {
         console.error('Failed to subscribe to category:', error);
+        // revert optimistic UI and show error toast
+        this.isSubscribed = false;
+        this.toastMessage = `Subscription failed. Please try again.`;
+        this.showToast = true;
+        this.cdr.detectChanges();
+        if (this.toastTimer) clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => {
+          this.showToast = false;
+          this.cdr.detectChanges();
+        }, 4500);
       }
-    }); 
+    });
   
 
   }
@@ -174,15 +257,73 @@ export class CategoryPage implements OnInit{
       console.error('Category or user not available for unsubscription');
       return;
     }
+    // Optimistically update UI and show toast immediately
+    this.isSubscribed = false;
+    this.toastMessage = `You've unsubscribed from ${this.formattedCategoryName()}. You won't receive updates anymore.`;
+    this.showToast = true;
+    this.cdr.detectChanges();
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => {
+      this.showToast = false;
+      this.cdr.detectChanges();
+    }, 4500);
+
     this.categoryService.unsubscribeFromCategory(categoryId, userId).subscribe({
-      next: (check: Boolean) => {
-        console.log('the user is unsubscribed successfully:');
-        this.isSubscribed = false;
-        this.cdr.detectChanges();
-      }, 
+      next: (_check: Boolean) => {
+        // server confirmed unsubscription
+      },
       error: (error) => {
         console.error('Failed to unsubscribe from category:', error);
+        // revert optimistic UI and show error toast
+        this.isSubscribed = true;
+        this.toastMessage = `Unsubscribe failed. Please try again.`;
+        this.showToast = true;
+        this.cdr.detectChanges();
+        if (this.toastTimer) clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => {
+          this.showToast = false;
+          this.cdr.detectChanges();
+        }, 4500);
       }
     });
   }
+
+  // Close toast notification (called from template)
+  closeToast(): void {
+    if (this.toastTimer) {
+      clearTimeout(this.toastTimer);
+      this.toastTimer = null;
+    }
+    this.showToast = false;
+    this.cdr.detectChanges();
+    console.log('Toast closed');
+  }
+
+
+  async getCurrentPositionAsync(options?: PositionOptions): Promise<GeolocationPosition | null> {
+  if (!isPlatformBrowser(this.platformId)) {
+    console.warn('Geolocation skipped: not running in browser');
+    return null;
+  }
+
+  if (!navigator.geolocation) {
+    console.warn('Geolocation not supported by this browser');
+    return null;
+  }
+
+  console.log('Getting current position...');
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
+}
+
+async showPosition(): Promise<void> {
+  const position = await this.getCurrentPositionAsync();
+  if (!position) return;
+
+  console.log('Latitude:', position.coords.latitude);
+  console.log('Longitude:', position.coords.longitude);
+}
+
+
 }

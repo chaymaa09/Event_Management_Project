@@ -1,0 +1,45 @@
+:host {
+	/* Title size for this page (can be adjusted) */
+	--title-font-size: 2.5rem;
+	--muted-color: rgba(19, 21, 23, .64);
+
+	/* Primary font stack for this page */
+	font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", Inter, Roboto, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+.category-title {
+	font-weight: 600;
+	line-height: 1.2;
+	font-size: var(--title-font-size);
+}
+
+
+/* Right-column title styling requested by user */
+.aside-title {
+	box-sizing: border-box;
+	color: rgb(19, 21, 23);
+	color-scheme: light;
+	display: block;
+	font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", Inter, Roboto, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+	font-size: 40px;
+	font-weight: 600;
+	height: 48px;
+	line-height: 48px;
+
+}
+
+.apple-font {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", Inter, Roboto, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+/* Empty map SVG background for the 'No Events Nearby' container */
+.empty-map-bg {
+	/* Layer a white fade over the SVG so centered text stays readable */
+	background-image: 
+		linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0.95) 75%),
+		url('/assets/svgFiles/emptyMap.svg');
+	background-repeat: no-repeat;
+	background-position: top center;
+	background-size: cover;
+	background-color: #f3f4f6;
+}

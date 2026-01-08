@@ -94,9 +94,7 @@ export class CreateEvent implements OnInit {
     { value: 'ART_CULTURE',   label: 'Arts & Culture', description: 'Design, music, arts, culture',               icon: 'palette',    colorClass: 'text-green-400' },
     { value: 'CLIMATE',       label: 'Climate',        description: 'Environment, climate, sustainability',       icon: 'public',     colorClass: 'text-lime-400' },
     { value: 'WELLNESS',      label: 'Wellness',       description: 'Health, mindfulness, wellbeing',             icon: 'spa',        colorClass: 'text-teal-400' },
-    { value: 'CYBER_SECURITY',label: 'Cyber Security', description: 'Security, privacy, hacking, blue team',      icon: 'shield',     colorClass: 'text-sky-400' },
     { value: 'FITNESS',       label: 'Fitness',        description: 'Sport, fitness, movement',                   icon: 'directions_run', colorClass: 'text-orange-400' },
-    { value: 'PARTY',         label: 'Party',          description: 'Nightlife, socials, celebrations',           icon: 'celebration',colorClass: 'text-rose-400' },
     { value: 'CRYPTO',        label: 'Crypto',         description: 'Blockchain, web3, crypto meetups',          icon: 'currency_bitcoin', colorClass: 'text-purple-400' },
   ];
   
