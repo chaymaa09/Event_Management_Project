@@ -106,6 +106,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new IllegalArgumentException("Missing 'sub' claim");
         }
 
+        // Only set fields from the JWT when creating a new local record.
+        // This avoids overwriting user-modified profile fields (like name) in the local DB
+        // when Keycloak's token still contains old values.
         User user = userRepository.findByKeycloakId(keycloakId).orElseGet(() -> {
             User u = new User();
             u.setKeycloakId(keycloakId);
@@ -124,19 +127,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return u;
         });
 
-        // Update email if provided and different
-        if (email != null && !email.isBlank() && !email.equals(user.getEmail())) {
-            user.setEmail(email);
-        }
-        // Update name if provided and different
-        if (name != null && !name.isBlank() && !name.equals(user.getName())) {
-            user.setName(name);
-        }
-        // Update provider/providerId if provided
-        if (idp != null && !idp.isBlank()) {
-            user.setProvider(idp);
-            user.setProviderId(providerId);
-        }
+        // NOTE: Do not overwrite local user fields from JWT on subsequent syncs.
+        // If you want to allow Keycloak to update local fields, implement controlled
+        // sync/consent logic here. For now we persist only the current user record.
 
         return userRepository.save(user);
     }
@@ -146,8 +139,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return null;
     }
 
-    //a changer
-    public User updateUserProfile(Jwt jwt, User user){
+    // Update the profile of the currently authenticated user using JWT to locate the DB record
+    @Override
+    @Transactional
+    public User updateUserProfile(Jwt jwt, User updates){
+        if (jwt == null) {
+            throw new IllegalArgumentException("Missing JWT");
+        }
+        // Ensure local user exists and fetch the record
+        User user = ensureUserExists(jwt);
+
+        if (updates == null) return user;
+
+        // Only copy allowed updatable fields
+        if (updates.getName() != null) user.setName(updates.getName());
+        if (updates.getPhone() != null) user.setPhone(updates.getPhone());
+        if (updates.getBio() != null) user.setBio(updates.getBio());
+        if (updates.getInstagramAccount() != null) user.setInstagramAccount(updates.getInstagramAccount());
+        if (updates.getXAccount() != null) user.setXAccount(updates.getXAccount());
+        if (updates.getYoutubeAccount() != null) user.setYoutubeAccount(updates.getYoutubeAccount());
+        if (updates.getLinkedinAccount() != null) user.setLinkedinAccount(updates.getLinkedinAccount());
+        if (updates.getWebsite() != null) user.setWebsite(updates.getWebsite());
+        if (updates.getEmailSup() != null) user.setEmailSup(updates.getEmailSup());
+
         return userRepository.save(user);
     }
 

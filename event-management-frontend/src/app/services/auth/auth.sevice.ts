@@ -99,6 +99,21 @@ export class AuthService {
     return this.cachedUser;
   }
 
+  setCachedUser(user: User | null): void {
+    this.cachedUser = user;
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        if (user) {
+          localStorage.setItem('currentUser', JSON.stringify(user));
+        } else {
+          localStorage.removeItem('currentUser');
+        }
+      } catch {
+        // ignore localStorage errors
+      }
+    }
+  }
+
   getCurrentUserName(): string {
     return this.cachedUser?.name ?? this.getUsername();
   }

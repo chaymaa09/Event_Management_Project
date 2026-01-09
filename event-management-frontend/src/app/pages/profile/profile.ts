@@ -28,8 +28,9 @@ export class Profile {
     currentUser: User | null = null;
     public hostedEvents: AppEvent[] = [];
     public attendedEvents: AppEvent[] = [];
-    public createdEventParticipants: Map<number, any[]> = new Map(); // eventId -> participants array
     public hasEvents: boolean = false;
+    // Map of eventId -> participants array
+    public createdEventParticipants: Map<number, any[]> = new Map<number, any[]>();
     activeTab = signal<'hosted' | 'attended'>('hosted');
     
 
@@ -45,24 +46,6 @@ export class Profile {
           console.error('Error fetching current user:', err);
         }
       }); 
-    }
-
-    loadCreatedEventParticipants(): void {
-      if (!this.hostedEvents.length) return;
-      
-      this.hostedEvents.forEach(event => {
-        this.participationService.getEventParticipantsActive(event.id!).subscribe({
-          next: (participants) => {
-            this.createdEventParticipants.set(event.id!, participants);
-            console.log(`Loaded ${participants.length} participants for event ${event.id}`, participants);
-            try { this.cd.detectChanges(); } catch (e) {}
-          },
-          error: (err) => {
-            console.error(`Error fetching participants for event ${event.id}:`, err);
-            this.createdEventParticipants.set(event.id!, []);
-          }
-        });
-      });
     }
 
     loadAttendedEvents(): void {
@@ -129,42 +112,6 @@ export class Profile {
       });
     }
 
-    confirmParticipant(participationId: number, eventId?: number): void {
-      if (!participationId || !eventId) return;
-      this.participationService.updateStatus(participationId, ParticipationStatus.CONFIRMED).subscribe({
-        next: () => {
-          this.loadCreatedEventParticipants();
-        },
-        error: (err) => {
-          console.error('Failed to confirm participant:', err);
-        }
-      });
-    }
-
-    refuseParticipant(participationId: number, eventId?: number): void {
-      if (!participationId || !eventId) return;
-      this.participationService.updateStatus(participationId, ParticipationStatus.BLOCKED).subscribe({
-        next: () => {
-          this.loadCreatedEventParticipants();
-        },
-        error: (err) => {
-          console.error('Failed to refuse participant:', err);
-        }
-      });
-    }
-
-    deblockParticipant(participationId: number, eventId?: number): void {
-      if (!participationId || !eventId) return;
-      this.participationService.updateStatus(participationId, ParticipationStatus.CONFIRMED).subscribe({
-        next: () => {
-          this.loadCreatedEventParticipants();
-        },
-        error: (err) => {
-          console.error('Failed to deblock participant:', err);
-        }
-      });
-    }
-
 
     getHostedEvents(): void {
       if (!this.currentUser) return;
@@ -173,13 +120,81 @@ export class Profile {
           this.hostedEvents = events;
           console.log('Hosted events loaded:', events);
           this.hasEvents = Array.isArray(events) && events.length > 0;
-          // load participants for each hosted event so they appear under hosted cards
-          this.loadCreatedEventParticipants();
           try { this.cd.detectChanges(); } catch (e) {}
+          // load participants for created events
+          this.loadCreatedEventParticipants();
         },
         error: (err) => {
           console.error('Error fetching hosted events:', err);
         }
+      });
+    }
+
+    loadCreatedEventParticipants(): void {
+      this.createdEventParticipants.clear();
+      if (!this.currentUser) return;
+      (this.hostedEvents || []).forEach((ev) => {
+        if (!ev || !ev.id) return;
+        this.participationService.getEventParticipantsActive(ev.id).subscribe({
+          next: (parts) => {
+            this.createdEventParticipants.set(ev.id!, parts || []);
+            try { this.cd.detectChanges(); } catch (e) {}
+          },
+          error: (err) => {
+            console.error('Failed to load participants for event', ev.id, err);
+            this.createdEventParticipants.set(ev.id!, []);
+          }
+        });
+      });
+    }
+
+    getParticipantsForEvent(eventId?: number): any[] {
+      if (!eventId) return [];
+      return this.createdEventParticipants.get(eventId) || [];
+    }
+
+    confirmParticipant(participationId?: number, eventId?: number): void {
+      if (!participationId) return;
+      this.participationService.updateStatus(participationId, ParticipationStatus.CONFIRMED).subscribe({
+        next: () => {
+          if (eventId) {
+            this.participationService.getEventParticipantsActive(eventId).subscribe(parts => {
+              this.createdEventParticipants.set(eventId, parts || []);
+              try { this.cd.detectChanges(); } catch (e) {}
+            });
+          }
+        },
+        error: (err) => console.error('Failed to confirm participant', err)
+      });
+    }
+
+    refuseParticipant(participationId?: number, eventId?: number): void {
+      if (!participationId) return;
+      this.participationService.updateStatus(participationId, ParticipationStatus.BLOCKED).subscribe({
+        next: () => {
+          if (eventId) {
+            this.participationService.getEventParticipantsActive(eventId).subscribe(parts => {
+              this.createdEventParticipants.set(eventId, parts || []);
+              try { this.cd.detectChanges(); } catch (e) {}
+            });
+          }
+        },
+        error: (err) => console.error('Failed to refuse participant', err)
+      });
+    }
+
+    deblockParticipant(participationId?: number, eventId?: number): void {
+      if (!participationId) return;
+      this.participationService.updateStatus(participationId, ParticipationStatus.CONFIRMED).subscribe({
+        next: () => {
+          if (eventId) {
+            this.participationService.getEventParticipantsActive(eventId).subscribe(parts => {
+              this.createdEventParticipants.set(eventId, parts || []);
+              try { this.cd.detectChanges(); } catch (e) {}
+            });
+          }
+        },
+        error: (err) => console.error('Failed to deblock participant', err)
       });
     }
 
@@ -196,11 +211,6 @@ export class Profile {
   } 
   get attendedCount(): number {
     return this.attendedEvents.length;
-  }
-
-  getParticipantsForEvent(eventId?: number): any[] {
-    if (!eventId) return [];
-    return this.createdEventParticipants.get(eventId) || [];
   }
 
   onEventClick(event: AppEvent) {

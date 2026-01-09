@@ -80,6 +80,8 @@ export class Settings implements OnInit {
     this.userService.updateProfile(updatedUser).subscribe({
       next: (user) => {
         this.user = user;
+        // update cached user so other pages reflect changes immediately
+        try { this.authService.setCachedUser(user); } catch (e) { console.warn('Failed to update auth cache', e); }
         this.saveSuccess = true;
         this.isLoading = false;
         setTimeout(() => this.saveSuccess = false, 3000);
