@@ -16,6 +16,7 @@ A full-stack event management application built with Spring Boot, Angular, and K
 ## 🏗️ Tech Stack
 
 ### Backend
+
 - **Java 17**
 - **Spring Boot 3.5.7**
 - **Spring Security** with OAuth2 Resource Server
@@ -27,6 +28,7 @@ A full-stack event management application built with Spring Boot, Angular, and K
 - **Maven** for dependency management
 
 ### Frontend
+
 - **Angular 20.3.0** (Standalone Components)
 - **TypeScript**
 - **Tailwind CSS** for styling
@@ -111,6 +113,34 @@ docker run -d \
    - Valid redirect URIs: `http://localhost:4200/*`
    - Web origins: `http://localhost:4200`
 3. Create users for testing in the realm
+
+#### Configure OAuth Providers (Optional)
+
+To enable social login with Google and GitHub:
+
+1. **Get OAuth Credentials**:
+
+   - [Google OAuth Console](https://console.developers.google.com/)
+   - [GitHub OAuth Apps](https://github.com/settings/developers)
+
+2. **Add to `.env` file** (copy from `.env.example`):
+
+   ```
+   GOOGLE_CLIENT_ID=your-google-client-id-here.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=your-google-client-secret-here
+   GITHUB_CLIENT_ID=your-github-client-id-here
+   GITHUB_CLIENT_SECRET=your-github-client-secret-here
+   ```
+
+3. **In Keycloak Admin Console**:
+
+   - Go to Realm → Identity Providers
+   - Add "Google" provider (add credentials)
+   - Add "GitHub" provider (add credentials)
+   - Map user attributes as needed
+   - Update client redirect URIs to include social provider callbacks
+
+4. **Frontend** will automatically show social login buttons on the login page
 
 ### 4. Backend Setup
 
@@ -198,9 +228,39 @@ npm start
 
 The frontend will start on **http://localhost:4200**
 
-## 🐳 Docker Setup (Coming Soon)
+## 🐳 Docker Setup
 
-Docker Compose configuration for running the entire stack (MySQL, Keycloak, Backend, Frontend) will be added to simplify deployment.
+Docker Compose configuration for running the entire stack (MySQL, Keycloak, Backend, Frontend).
+
+### Using Docker Compose (Recommended)
+
+```bash
+docker-compose up -d
+```
+
+This will start:
+
+- **MySQL** on port 3306
+- **Keycloak** on port 8080
+
+Then follow steps 4-5 above to run backend and frontend.
+
+### Docker Commands
+
+```bash
+# Start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f keycloak
+docker-compose logs -f mysql
+
+# Stop services
+docker-compose down
+
+# Clean everything (including data)
+docker-compose down -v
+```
 
 ## 📁 Project Structure
 
@@ -241,9 +301,11 @@ Event_Management_Project/
 ## 🔌 API Endpoints
 
 ### Authentication
+
 All endpoints require Bearer JWT token (except public endpoints)
 
 ### Events
+
 - `GET /api/events` - Get all events
 - `GET /api/events/{id}` - Get event by ID
 - `GET /api/events/city/{cityName}` - Get events by city (case-insensitive)
@@ -252,16 +314,19 @@ All endpoints require Bearer JWT token (except public endpoints)
 - `DELETE /api/events/{id}` - Delete event (authenticated, owner only)
 
 ### Cities & Continents
+
 - `GET /api/continents` - Get all continents
 - `GET /api/cities/{continent}` - Get cities by continent with event counts
 - `GET /api/cities/name/{cityName}` - Get city details by name
 
 ### Users
+
 - `GET /api/users/me` - Get current user profile
 - `PUT /api/users/me` - Update current user profile
 - `DELETE /api/users/me` - Delete current user account
 
 ### Participation
+
 - `POST /api/participations` - Register for event
 - `DELETE /api/participations/{id}` - Cancel participation
 - `GET /api/participations/event/{eventId}` - Get participants for event
@@ -270,7 +335,9 @@ All endpoints require Bearer JWT token (except public endpoints)
 ## 🎨 Key Features Details
 
 ### Event Creation
+
 Users can create events with:
+
 - Title, description (Markdown supported), and category
 - Date, time, and duration
 - Location (city, address, or virtual)
@@ -279,12 +346,14 @@ Users can create events with:
 - Event poster image upload
 
 ### City & Continent Browsing
+
 - Browse continents with event counts
 - View cities grouped by continent
 - City detail pages show all events in that city
 - Dynamic map integration using Leaflet
 
 ### User Authentication Flow
+
 1. Users access the platform
 2. Click "Sign In" redirects to Keycloak login
 3. After authentication, JWT token is stored
@@ -294,6 +363,7 @@ Users can create events with:
 ## 🔧 Development
 
 ### Backend Development
+
 ```bash
 cd EventMangementProject
 ./mvnw spring-boot:run
@@ -302,6 +372,7 @@ cd EventMangementProject
 Hot reload is enabled via Spring Boot DevTools.
 
 ### Frontend Development
+
 ```bash
 cd event-management-frontend
 npm start
@@ -312,6 +383,7 @@ Angular dev server supports hot module replacement.
 ### Database Migrations
 
 Create new Flyway migration in `src/main/resources/db/migration/`:
+
 ```
 V{version}__Description.sql
 ```
@@ -321,12 +393,14 @@ Example: `V9__Add_event_rating.sql`
 ## 🧪 Testing
 
 ### Backend Tests
+
 ```bash
 cd EventMangementProject
 ./mvnw test
 ```
 
 ### Frontend Tests
+
 ```bash
 cd event-management-frontend
 npm test
@@ -335,6 +409,7 @@ npm test
 ## 📝 Environment Variables
 
 ### Backend (application.properties)
+
 - `spring.datasource.url` - MySQL connection URL
 - `spring.datasource.username` - Database username
 - `spring.datasource.password` - Database password
@@ -343,27 +418,45 @@ npm test
 - `app.user-avatar-dir` - Directory for user avatar uploads
 
 ### Frontend (environment.ts)
+
 - Keycloak URL, realm, and client ID are configured in `app.config.ts`
+
+### OAuth Configuration (.env file)
+
+Copy `.env.example` to `.env` and add your credentials:
+
+```
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+```
+
+**Important**: `.env` is in `.gitignore` and should NEVER be committed to git for security.
 
 ## 🐛 Troubleshooting
 
 ### Backend won't start
+
 - Ensure MySQL is running and accessible
 - Check database credentials in application.properties
 - Verify Keycloak is running and accessible at http://localhost:8080
 - Check port 8081 is not already in use
 
 ### Frontend shows CORS errors
+
 - Verify backend is running on port 8081
 - Check proxy.conf.json configuration
 - Ensure Keycloak web origins includes http://localhost:4200
 
 ### Authentication fails
+
 - Verify Keycloak realm and client configuration
 - Check issuer-uri matches your Keycloak setup
 - Ensure redirect URIs are correctly configured in Keycloak client
 
 ### Database migration errors
+
 - Check Flyway migration files for syntax errors
 - Verify database connection in application.properties
 - You can reset database with: `source reset-database.sql` (use carefully!)
