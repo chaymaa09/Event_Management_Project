@@ -9,6 +9,7 @@ import { User } from '../../models/user.model';
 import { SearchService } from '../../services/search.service';
 import { EventService } from '../../services/event';
 import { SearchModal } from '../../components/search-modal/search-modal';
+import { SidebarService } from '../../services/sidebar.service';
 
 @Component({
   selector: 'app-category-page',
@@ -34,6 +35,7 @@ export class CategoryPage implements OnInit{
   private toastTimer: any = null;
 
   private cdr = inject(ChangeDetectorRef);
+  private sidebarService = inject(SidebarService);
 
   constructor(
       private participationService: ParticipationService,
@@ -360,6 +362,11 @@ async showPosition(): Promise<void> {
       }
     });
     
+  }
+
+  selectEvent(event: any) {
+    this.sidebarService.close(); 
+    this.sidebarService.open(event); 
   }
 
 }

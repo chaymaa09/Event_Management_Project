@@ -31,4 +31,7 @@ public interface EventService {
     // boolean isEventFull(Long eventId);  // Check capacity
     // int getAvailableSpots(Long eventId);  // Remaining capacity
 
+    List<Event> findEventByCreator(Long Id);
+
+
 }

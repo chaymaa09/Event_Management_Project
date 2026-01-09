@@ -1,6 +1,8 @@
 package com.example.eventmanagementproject.web;
 
+import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.dao.entities.User;
+import com.example.eventmanagementproject.service.EventService;
 import com.example.eventmanagementproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final EventService eventService;
 
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
@@ -91,6 +94,11 @@ public class UserController {
     public ResponseEntity<User> syncMe(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.ensureUserExists(jwt);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/{userId}/hosted")
+    public List<Event> getHostedEvents(@PathVariable Long userId) {
+        return eventService.findEventByCreator(userId);
     }
 
 }

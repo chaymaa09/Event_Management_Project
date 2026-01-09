@@ -1,6 +1,7 @@
 package com.example.eventmanagementproject.service;
 
 import com.example.eventmanagementproject.dao.entities.AuthType;
+import com.example.eventmanagementproject.dao.entities.Event;
 import com.example.eventmanagementproject.dao.entities.User;
 import com.example.eventmanagementproject.dao.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -226,5 +227,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new RuntimeException("Failed to store avatar", e);
         }
     }
+
 
 }

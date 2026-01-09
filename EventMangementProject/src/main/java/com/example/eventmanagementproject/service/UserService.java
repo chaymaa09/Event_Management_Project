@@ -2,6 +2,7 @@ package com.example.eventmanagementproject.service;
 
 import java.util.List;
 
+import com.example.eventmanagementproject.dao.entities.Event;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.example.eventmanagementproject.dao.entities.User;

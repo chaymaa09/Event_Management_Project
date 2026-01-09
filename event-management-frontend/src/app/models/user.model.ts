@@ -11,6 +11,7 @@ export interface User {
   linkedinAccount?: string;
   website?: string;
   emailSup?: string[];
+  joinedDate?: string;
 }
 
 export interface LoginRequest {

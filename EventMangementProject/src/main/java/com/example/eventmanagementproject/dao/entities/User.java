@@ -1,5 +1,6 @@
 package com.example.eventmanagementproject.dao.entities;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -62,6 +63,9 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable=false)
     private String password;
+
+
+    private ZonedDateTime createdAt = ZonedDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private AuthType authType;

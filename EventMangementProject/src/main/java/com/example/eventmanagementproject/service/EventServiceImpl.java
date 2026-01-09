@@ -13,6 +13,7 @@ import com.example.eventmanagementproject.dto.EventCreateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -163,6 +164,14 @@ public class EventServiceImpl implements EventService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = R * c;
         return distance;
+    }
+
+    @Override
+    public List<Event> findEventByCreator(Long id) {
+        if (userRepository.existsById(id) && eventRepository.findByCreator_id(id) != null) {
+            return eventRepository.findByCreator_id(id);
+        }
+        return new ArrayList<>();
     }
 
 }
