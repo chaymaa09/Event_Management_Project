@@ -1,0 +1,385 @@
+# Event Management Platform
+
+A full-stack event management application built with Spring Boot, Angular, and Keycloak for authentication. Users can browse events by city and continent, create and manage events, participate in events, and more.
+
+## 🚀 Features
+
+- **User Authentication**: Secure OAuth2/OIDC authentication via Keycloak
+- **Event Management**: Create, update, and delete events with rich text descriptions
+- **Geographic Organization**: Browse events by continent and city
+- **Live Event Status**: Real-time indication of ongoing events
+- **Event Participation**: Users can register and participate in events
+- **User Profiles**: Manage user profiles with avatars
+- **Responsive Design**: Modern UI with Tailwind CSS
+- **Bilingual Support**: English and French localization
+
+## 🏗️ Tech Stack
+
+### Backend
+- **Java 17**
+- **Spring Boot 3.5.7**
+- **Spring Security** with OAuth2 Resource Server
+- **Spring Data JPA** with Hibernate
+- **MySQL 8** database
+- **Flyway** for database migrations
+- **Keycloak** for authentication and authorization
+- **Lombok** for boilerplate reduction
+- **Maven** for dependency management
+
+### Frontend
+- **Angular 20.3.0** (Standalone Components)
+- **TypeScript**
+- **Tailwind CSS** for styling
+- **Keycloak Angular 20.0.0** for auth integration
+- **Leaflet** for maps
+- **Marked** for Markdown rendering
+- **Angular Material & CDK**
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Java Development Kit (JDK) 17** or higher
+- **Node.js 18+** and npm
+- **MySQL 8.0+**
+- **Keycloak 26+** (or use Docker)
+- **Maven 3.6+** (or use the included wrapper)
+- **Git**
+
+## ⚙️ Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/chaymaa09/Event_Management_Project.git
+cd Event_Management_Project
+```
+
+### 2. Database Setup
+
+#### Create MySQL Database
+
+```bash
+mysql -u root -p
+```
+
+```sql
+CREATE DATABASE IF NOT EXISTS `event-management`;
+EXIT;
+```
+
+The application uses Flyway for database migrations, which will automatically create and populate tables on first run.
+
+#### Database Configuration
+
+Update `EventMangementProject/src/main/resources/application.properties` if needed:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/event-management?createDatabaseIfNotExist=true&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=YOUR_PASSWORD
+```
+
+### 3. Keycloak Setup
+
+#### Option A: Using Docker (Recommended)
+
+```bash
+docker run -d \
+  --name keycloak \
+  -p 8080:8080 \
+  -e KEYCLOAK_ADMIN=admin \
+  -e KEYCLOAK_ADMIN_PASSWORD=admin \
+  quay.io/keycloak/keycloak:26.2.2 \
+  start-dev
+```
+
+#### Option B: Manual Installation
+
+1. Download Keycloak from [keycloak.org](https://www.keycloak.org/downloads)
+2. Extract and run: `bin/kc.sh start-dev` (Linux/Mac) or `bin\kc.bat start-dev` (Windows)
+3. Access Keycloak at http://localhost:8080
+4. Login with admin/admin
+
+#### Configure Keycloak Realm
+
+1. Create a new realm named `event-management-realm`
+2. Create a client named `event-management-client`:
+   - Client authentication: OFF (public client)
+   - Standard flow: ENABLED
+   - Direct access grants: ENABLED
+   - Valid redirect URIs: `http://localhost:4200/*`
+   - Web origins: `http://localhost:4200`
+3. Create users for testing in the realm
+
+### 4. Backend Setup
+
+Navigate to the backend directory:
+
+```bash
+cd EventMangementProject
+```
+
+#### Update Application Properties
+
+Ensure `src/main/resources/application.properties` has correct Keycloak settings:
+
+```properties
+spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8080/realms/event-management-realm
+
+keycloak.admin.server-url=http://localhost:8080
+keycloak.admin.admin-realm=master
+keycloak.admin.target-realm=event-management-realm
+keycloak.admin.client-id=admin-cli
+keycloak.admin.username=admin
+keycloak.admin.password=admin
+```
+
+#### Build and Run
+
+Using Maven wrapper (recommended):
+
+```bash
+# Windows
+mvnw.cmd clean install
+mvnw.cmd spring-boot:run
+
+# Linux/Mac
+./mvnw clean install
+./mvnw spring-boot:run
+```
+
+Or using installed Maven:
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+The backend will start on **http://localhost:8081**
+
+### 5. Frontend Setup
+
+Open a new terminal and navigate to the frontend directory:
+
+```bash
+cd event-management-frontend
+```
+
+#### Install Dependencies
+
+```bash
+npm install
+```
+
+#### Update Keycloak Configuration
+
+Ensure `src/app/app.config.ts` has the correct Keycloak settings:
+
+```typescript
+{
+  config: {
+    url: 'http://localhost:8080',
+    realm: 'event-management-realm',
+    clientId: 'event-management-client'
+  },
+  initOptions: {
+    onLoad: 'check-sso',
+    silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html'
+  }
+}
+```
+
+#### Run Development Server
+
+```bash
+npm start
+```
+
+The frontend will start on **http://localhost:4200**
+
+## 🐳 Docker Setup (Coming Soon)
+
+Docker Compose configuration for running the entire stack (MySQL, Keycloak, Backend, Frontend) will be added to simplify deployment.
+
+## 📁 Project Structure
+
+```
+Event_Management_Project/
+├── EventMangementProject/          # Spring Boot Backend
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/example/eventmanagementproject/
+│   │   │   │   ├── domain/         # Entity models
+│   │   │   │   ├── dto/            # Data Transfer Objects
+│   │   │   │   ├── repository/     # JPA Repositories
+│   │   │   │   ├── service/        # Business logic
+│   │   │   │   ├── web/            # REST Controllers
+│   │   │   │   └── security/       # Security configuration
+│   │   │   └── resources/
+│   │   │       ├── application.properties
+│   │   │       └── db/migration/   # Flyway migrations
+│   │   └── test/
+│   └── pom.xml
+│
+└── event-management-frontend/      # Angular Frontend
+    ├── src/
+    │   ├── app/
+    │   │   ├── components/         # Reusable components
+    │   │   ├── pages/              # Page components
+    │   │   ├── services/           # API services
+    │   │   ├── guards/             # Route guards
+    │   │   ├── interceptors/       # HTTP interceptors
+    │   │   └── models/             # TypeScript models
+    │   ├── assets/
+    │   └── environments/
+    ├── angular.json
+    ├── package.json
+    └── tailwind.config.js
+```
+
+## 🔌 API Endpoints
+
+### Authentication
+All endpoints require Bearer JWT token (except public endpoints)
+
+### Events
+- `GET /api/events` - Get all events
+- `GET /api/events/{id}` - Get event by ID
+- `GET /api/events/city/{cityName}` - Get events by city (case-insensitive)
+- `POST /api/events` - Create new event (authenticated)
+- `PUT /api/events/{id}` - Update event (authenticated, owner only)
+- `DELETE /api/events/{id}` - Delete event (authenticated, owner only)
+
+### Cities & Continents
+- `GET /api/continents` - Get all continents
+- `GET /api/cities/{continent}` - Get cities by continent with event counts
+- `GET /api/cities/name/{cityName}` - Get city details by name
+
+### Users
+- `GET /api/users/me` - Get current user profile
+- `PUT /api/users/me` - Update current user profile
+- `DELETE /api/users/me` - Delete current user account
+
+### Participation
+- `POST /api/participations` - Register for event
+- `DELETE /api/participations/{id}` - Cancel participation
+- `GET /api/participations/event/{eventId}` - Get participants for event
+- `GET /api/participations/user/{userId}` - Get user's participations
+
+## 🎨 Key Features Details
+
+### Event Creation
+Users can create events with:
+- Title, description (Markdown supported), and category
+- Date, time, and duration
+- Location (city, address, or virtual)
+- Maximum participants and pricing
+- Tags for better discoverability
+- Event poster image upload
+
+### City & Continent Browsing
+- Browse continents with event counts
+- View cities grouped by continent
+- City detail pages show all events in that city
+- Dynamic map integration using Leaflet
+
+### User Authentication Flow
+1. Users access the platform
+2. Click "Sign In" redirects to Keycloak login
+3. After authentication, JWT token is stored
+4. Token is automatically attached to API requests
+5. Protected routes require valid authentication
+
+## 🔧 Development
+
+### Backend Development
+```bash
+cd EventMangementProject
+./mvnw spring-boot:run
+```
+
+Hot reload is enabled via Spring Boot DevTools.
+
+### Frontend Development
+```bash
+cd event-management-frontend
+npm start
+```
+
+Angular dev server supports hot module replacement.
+
+### Database Migrations
+
+Create new Flyway migration in `src/main/resources/db/migration/`:
+```
+V{version}__Description.sql
+```
+
+Example: `V9__Add_event_rating.sql`
+
+## 🧪 Testing
+
+### Backend Tests
+```bash
+cd EventMangementProject
+./mvnw test
+```
+
+### Frontend Tests
+```bash
+cd event-management-frontend
+npm test
+```
+
+## 📝 Environment Variables
+
+### Backend (application.properties)
+- `spring.datasource.url` - MySQL connection URL
+- `spring.datasource.username` - Database username
+- `spring.datasource.password` - Database password
+- `spring.security.oauth2.resourceserver.jwt.issuer-uri` - Keycloak realm URL
+- `keycloak.admin.*` - Keycloak admin configuration
+- `app.user-avatar-dir` - Directory for user avatar uploads
+
+### Frontend (environment.ts)
+- Keycloak URL, realm, and client ID are configured in `app.config.ts`
+
+## 🐛 Troubleshooting
+
+### Backend won't start
+- Ensure MySQL is running and accessible
+- Check database credentials in application.properties
+- Verify Keycloak is running and accessible at http://localhost:8080
+- Check port 8081 is not already in use
+
+### Frontend shows CORS errors
+- Verify backend is running on port 8081
+- Check proxy.conf.json configuration
+- Ensure Keycloak web origins includes http://localhost:4200
+
+### Authentication fails
+- Verify Keycloak realm and client configuration
+- Check issuer-uri matches your Keycloak setup
+- Ensure redirect URIs are correctly configured in Keycloak client
+
+### Database migration errors
+- Check Flyway migration files for syntax errors
+- Verify database connection in application.properties
+- You can reset database with: `source reset-database.sql` (use carefully!)
+
+## 👥 Contributors
+
+- Salwa Khattami
+- Chaymaa (chaymaa09)
+
+## 📄 License
+
+This project is created for educational purposes as part of JEE course.
+
+## 🙏 Acknowledgments
+
+- Spring Boot for the excellent backend framework
+- Angular team for the powerful frontend framework
+- Keycloak for authentication and authorization
+- Tailwind CSS for styling utilities
