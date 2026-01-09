@@ -4,13 +4,13 @@ A full-stack event management application built with Spring Boot, Angular, and K
 
 ## �️ Tech Stack Badges
 
-![Java](https://img.shields.io/badge/Java-17-orange?logo=java&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-green?logo=springboot&logoColor=white)
-![Angular](https://img.shields.io/badge/Angular-20-red?logo=angular&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript&logoColor=white)
+![Java](https://img.shields.io/badge/Java-17-FF6B6B?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?logo=springboot&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-20-DD0031?logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-38B2AC?logo=tailwindcss&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-Auth-purple?logo=jsonwebtokens&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=flat-square)
 ![Maven](https://img.shields.io/badge/Maven-3.x-C71A36?logo=apachemaven&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
 
