@@ -178,7 +178,7 @@
 
 
 
-    <section>
+    <section *ngIf="event?.description" >
       <h3 class="font-bold text-md text-gray-900 mb-2 pb-1 border-b border-gray-300">About Event</h3>
       <p class="text-gray-800 leading-relaxed text-md whitespace-pre-line">{{ event.description }}</p>
     </section>
