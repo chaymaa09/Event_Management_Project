@@ -3,13 +3,14 @@ import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import {Navbar} from './components/navbar/navbar';
 import { AuthService } from './services/auth/auth.sevice';
+import { EventSidebar } from './components/event-sidebar/event-sidebar';
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar],
+  imports: [RouterOutlet, Navbar, EventSidebar],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })

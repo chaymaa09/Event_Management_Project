@@ -27,8 +27,7 @@ public class EventMapper {
         dto.setVirtualLink(event.getVirtualLink());
         dto.setWaitingListEnabled(event.getWaitingListEnabled());
         dto.setRequiresApproval(event.getRequiresApproval());
-        dto.setPrice(event.getPrice());
-        dto.setCurrency(event.getCurrency());
+        // pricing removed
         dto.setCategory(event.getCategory() != null ? event.getCategory().getName() : null);
         dto.setPosterUrl(event.getPosterUrl());
         dto.setCreationDate(event.getCreationDate());

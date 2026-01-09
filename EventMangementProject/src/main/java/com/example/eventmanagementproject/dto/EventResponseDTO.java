@@ -1,8 +1,9 @@
 package com.example.eventmanagementproject.dto;
 
-import lombok.Data;
 import java.time.ZonedDateTime;
 import java.util.Set;
+
+import lombok.Data;
 
 @Data
 public class EventResponseDTO {
@@ -17,8 +18,7 @@ public class EventResponseDTO {
     private String virtualLink;
     private Boolean waitingListEnabled;
     private Boolean requiresApproval;
-    private Double price;
-    private String currency;
+    // pricing removed
     private String category;
     private String posterUrl;
     private ZonedDateTime creationDate;

@@ -8,8 +8,11 @@ import com.example.eventmanagementproject.dao.repositories.ParticipationReposito
 import com.example.eventmanagementproject.dao.repositories.UserRepository;
 import com.example.eventmanagementproject.dao.repositories.EventRepository;
 
+import com.zaxxer.hikari.util.ClockSource;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -70,14 +73,9 @@ public class ParticipationServiceImpl implements ParticipationService {
     }
 
     public void validateStatusTransition(ParticipationStatus currentStatus, ParticipationStatus newStatus) {
-        if (currentStatus == ParticipationStatus.CANCELLED && newStatus == ParticipationStatus.CONFIRMED) {
-            throw new RuntimeException("Cannot confirm a cancelled participation");
-        }
-
-        if (currentStatus == ParticipationStatus.JOINED && newStatus == ParticipationStatus.PENDING) {
+        if (currentStatus == ParticipationStatus.ATTENDED && newStatus == ParticipationStatus.PENDING) {
             throw new RuntimeException("Cannot change attended participation back to pending");
         }
-
     }
 
     public List<User> getEventSubscribers(Long eventId){
@@ -88,7 +86,7 @@ public class ParticipationServiceImpl implements ParticipationService {
 
             if(participations != null || participations.size() > 0) {
                 for (Participation participation : participations) {
-                    if (participation.getStatus().equals(ParticipationStatus.JOINED)) {
+                    if (participation.getStatus().equals(ParticipationStatus.ATTENDED)) {
                         subscribers.add(participation.getUser());
                     }
                 }
@@ -100,4 +98,86 @@ public class ParticipationServiceImpl implements ParticipationService {
         }
         return subscribers;
     }
+
+
+    @Override
+    public List<User> getJoinedAttendees(Long eventId) {
+
+        Event event = eventRepository.findById(eventId)
+                .orElse(null);
+
+        List<User> joinedUsers = getEventParticipations(event)
+
+                .stream()
+                .filter(p -> p.getStatus() == ParticipationStatus.CONFIRMED)
+                .map(Participation::getUser)
+                .toList();
+
+        return joinedUsers;
+    }
+
+    @Override
+    public Participation createParticipation(Event event, User user, ParticipationStatus status){
+        if (event != null && user != null) {
+
+            Participation participation = new Participation();
+            participation.setEvent(event);
+            participation.setUser(user);
+            participation.setStatus(status);
+            return participationRepository.save(participation);
+        }else {
+            return null;
+        }
+
+    }
+
+
+    @Override
+    public Boolean sendRequestToJoin(Long eventId, Long userId) {
+        Event event = eventRepository.findById(eventId).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+        if (event == null || user == null) return false;
+        // find existing participation and update status to PENDING if necessary
+        Optional<Participation> existing = participationRepository.findByEventAndUser(event, user);
+        if (existing.isPresent()) {
+            Participation p = existing.get();
+            p.setStatus(ParticipationStatus.PENDING);
+            participationRepository.save(p);
+            return true;
+        }
+        Participation p = createParticipation(event, user, ParticipationStatus.PENDING);
+        participationRepository.save(p);
+        return p != null;
+
+
+
+    }
+
+    @Override
+    public Boolean join(Long eventId, Long userId) {
+        Event event = eventRepository.findById(eventId).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+        if (event == null || user == null) return false;
+        Optional<Participation> existing = participationRepository.findByEventAndUser(event, user);
+        if (existing.isPresent()) {
+            Participation p = existing.get();
+            if (p.getStatus() == ParticipationStatus.PENDING) {
+                p.setStatus(ParticipationStatus.CONFIRMED);
+                participationRepository.save(p);
+                return true;
+            }
+            return false;
+        } else {
+            Participation pnew = createParticipation(event, user, ParticipationStatus.CONFIRMED);
+            participationRepository.save(pnew);
+            return pnew != null;
+        }
+
+    }
+
+    @Override
+    public List<Participation> getUserParticipations(Long userId) {
+        return participationRepository.findByUser_id(userId);
+    }
+
 }

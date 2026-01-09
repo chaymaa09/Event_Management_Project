@@ -1,6 +1,5 @@
 package com.example.eventmanagementproject.service;
 
-import com.example.eventmanagementproject.dao.entities.AuthType;
 import com.example.eventmanagementproject.dao.entities.User;
 import com.example.eventmanagementproject.dao.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -110,7 +109,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findByKeycloakId(keycloakId).orElseGet(() -> {
             User u = new User();
             u.setKeycloakId(keycloakId);
-            u.setAuthType(AuthType.OAUTH);
             u.setEnabled(true);
             u.setPassword("oauth");  // Required non-null field
             // Set defaults on creation with proper fallbacks
@@ -226,5 +224,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new RuntimeException("Failed to store avatar", e);
         }
     }
+
 
 }

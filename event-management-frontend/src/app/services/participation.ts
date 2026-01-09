@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ParticipationDTO} from '../models/event.model';
+import { ParticipationDTO, User} from '../models/event.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -23,4 +23,6 @@ export class ParticipationService {
   cancelParticipation(participationId: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${participationId}`);
   }
+
+  
 }

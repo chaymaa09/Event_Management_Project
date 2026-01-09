@@ -11,9 +11,7 @@ export interface AppEvent {
   isPrivate?: boolean;
   isVirtual?: boolean;
   virtualLink?: string;
-  price: number;
-  currency?: string;
-  // Matches backend Category enum: TECH, AI, ART_CULTURE, CLIMATE, WELLNESS, CYBER_SECURITY, FITNESS, PARTY, CRYPTO
+  // pricing removed: events are free
   category: string;
   capacity: number;
   attendees?: number;
@@ -38,9 +36,10 @@ export interface EventCategory {
 }
 
 export interface Participation {
+  id?: number;
   event : AppEvent;
   status: ParticipationStatus;
-  userId: number;
+  user: User;
 }
 
 export interface Subscriber {
@@ -105,7 +104,7 @@ export interface Notification {
  */
 export interface ParticipationDTO {
   id?: number;
-  userId: number;
+  user: User;
   userName: string;
   userEmail: string;
   userAvatarUrl?: string;
@@ -133,9 +132,4 @@ export interface TimezoneOption {
   offset: string;
   city: string;
 }
-
-export interface CurrencyOption {
-  code: string;
-  name: string;
-  symbol: string;
-}
+// CurrencyOption removed — all events are free now.

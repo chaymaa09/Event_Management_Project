@@ -1,12 +1,13 @@
 import { Component, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { EventService } from '../../services/event';
+import { KeycloakService } from 'keycloak-angular';
+import { CategoryService } from '../../services/category.service';
+import { Category } from '../../models/category.model';
 import { AuthService } from '../../services/auth/auth.sevice';
-import { AppEvent, Location } from '../../models/event.model';
-import { CurrencyOption } from '../../models/event.model';
-import { TimezoneOption } from '../../models/event.model';
+import { AppEvent, Location, TimezoneOption } from '../../models/event.model';
 import { CategoryIconComponent, CategoryType } from '../../components/category-icon/category-icon.component';
 
 
@@ -54,12 +55,7 @@ export class CreateEvent implements OnInit {
   private locationSearchTimeout: any = null;
   isSearchingLocation = false;
   
-  // Price
-  price = 0;
-  currency: CurrencyOption = { code: 'USD', name: 'US Dollar', symbol: '$' };
-  currencySearch = '';
-  showPriceModal = false;
-  showCurrencyDropdown = false;
+  // pricing removed — events are free
   
   // Validation
   requiresApproval = false;
@@ -101,19 +97,20 @@ export class CreateEvent implements OnInit {
   // Timezones list - dynamically generated
   timezones: TimezoneOption[] = [];
   
-  // Currencies list - dynamically generated
-  currencies: CurrencyOption[] = [];
+  // currencies removed — all events free
 
   constructor(
     private eventService: EventService,
+    private categoryService: CategoryService,
     private authService: AuthService,
-    private router: Router
+    private keycloakService: KeycloakService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    // Generate timezones and currencies from Intl API
+    // Generate timezones from Intl API
     this.generateTimezones();
-    this.generateCurrencies();
     
     // Set default dates to today
     const now = new Date();
@@ -122,6 +119,88 @@ export class CreateEvent implements OnInit {
     
     // Detect user's timezone
     this.detectUserTimezone();
+
+    // If route contains edit params, load event for editing
+    this.route.queryParams.subscribe(params => {
+      if (params['edit'] === 'true' && params['id']) {
+        const id = Number(params['id']);
+        if (!isNaN(id)) {
+          this.loadEventForEdit(id);
+        }
+      }
+    });
+
+    // Load server categories to map names -> ids for updates
+    this.categoryService.getAllCategories().subscribe({
+      next: (cats) => {
+        this.serverCategories = cats || [];
+      },
+      error: (err) => {
+        console.warn('Could not load server categories:', err);
+        this.serverCategories = [];
+      }
+    });
+  }
+
+  serverCategories: Category[] = [];
+
+  isEditMode = false;
+  editingEventId: number | null = null;
+
+  private loadEventForEdit(id: number): void {
+    this.eventService.getEventById(id).subscribe({
+      next: (ev) => {
+        this.isEditMode = true;
+        this.editingEventId = ev.id || null;
+
+        // Prefill fields based on loaded event
+        this.eventName = ev.title || '';
+        this.description = ev.description || '';
+        if (ev.startDate) {
+          const sd = new Date(ev.startDate);
+          this.startDate = this.formatDateForInput(sd);
+          this.startTime = sd.toTimeString().slice(0,5) || this.startTime;
+        }
+        if (ev.endDate) {
+          const ed = new Date(ev.endDate);
+          this.endDate = this.formatDateForInput(ed);
+          this.endTime = ed.toTimeString().slice(0,5) || this.endTime;
+        }
+        this.eventType = ev.isVirtual ? 'virtual' : 'in-person';
+        this.virtualLink = ev.virtualLink || '';
+        // pricing removed — events are free
+        this.requiresApproval = !!ev.requiresApproval;
+        this.isCapacityLimited = !!ev.capacity && ev.capacity > 0;
+        this.capacity = ev.capacity || null;
+        this.waitingListEnabled = !!ev.waitingListEnabled;
+        this.posterUrl = ev.posterUrl || this.defaultPosterUrl;
+        this.posterPreview = ev.posterUrl || '';
+        // Normalize category: server may return a string or an object {id,name}
+        const catAny: any = ev.category;
+        console.log('Loaded event category raw:', catAny);
+        if (typeof catAny === 'string') {
+          this.category = (catAny || '').toString().toUpperCase() as any;
+        } else if (catAny && typeof catAny === 'object') {
+          this.category = (String(catAny.name || this.category).toUpperCase()) as any;
+        }
+        console.log('Mapped this.category =>', this.category);
+        if (ev.location) {
+          this.selectedLocation = {
+            name: ev.location.name,
+            street: ev.location.street,
+            city: ev.location.city,
+            country: ev.location.country,
+            postalCode: ev.location.postalCode,
+            latitude: ev.location.latitude,
+            longitude: ev.location.longitude,
+            timezone: ev.location.timezone
+          } as any;
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load event for edit:', err);
+      }
+    });
   }
 
   selectCategory(value: CategoryType): void {
@@ -160,49 +239,7 @@ export class CreateEvent implements OnInit {
     }
   }
 
-  generateCurrencies(): void {
-    try {
-      // Get all supported currencies from Intl API
-      const currencyCodes = (Intl as any).supportedValuesOf('currency') as string[];
-      const displayNames = new Intl.DisplayNames(['en'], { type: 'currency' });
-      
-      this.currencies = currencyCodes.map(code => {
-        // Get currency symbol
-        let symbol = code;
-        try {
-          const formatted = new Intl.NumberFormat('en', {
-            style: 'currency',
-            currency: code,
-            currencyDisplay: 'narrowSymbol'
-          }).format(0);
-          symbol = formatted.replace(/[\d.,\s]/g, '').trim() || code;
-        } catch {
-          symbol = code;
-        }
-        
-        return {
-          code: code,
-          name: displayNames.of(code) || code,
-          symbol: symbol
-        };
-      });
-      
-      // Move common currencies to the top
-      const commonCurrencies = ['USD', 'EUR', 'MAD', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR'];
-      this.currencies.sort((a, b) => {
-        const aIndex = commonCurrencies.indexOf(a.code);
-        const bIndex = commonCurrencies.indexOf(b.code);
-        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-        if (aIndex !== -1) return -1;
-        if (bIndex !== -1) return 1;
-        return a.name.localeCompare(b.name);
-      });
-    } catch (e) {
-      // Fallback for older browsers
-      console.warn('Could not generate currencies, using fallback');
-      
-    }
-  }
+  // generateCurrencies removed
 
   detectUserTimezone(): void {
     try {
@@ -473,40 +510,7 @@ export class CreateEvent implements OnInit {
     this.showLocationDropdown = false;
   }
 
-  // Currency methods
-  get filteredCurrencies(): CurrencyOption[] {
-    if (!this.currencySearch) return this.currencies;
-    const search = this.currencySearch.toLowerCase();
-    return this.currencies.filter(c => 
-      c.code.toLowerCase().includes(search) || 
-      c.name.toLowerCase().includes(search)
-    );
-  }
-
-  selectCurrency(curr: CurrencyOption): void {
-    this.currency = curr;
-    this.showCurrencyDropdown = false;
-    this.currencySearch = '';
-  }
-
-  get priceDisplay(): string {
-    if (this.price === 0) return 'Free';
-    return `${this.currency.symbol}${this.price}`;
-  }
-
-  openPriceModal(): void {
-    this.showPriceModal = true;
-  }
-
-  closePriceModal(): void {
-    this.showPriceModal = false;
-    this.showCurrencyDropdown = false;
-  }
-
-  confirmPrice(): void {
-    this.showPriceModal = false;
-    this.showCurrencyDropdown = false;
-  }
+  // pricing UI removed
 
   // Capacity methods
   get capacityDisplay(): string {
@@ -568,7 +572,7 @@ export class CreateEvent implements OnInit {
   isSubmitting = false;
 
   // Create event
-  createEvent(): void {
+  async createEvent(): Promise<void> {
     console.log('Create event clicked');
     console.log('Form valid:', this.isFormValid);
     console.log('Event name:', this.eventName);
@@ -578,6 +582,18 @@ export class CreateEvent implements OnInit {
     console.log('Selected location:', this.selectedLocation);
     console.log('Virtual link:', this.virtualLink);
     
+    // Ensure user is logged in and token is fresh before submitting
+    try {
+      const loggedIn = await this.keycloakService.isLoggedIn();
+      if (!loggedIn) {
+        await this.keycloakService.login();
+        return;
+      }
+      await this.keycloakService.updateToken(30);
+    } catch (kcErr) {
+      console.warn('Keycloak check failed', kcErr);
+    }
+
     if (!this.isFormValid) {
       console.log('Form is not valid');
       return;
@@ -614,9 +630,9 @@ export class CreateEvent implements OnInit {
     // If there's a poster file, upload it first
     if (this.posterFile) {
       this.eventService.uploadPoster(this.posterFile).subscribe({
-        next: (response) => {
+        next: async (response) => {
           console.log('Poster uploaded:', response);
-          this.submitEvent(startDateTime, endDateTime, currentUser, response.posterUrl);
+          await this.submitEvent(startDateTime, endDateTime, currentUser, response.posterUrl);
         },
         error: (err) => {
           console.error('Failed to upload poster:', err);
@@ -626,21 +642,26 @@ export class CreateEvent implements OnInit {
       });
     } else {
       // No uploaded poster: use the default poster URL so it is persisted in backend
-      this.submitEvent(startDateTime, endDateTime, currentUser, this.defaultPosterUrl);
+      await this.submitEvent(startDateTime, endDateTime, currentUser, this.defaultPosterUrl);
     }
   }
 
-  private submitEvent(startDateTime: string, endDateTime: string, currentUser: any, posterUrl: string): void {
-    const event: AppEvent = {
+  private async submitEvent(startDateTime: string, endDateTime: string, currentUser: any, posterUrl: string): Promise<void> {
+    const event: any = {
+      // Include id when editing so backend updates the existing event
+      ...(this.isEditMode && this.editingEventId ? { id: this.editingEventId } : {}),
       title: this.eventName,
       description: this.description,
       startDate: startDateTime,
       endDate: endDateTime,
       isVirtual: this.eventType === 'virtual',
       virtualLink: this.eventType === 'virtual' ? this.virtualLink : undefined,
-      price: this.price,
-      currency: this.currency.code,
-      category: this.category,
+      // Backend will accept a category ID; send only the ID so server can lookup the Category
+      categoryId: (() => {
+        const name = (this.category as unknown as string) || '';
+        const found = this.serverCategories.find(c => c.name?.toLowerCase() === name.toLowerCase());
+        return found ? found.id : null;
+      })(),
       capacity: this.isCapacityLimited && this.capacity ? this.capacity : 0,
       waitingListEnabled: this.waitingListEnabled,
       requiresApproval: this.requiresApproval,
@@ -659,18 +680,41 @@ export class CreateEvent implements OnInit {
 
     console.log('Sending event:', event);
 
-    this.eventService.createEvent(event).subscribe({
-      next: (created) => {
-        console.log('Event created:', created);
+    if (this.isEditMode && this.editingEventId) {
+      // Ensure token is attached explicitly for update
+      try {
+        const token = await this.keycloakService.getToken();
+        this.eventService.updateEvent(this.editingEventId, event, token).subscribe({
+          next: (updated) => {
+            console.log('Event updated:', updated);
+            this.isSubmitting = false;
+            this.router.navigate(['/events', updated.id]);
+          },
+          error: (err) => {
+            console.error('Failed to update event:', err);
+            this.isSubmitting = false;
+            alert('Error updating event: ' + (err.error?.message || err.message || 'Unknown error'));
+          }
+        });
+      } catch (tErr) {
+        console.error('Could not get Keycloak token', tErr);
         this.isSubmitting = false;
-        this.router.navigate(['/events', created.id]);
-      },
-      error: (err) => {
-        console.error('Failed to create event:', err);
-        this.isSubmitting = false;
-        alert('Error creating event: ' + (err.error?.message || err.message || 'Unknown error'));
+        alert('Authentication error: could not get token');
       }
-    });
+    } else {
+      this.eventService.createEvent(event).subscribe({
+        next: (created) => {
+          console.log('Event created:', created);
+          this.isSubmitting = false;
+          this.router.navigate(['/events', created.id]);
+        },
+        error: (err) => {
+          console.error('Failed to create event:', err);
+          this.isSubmitting = false;
+          alert('Error creating event: ' + (err.error?.message || err.message || 'Unknown error'));
+        }
+      });
+    }
   }
 
   // Close dropdowns when clicking outside
@@ -692,9 +736,7 @@ export class CreateEvent implements OnInit {
     if (!target.closest('.location-dropdown')) {
       this.showLocationDropdown = false;
     }
-    if (!target.closest('.currency-dropdown')) {
-      this.showCurrencyDropdown = false;
-    }
+    // currency dropdown removed
     if (!target.closest('.calendar-dropdown')) {
       this.showStartCalendar = false;
       this.showEndCalendar = false;

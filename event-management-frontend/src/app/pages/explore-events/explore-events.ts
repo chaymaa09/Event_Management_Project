@@ -5,11 +5,15 @@ import { City } from '../../models/city.model';
 import { Category } from '../../models/category.model';
 import { CityService } from '../../services/city.service';
 import { CategoryService } from '../../services/category.service';
+import { AppEvent } from '../../models/event.model';
+import { SearchService } from '../../services/search.service';
+import { EventService } from '../../services/event';
+import { SearchModal } from '../../components/search-modal/search-modal';
 
 @Component({
   selector: 'app-explore-events',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SearchModal],
   templateUrl: './explore-events.html',
   styleUrls: ['./explore-events.css'],
 })
@@ -44,14 +48,26 @@ export class ExploreEvents implements OnInit {
   'bg-slate-500',
 ];
 
+  allEvents: AppEvent[] = [];
+  filteredResults: AppEvent[] = [];
+
+
+
   constructor(
     private cityService: CityService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private eventService: EventService,
+    private searchService: SearchService
   ) {}
 
   ngOnInit(): void {
     this.loadCategories();
     this.loadCitiesForContinent(this.activeContinent);
+    this.loadAllEvents();
+        
+    this.searchService.currentSearchTerm$.subscribe(term => {
+      this.performFiltering(term);
+    });
 
   }
 
@@ -105,6 +121,28 @@ export class ExploreEvents implements OnInit {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   }
 
+  performFiltering(term: string) {
+    if (!term.trim()) {
+      this.filteredResults = [];
+      return;
+    }
+    this.filteredResults = this.allEvents.filter(e => 
+      e.title.toLowerCase().includes(term.toLowerCase())
+    );
+  }
+
+
+  loadAllEvents(): void {
+    this.eventService.getAllEvents().subscribe({
+      next: (events) => {
+        this.allEvents = events;
+      },
+      error: (err) => {
+        console.error('Failed to load all events for search filtering:', err);
+      }
+    });
+    
+  }
   handleLogoError(event: Event): void {
     const img = event.target as HTMLImageElement;
     // Use a simple placeholder SVG data URL

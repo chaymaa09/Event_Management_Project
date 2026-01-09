@@ -1,1 +1,223 @@
-<p>profile works!</p>
+<div class="max-w-4xl mx-auto py-12 px-6">
+<div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
+    <div class="absolute -top-24 left-8 w-72 h-72 bg-purple-200/60 blur-3xl rounded-full"></div>
+    <div class="absolute top-32 right-0 w-80 h-80 bg-blue-200/50 blur-3xl rounded-full"></div>
+    <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-pink-200/40 blur-3xl rounded-full"></div>
+    
+</div>
+
+<div class="max-w-2xl mx-auto pt-12 m-2 px-6">
+  
+  <div class="flex items-start gap-6 mb-6">
+    <div class="relative">
+      <img [src]="currentUser?.avatarUrl" 
+           [alt]="currentUser?.name"
+           class="w-32 h-32 rounded-full object-cover shadow-sm border-hidden">
+    </div>
+
+    <div class="flex flex-col pt-2">
+      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">{{ currentUser?.name }}</h1>
+      
+      <div class="flex items-center gap-1.5 text-gray-400 text-sm mt-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>Joined {{ currentUser?.joinedDate }}</span>
+      </div>
+
+      <div class="flex items-center gap-4 mt-3">
+        <div class="flex items-center gap-1 text-sm">
+          <span class="font-bold text-gray-900">{{ hostedCount }}</span>
+          <span class="text-gray-500">Hosted</span>
+        </div>
+        <div class="flex items-center gap-1 text-sm">
+          <span class="font-bold text-gray-900">{{ attendedCount }}</span>
+          <span class="text-gray-500">Attended</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="border-gray-300 mt-4 mb-8">
+
+  <div *ngIf="!hasEvents" class="flex flex-col items-center justify-center py-6">
+    <div class="relative w-56 h-56">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 420 380"><g filter="url(#CalendarLight_svg__a)"><rect width="236" height="236" x="80" y="33" fill="url(#CalendarLight_svg__b)" rx="32"></rect></g><path fill="url(#CalendarLight_svg__c)" fill-rule="evenodd" d="M115 57c-6.075 0-11 4.925-11 11s4.925 11 11 11h166c6.075 0 11-4.925 11-11s-4.925-11-11-11zm-10.232 62.58c-.768 1.624-.768 3.722-.768 7.92s0 6.296.768 7.92a8 8 0 0 0 3.812 3.812c1.624.768 3.722.768 7.92.768h33c4.198 0 6.296 0 7.92-.768a8 8 0 0 0 3.812-3.812c.768-1.624.768-3.722.768-7.92s0-6.296-.768-7.92a8 8 0 0 0-3.812-3.812c-1.624-.768-3.722-.768-7.92-.768h-33c-4.198 0-6.296 0-7.92.768a8 8 0 0 0-3.812 3.812M104 198.8c0-4.48 0-6.721.872-8.432a8 8 0 0 1 3.496-3.496c1.711-.872 3.952-.872 8.432-.872h32.4c4.48 0 6.721 0 8.432.872a8 8 0 0 1 3.496 3.496c.872 1.711.872 3.952.872 8.432v33.4c0 4.48 0 6.721-.872 8.432a8 8 0 0 1-3.496 3.496c-1.711.872-3.952.872-8.432.872h-32.4c-4.48 0-6.721 0-8.432-.872a8 8 0 0 1-3.496-3.496C104 238.921 104 236.68 104 232.2zm68.872-100.432C172 100.08 172 102.32 172 106.8v34.4c0 4.48 0 6.721.872 8.432a8 8 0 0 0 3.496 3.496c1.711.872 3.952.872 8.432.872h32.4c4.48 0 6.721 0 8.432-.872a8 8 0 0 0 3.496-3.496c.872-1.711.872-3.952.872-8.432v-34.4c0-4.48 0-6.721-.872-8.432a8 8 0 0 0-3.496-3.496C223.921 94 221.68 94 217.2 94h-32.4c-4.48 0-6.721 0-8.432.872a8 8 0 0 0-3.496 3.496M172 232.5c0-4.198 0-6.296.768-7.92a8 8 0 0 1 3.812-3.812c1.624-.768 3.722-.768 7.92-.768h33c4.198 0 6.296 0 7.92.768a8 8 0 0 1 3.812 3.812c.768 1.624.768 3.722.768 7.92s0 6.296-.768 7.92a8 8 0 0 1-3.812 3.812c-1.624.768-3.722.768-7.92.768h-33c-4.198 0-6.296 0-7.92-.768a8 8 0 0 1-3.812-3.812c-.768-1.624-.768-3.722-.768-7.92m68.872-74.132C240 160.079 240 162.32 240 166.8v29.4c0 4.48 0 6.721.872 8.432a8 8 0 0 0 3.496 3.496c1.711.872 3.952.872 8.432.872h32.4c4.48 0 6.721 0 8.432-.872a8 8 0 0 0 3.496-3.496c.872-1.711.872-3.952.872-8.432v-29.4c0-4.48 0-6.721-.872-8.432a8 8 0 0 0-3.496-3.496C291.921 154 289.68 154 285.2 154h-32.4c-4.48 0-6.721 0-8.432.872a8 8 0 0 0-3.496 3.496" clip-rule="evenodd"></path><g filter="url(#CalendarLight_svg__d)"><rect width="100" height="100" x="258" fill="url(#CalendarLight_svg__e)" rx="32"></rect></g><g filter="url(#CalendarLight_svg__f)"><path fill="#E0E0E0" d="M308.11 82.398q-7.833-.03-13.481-3.856-5.617-3.825-8.653-11.082-3.006-7.257-2.976-17.458 0-10.171 3.006-17.337 3.036-7.165 8.653-10.9Q300.307 18 308.11 18t13.42 3.765q5.647 3.765 8.684 10.93 3.036 7.135 3.005 17.307 0 10.231-3.036 17.488-3.006 7.257-8.623 11.083-5.617 3.825-13.45 3.825m0-10.9q5.343 0 8.532-5.374t3.157-16.122q0-7.075-1.457-11.78-1.427-4.707-4.069-7.075-2.61-2.368-6.163-2.368-5.313 0-8.502 5.313-3.188 5.314-3.218 15.91 0 7.165 1.427 11.962 1.458 4.767 4.099 7.166 2.642 2.368 6.194 2.368"></path></g><defs><linearGradient id="CalendarLight_svg__b" x1="198" x2="198" y1="33" y2="269" gradientUnits="userSpaceOnUse"><stop stop-color="#FAFAFA"></stop><stop offset="1" stop-color="#fff"></stop></linearGradient><linearGradient id="CalendarLight_svg__c" x1="201" x2="201" y1="57" y2="245" gradientUnits="userSpaceOnUse"><stop stop-color="#DEDEDE"></stop><stop offset="1" stop-color="#F2F2F2"></stop></linearGradient><linearGradient id="CalendarLight_svg__e" x1="308" x2="308" y1="0" y2="100" gradientUnits="userSpaceOnUse"><stop stop-color="#F7F7F7"></stop><stop offset="1" stop-color="#fff"></stop></linearGradient><filter id="CalendarLight_svg__a" width="396" height="444" x="0" y="5" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feGaussianBlur in="BackgroundImageFix" stdDeviation="14"></feGaussianBlur><feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_1534_31596"></feComposite><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="2.767"></feOffset><feGaussianBlur stdDeviation="1.107"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.07 0"></feColorMatrix><feBlend in2="effect1_backgroundBlur_1534_31596" result="effect2_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="6.65"></feOffset><feGaussianBlur stdDeviation="2.66"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0503198 0"></feColorMatrix><feBlend in2="effect2_dropShadow_1534_31596" result="effect3_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="12.522"></feOffset><feGaussianBlur stdDeviation="5.009"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0417275 0"></feColorMatrix><feBlend in2="effect3_dropShadow_1534_31596" result="effect4_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="22.336"></feOffset><feGaussianBlur stdDeviation="8.935"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.035 0"></feColorMatrix><feBlend in2="effect4_dropShadow_1534_31596" result="effect5_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="41.778"></feOffset><feGaussianBlur stdDeviation="16.711"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0282725 0"></feColorMatrix><feBlend in2="effect5_dropShadow_1534_31596" result="effect6_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="100"></feOffset><feGaussianBlur stdDeviation="40"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0196802 0"></feColorMatrix><feBlend in2="effect6_dropShadow_1534_31596" result="effect7_dropShadow_1534_31596"></feBlend><feBlend in="SourceGraphic" in2="effect7_dropShadow_1534_31596" result="shape"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="1"></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic"></feComposite><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"></feColorMatrix><feBlend in2="shape" result="effect8_innerShadow_1534_31596"></feBlend></filter><filter id="CalendarLight_svg__d" width="260" height="308" x="178" y="-28" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feGaussianBlur in="BackgroundImageFix" stdDeviation="14"></feGaussianBlur><feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_1534_31596"></feComposite><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="2.767"></feOffset><feGaussianBlur stdDeviation="1.107"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.07 0"></feColorMatrix><feBlend in2="effect1_backgroundBlur_1534_31596" result="effect2_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="6.65"></feOffset><feGaussianBlur stdDeviation="2.66"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0503198 0"></feColorMatrix><feBlend in2="effect2_dropShadow_1534_31596" result="effect3_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="12.522"></feOffset><feGaussianBlur stdDeviation="5.009"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0417275 0"></feColorMatrix><feBlend in2="effect3_dropShadow_1534_31596" result="effect4_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="22.336"></feOffset><feGaussianBlur stdDeviation="8.935"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.035 0"></feColorMatrix><feBlend in2="effect4_dropShadow_1534_31596" result="effect5_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="41.778"></feOffset><feGaussianBlur stdDeviation="16.711"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0282725 0"></feColorMatrix><feBlend in2="effect5_dropShadow_1534_31596" result="effect6_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="100"></feOffset><feGaussianBlur stdDeviation="40"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0196802 0"></feColorMatrix><feBlend in2="effect6_dropShadow_1534_31596" result="effect7_dropShadow_1534_31596"></feBlend><feBlend in="SourceGraphic" in2="effect7_dropShadow_1534_31596" result="shape"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="1"></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic"></feComposite><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"></feColorMatrix><feBlend in2="shape" result="effect8_innerShadow_1534_31596"></feBlend></filter><filter id="CalendarLight_svg__f" width="58.22" height="72.398" x="279" y="18" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="4"></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feComposite in2="hardAlpha" operator="out"></feComposite><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"></feColorMatrix><feBlend in2="BackgroundImageFix" result="effect1_dropShadow_1534_31596"></feBlend><feBlend in="SourceGraphic" in2="effect1_dropShadow_1534_31596" result="shape"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="1"></feOffset><feGaussianBlur stdDeviation="5"></feGaussianBlur><feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic"></feComposite><feColorMatrix values="0 0 0 0 0.804167 0 0 0 0 0.804167 0 0 0 0 0.804167 0 0 0 1 0"></feColorMatrix><feBlend in2="shape" result="effect2_innerShadow_1534_31596"></feBlend></filter></defs></svg>
+    </div>
+
+    <h2 class="text-xl font-bold text-gray-400 mb-1">Nothing Here, Yet</h2>
+    <p class="text-gray-400 text-sm tracking-wide">
+      {{ currentUser?.name }} has no events at this time.
+    </p>
+  </div>
+
+  <div *ngIf="hasEvents" class="grid gap-6">
+    </div>
+
+</div>
+
+<div class="flex justify-end mb-12">
+    <div class="bg-gray-100 p-0.5 rounded-xl flex gap-0.5">
+      <button 
+        (click)="setTab('hosted')"
+        [class.bg-white]="activeTab() === 'hosted'"
+        [class.shadow-sm]="activeTab() === 'hosted'"
+        class="px-6 py-2 rounded-lg text-sm font-bold transition-all"
+        [class.text-gray-900]="activeTab() === 'hosted'"
+        [class.text-gray-500]="activeTab() !== 'hosted'">
+        Hosted
+      </button>
+      <button 
+        (click)="setTab('attended')"
+        [class.bg-white]="activeTab() === 'attended'"
+        [class.shadow-sm]="activeTab() === 'attended'"
+        class="px-6 py-2 rounded-lg text-sm font-bold transition-all"
+        [class.text-gray-900]="activeTab() === 'attended'"
+        [class.text-gray-500]="activeTab() !== 'attended'">
+        Attended
+      </button>
+    </div>
+  </div>
+
+
+<div class="space-y-12 relative">
+    <div class="absolute left-[3.25rem] top-2 bottom-2 w-px bg-gray-100 hidden md:block"></div>
+
+    <ng-container *ngIf="activeTab() === 'hosted' ? hostedEvents?.length : attendedEvents?.length; else emptyState">
+      <div *ngFor="let event of (activeTab() === 'hosted' ? hostedEvents : attendedEvents); let i = index" class="flex flex-col md:flex-row gap-8 relative">
+        
+        <div class="w-32 shrink-0 pt-1 text-right hidden md:block">
+          
+          <div class="absolute left-[3.25rem] top-3 w-3 h-3 rounded-full bg-gray-400 border-2 border-white translate-x-[-50%]"></div>
+          <p class="text-gray-900 font-bold text-lg">{{ event.startDate | date:'MMM d' }}</p>
+          <p class="text-gray-400 text-sm">{{ event.startDate | date:'EEEE' }}</p>
+        </div>
+
+        <div (click)="onEventClick(event)" class="flex-1 bg-white border border-gray-100 rounded-2xl p-4 flex gap-4 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden">
+          
+          <div class="flex-1 min-w-0">
+            <p class="text-gray-400 text-sm mb-1 flex items-center gap-2 flex-wrap">
+              <span>{{ event.startDate | date:'h:mm a' }}</span>
+              <span *ngIf="!isPastEvent(event.startDate)" 
+                    class="px-2 py-0.5 bg-purple-500 text-white text-[10px] font-bold rounded uppercase tracking-wider border border-blue-100">
+                Upcoming
+              </span>
+              <span *ngIf="isPastEvent(event.startDate)" 
+                    class="px-2 py-0.5 bg-gray-200 text-gray-600 text-[10px] font-bold rounded uppercase tracking-wider border border-gray-100">
+                Past
+              </span>
+              <!-- Participation status badge for attended events -->
+              <span *ngIf="activeTab() === 'attended'" class="px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider" [ngClass]="{
+                'bg-green-100 text-green-800 border border-green-200': $any(event).participationStatus === 'CONFIRMED',
+                'bg-amber-100 text-amber-800 border border-amber-200': $any(event).participationStatus === 'WAITING' || $any(event).participationStatus === 'PENDING',
+                'bg-gray-100 text-gray-700 border border-gray-200': $any(event).participationStatus === 'CANCELLED',
+                'bg-red-100 text-red-800 border border-red-200': $any(event).participationStatus === 'BLOCKED'
+              }">
+                {{ $any(event).participationStatus || 'JOINED' }}
+              </span>
+            </p>
+            <h3 class="text-xl font-bold text-gray-900 truncate pr-20">{{ event.title }}</h3>
+            
+            <div class="flex flex-col gap-1 mt-2">
+                <div class="flex items-center gap-2 text-gray-500 text-sm">
+                    <img [src]="event.creator.avatarUrl" class="w-4 h-4 rounded-full">
+                    <span>By {{ event.creator.name }}</span>
+                </div>
+                <div class="flex items-center gap-1 text-gray-400 text-sm">
+                    <ng-container *ngIf="event.isVirtual; else physicalLocation">
+                      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <g fill="currentColor" fill-rule="evenodd">
+                          <path fill-rule="nonzero" d="M21.553 5.218A.88.88 0 0 1 23 5.892v12.217a.88.88 0 0 1-1.447.673L18.5 16.21V7.79l-5 4.21z"></path>
+                          <path d="M13.5 3H6v5h7.5v4h5V4.5A1.5 1.5 0 0 0 17 3h-3.5"></path>
+                          <path fill-rule="nonzero" d="M1 8h5v8H1z"></path>
+                          <path d="M18.5 12h-5v4H6v5h11a1.5 1.5 0 0 0 1.5-1.5V12M6 8H1l5-5zM1 16v3.5A1.5 1.5 0 0 0 2.5 21H6v-5z"></path>
+                        </g>
+                      </svg>
+                      <span class="pl-1">Online</span>
+                    </ng-container>
+                    <ng-template #physicalLocation>
+                      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                        <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                          <path d="M2 6.854C2 11.02 7.04 15 8 15s6-3.98 6-8.146C14 3.621 11.314 1 8 1S2 3.62 2 6.854"></path>
+                          <path d="M9.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"></path>
+                        </g>
+                      </svg>
+                      <span class="pl-1">{{ event.location?.name }}</span>
+                    </ng-template>
+                </div>
+            </div>
+            <!-- Action buttons for attended events -->
+            <div *ngIf="activeTab() === 'attended'" class="flex flex-col gap-2 mt-3 w-full">
+              <button *ngIf="$any(event).participationStatus !== 'CANCELLED'" 
+                      (click)="$event.stopPropagation(); cancelJoin($any(event).participationId, i)" 
+                      class="w-full px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-200 border border-gray-300 rounded-lg hover:bg-gray-300 transition-all active:scale-95">
+                Cancel
+              </button>
+              <button *ngIf="$any(event).participationStatus === 'CANCELLED'" 
+                      (click)="$event.stopPropagation(); rejoinEvent($any(event).participationId, i)" 
+                      class="w-full px-4 py-2.5 text-sm font-semibold text-white bg-gray-800 border border-gray-900 rounded-lg hover:bg-black transition-all active:scale-95 shadow-sm">
+                Rejoin Event
+              </button>
+            </div>
+
+            <!-- Participants list for hosted events (always under Hosted tab) -->
+            <div *ngIf="activeTab() === 'hosted'" class="mt-4 pt-3 border-t border-gray-100">
+              <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Participants</p>
+              <div class="max-h-40 overflow-y-auto pr-1 space-y-2">
+                <div *ngFor="let p of getParticipantsForEvent(event.id)" class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <img [src]="p.userAvatarUrl" class="w-8 h-8 rounded-full object-cover bg-gray-200" alt="" />
+                    <div class="min-w-0">
+                      <p class="text-sm font-semibold text-gray-900 truncate">{{ p.userName }}</p>
+                      <p class="text-xs text-gray-500 truncate">{{ p.userEmail }}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider" [ngClass]="{
+                      'bg-green-100 text-green-800 border border-green-200': p.status === 'CONFIRMED' || p.status === 'ATTENDED',
+                      'bg-amber-100 text-amber-800 border border-amber-200': p.status === 'PENDING',
+                      'bg-red-100 text-red-800 border border-red-200': p.status === 'BLOCKED'
+                    }">
+                      {{ p.status }}
+                    </span>
+                    <div class="flex gap-1">
+                      <!-- Pending: Confirm / Refuse (block) -->
+                      <button *ngIf="p.status === 'PENDING'" (click)="$event.stopPropagation(); confirmParticipant(p.id, event.id)" class="px-2.5 py-1 text-[11px] font-semibold text-white bg-gray-900 rounded-lg border border-black hover:bg-black transition-all active:scale-95">
+                        Confirm
+                      </button>
+                      <button *ngIf="p.status === 'PENDING'" (click)="$event.stopPropagation(); refuseParticipant(p.id, event.id)" class="px-2.5 py-1 text-[11px] font-semibold text-gray-700 bg-gray-200 rounded-lg border border-gray-300 hover:bg-gray-300 transition-all active:scale-95">
+                        Refuse
+                      </button>
+                      <!-- Blocked: Deblock -->
+                      <button *ngIf="p.status === 'BLOCKED'" (click)="$event.stopPropagation(); deblockParticipant(p.id, event.id)" class="px-2.5 py-1 text-[11px] font-semibold text-white bg-gray-800 rounded-lg border border-gray-900 hover:bg-black transition-all active:scale-95">
+                        Deblock
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <p *ngIf="!getParticipantsForEvent(event.id)?.length" class="text-xs text-gray-400">No participants yet.</p>
+              </div>
+            </div>
+          </div>
+
+          <img [src]="event.posterUrl" class="w-24 h-24 rounded-xl object-cover shadow-sm bg-gray-50">
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #emptyState>
+        <div class="flex flex-col items-center justify-center py-6">
+            <div class="w-52 h-52 rounded-2xl  border-gray-100 flex items-center mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 420 380"><g filter="url(#CalendarLight_svg__a)"><rect width="236" height="236" x="80" y="33" fill="url(#CalendarLight_svg__b)" rx="32"></rect></g><path fill="url(#CalendarLight_svg__c)" fill-rule="evenodd" d="M115 57c-6.075 0-11 4.925-11 11s4.925 11 11 11h166c6.075 0 11-4.925 11-11s-4.925-11-11-11zm-10.232 62.58c-.768 1.624-.768 3.722-.768 7.92s0 6.296.768 7.92a8 8 0 0 0 3.812 3.812c1.624.768 3.722.768 7.92.768h33c4.198 0 6.296 0 7.92-.768a8 8 0 0 0 3.812-3.812c.768-1.624.768-3.722.768-7.92s0-6.296-.768-7.92a8 8 0 0 0-3.812-3.812c-1.624-.768-3.722-.768-7.92-.768h-33c-4.198 0-6.296 0-7.92.768a8 8 0 0 0-3.812 3.812M104 198.8c0-4.48 0-6.721.872-8.432a8 8 0 0 1 3.496-3.496c1.711-.872 3.952-.872 8.432-.872h32.4c4.48 0 6.721 0 8.432.872a8 8 0 0 1 3.496 3.496c.872 1.711.872 3.952.872 8.432v33.4c0 4.48 0 6.721-.872 8.432a8 8 0 0 1-3.496 3.496c-1.711.872-3.952.872-8.432.872h-32.4c-4.48 0-6.721 0-8.432-.872a8 8 0 0 1-3.496-3.496C104 238.921 104 236.68 104 232.2zm68.872-100.432C172 100.08 172 102.32 172 106.8v34.4c0 4.48 0 6.721.872 8.432a8 8 0 0 0 3.496 3.496c1.711.872 3.952.872 8.432.872h32.4c4.48 0 6.721 0 8.432-.872a8 8 0 0 0 3.496-3.496c.872-1.711.872-3.952.872-8.432v-34.4c0-4.48 0-6.721-.872-8.432a8 8 0 0 0-3.496-3.496C223.921 94 221.68 94 217.2 94h-32.4c-4.48 0-6.721 0-8.432.872a8 8 0 0 0-3.496 3.496M172 232.5c0-4.198 0-6.296.768-7.92a8 8 0 0 1 3.812-3.812c1.624-.768 3.722-.768 7.92-.768h33c4.198 0 6.296 0 7.92.768a8 8 0 0 1 3.812 3.812c.768 1.624.768 3.722.768 7.92s0 6.296-.768 7.92a8 8 0 0 1-3.812 3.812c-1.624.768-3.722.768-7.92.768h-33c-4.198 0-6.296 0-7.92-.768a8 8 0 0 1-3.812-3.812c-.768-1.624-.768-3.722-.768-7.92m68.872-74.132C240 160.079 240 162.32 240 166.8v29.4c0 4.48 0 6.721.872 8.432a8 8 0 0 0 3.496 3.496c1.711.872 3.952.872 8.432.872h32.4c4.48 0 6.721 0 8.432-.872a8 8 0 0 0 3.496-3.496c.872-1.711.872-3.952.872-8.432v-29.4c0-4.48 0-6.721-.872-8.432a8 8 0 0 0-3.496-3.496C291.921 154 289.68 154 285.2 154h-32.4c-4.48 0-6.721 0-8.432.872a8 8 0 0 0-3.496 3.496" clip-rule="evenodd"></path><g filter="url(#CalendarLight_svg__d)"><rect width="100" height="100" x="258" fill="url(#CalendarLight_svg__e)" rx="32"></rect></g><g filter="url(#CalendarLight_svg__f)"><path fill="#E0E0E0" d="M308.11 82.398q-7.833-.03-13.481-3.856-5.617-3.825-8.653-11.082-3.006-7.257-2.976-17.458 0-10.171 3.006-17.337 3.036-7.165 8.653-10.9Q300.307 18 308.11 18t13.42 3.765q5.647 3.765 8.684 10.93 3.036 7.135 3.005 17.307 0 10.231-3.036 17.488-3.006 7.257-8.623 11.083-5.617 3.825-13.45 3.825m0-10.9q5.343 0 8.532-5.374t3.157-16.122q0-7.075-1.457-11.78-1.427-4.707-4.069-7.075-2.61-2.368-6.163-2.368-5.313 0-8.502 5.313-3.188 5.314-3.218 15.91 0 7.165 1.427 11.962 1.458 4.767 4.099 7.166 2.642 2.368 6.194 2.368"></path></g><defs><linearGradient id="CalendarLight_svg__b" x1="198" x2="198" y1="33" y2="269" gradientUnits="userSpaceOnUse"><stop stop-color="#FAFAFA"></stop><stop offset="1" stop-color="#fff"></stop></linearGradient><linearGradient id="CalendarLight_svg__c" x1="201" x2="201" y1="57" y2="245" gradientUnits="userSpaceOnUse"><stop stop-color="#DEDEDE"></stop><stop offset="1" stop-color="#F2F2F2"></stop></linearGradient><linearGradient id="CalendarLight_svg__e" x1="308" x2="308" y1="0" y2="100" gradientUnits="userSpaceOnUse"><stop stop-color="#F7F7F7"></stop><stop offset="1" stop-color="#fff"></stop></linearGradient><filter id="CalendarLight_svg__a" width="396" height="444" x="0" y="5" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feGaussianBlur in="BackgroundImageFix" stdDeviation="14"></feGaussianBlur><feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_1534_31596"></feComposite><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="2.767"></feOffset><feGaussianBlur stdDeviation="1.107"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.07 0"></feColorMatrix><feBlend in2="effect1_backgroundBlur_1534_31596" result="effect2_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="6.65"></feOffset><feGaussianBlur stdDeviation="2.66"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0503198 0"></feColorMatrix><feBlend in2="effect2_dropShadow_1534_31596" result="effect3_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="12.522"></feOffset><feGaussianBlur stdDeviation="5.009"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0417275 0"></feColorMatrix><feBlend in2="effect3_dropShadow_1534_31596" result="effect4_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="22.336"></feOffset><feGaussianBlur stdDeviation="8.935"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.035 0"></feColorMatrix><feBlend in2="effect4_dropShadow_1534_31596" result="effect5_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="41.778"></feOffset><feGaussianBlur stdDeviation="16.711"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0282725 0"></feColorMatrix><feBlend in2="effect5_dropShadow_1534_31596" result="effect6_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="100"></feOffset><feGaussianBlur stdDeviation="40"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0196802 0"></feColorMatrix><feBlend in2="effect6_dropShadow_1534_31596" result="effect7_dropShadow_1534_31596"></feBlend><feBlend in="SourceGraphic" in2="effect7_dropShadow_1534_31596" result="shape"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="1"></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic"></feComposite><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"></feColorMatrix><feBlend in2="shape" result="effect8_innerShadow_1534_31596"></feBlend></filter><filter id="CalendarLight_svg__d" width="260" height="308" x="178" y="-28" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feGaussianBlur in="BackgroundImageFix" stdDeviation="14"></feGaussianBlur><feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_1534_31596"></feComposite><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="2.767"></feOffset><feGaussianBlur stdDeviation="1.107"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.07 0"></feColorMatrix><feBlend in2="effect1_backgroundBlur_1534_31596" result="effect2_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="6.65"></feOffset><feGaussianBlur stdDeviation="2.66"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0503198 0"></feColorMatrix><feBlend in2="effect2_dropShadow_1534_31596" result="effect3_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="12.522"></feOffset><feGaussianBlur stdDeviation="5.009"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0417275 0"></feColorMatrix><feBlend in2="effect3_dropShadow_1534_31596" result="effect4_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="22.336"></feOffset><feGaussianBlur stdDeviation="8.935"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.035 0"></feColorMatrix><feBlend in2="effect4_dropShadow_1534_31596" result="effect5_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="41.778"></feOffset><feGaussianBlur stdDeviation="16.711"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0282725 0"></feColorMatrix><feBlend in2="effect5_dropShadow_1534_31596" result="effect6_dropShadow_1534_31596"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="100"></feOffset><feGaussianBlur stdDeviation="40"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.0196802 0"></feColorMatrix><feBlend in2="effect6_dropShadow_1534_31596" result="effect7_dropShadow_1534_31596"></feBlend><feBlend in="SourceGraphic" in2="effect7_dropShadow_1534_31596" result="shape"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="1"></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic"></feComposite><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"></feColorMatrix><feBlend in2="shape" result="effect8_innerShadow_1534_31596"></feBlend></filter><filter id="CalendarLight_svg__f" width="58.22" height="72.398" x="279" y="18" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="4"></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feComposite in2="hardAlpha" operator="out"></feComposite><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"></feColorMatrix><feBlend in2="BackgroundImageFix" result="effect1_dropShadow_1534_31596"></feBlend><feBlend in="SourceGraphic" in2="effect1_dropShadow_1534_31596" result="shape"></feBlend><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dy="1"></feOffset><feGaussianBlur stdDeviation="5"></feGaussianBlur><feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic"></feComposite><feColorMatrix values="0 0 0 0 0.804167 0 0 0 0 0.804167 0 0 0 0 0.804167 0 0 0 1 0"></feColorMatrix><feBlend in2="shape" result="effect2_innerShadow_1534_31596"></feBlend></filter></defs></svg>
+            </div>
+            <h2 class="text-gray-400 font-bold">Nothing Here, Yet</h2>
+            <p class="text-gray-400 text-sm tracking-wide">
+            {{ currentUser?.name }} has no {{ activeTab() }} events at this time.
+            </p>
+        </div>
+    </ng-template>
+  </div>
+
+
+
+</div>

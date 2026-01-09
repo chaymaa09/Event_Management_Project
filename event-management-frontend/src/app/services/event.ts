@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {AppEvent} from '../models/event.model'
+import {AppEvent, Participation, User} from '../models/event.model'
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -24,8 +24,13 @@ export class EventService {
   createEvent(createEvent: AppEvent): Observable<AppEvent> {
     return this.http.post<AppEvent>(`${this.baseUrl}/add`, createEvent);
   }
-  updateEvent(id: number, updateEvent: AppEvent): Observable<AppEvent> {
-    return this.http.put<AppEvent>(`${this.baseUrl}/${id}`, updateEvent);
+  updateEvent(id: number, updateEvent: AppEvent, token?: string): Observable<AppEvent> {
+    // Backend expects PUT to /events/update/{id} with an EventCreateDTO-like object
+    if (token) {
+      const headers = { Authorization: `Bearer ${token}` };
+      return this.http.put<AppEvent>(`${this.baseUrl}/update/${id}`, updateEvent, { headers });
+    }
+    return this.http.put<AppEvent>(`${this.baseUrl}/update/${id}`, updateEvent);
   }
 
   deleteEvent(id: number)  {
@@ -47,6 +52,5 @@ export class EventService {
   getEventsByCity(cityName: string): Observable<AppEvent[]> {
     return this.http.get<AppEvent[]>(`${this.baseUrl}/city/${cityName}`);
   }
-
 
 }

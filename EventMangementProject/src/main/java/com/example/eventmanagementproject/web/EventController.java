@@ -71,9 +71,9 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEvent);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Event> updateEvent(@RequestBody Event event) {
-        return ResponseEntity.ok(eventService.updateEvent(event));
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody EventCreateDTO dto) {
+        return ResponseEntity.ok(eventService.updateEvent(id, dto));
     }
 
     @DeleteMapping("/delete/{id}")

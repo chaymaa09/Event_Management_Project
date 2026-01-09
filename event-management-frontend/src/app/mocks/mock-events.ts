@@ -10,7 +10,6 @@ export const MOCK_EVENTS: AppEvent[] = [
     category: 'PARTY',
     capacity: 500,
     posterUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&h=600&fit=crop',
-    price: 45.00,
     attendees: 350,
     creator: {
       id: 10,
@@ -39,7 +38,6 @@ export const MOCK_EVENTS: AppEvent[] = [
     isVirtual: true,
     virtualLink: 'https://meet.google.com/abc-defg-hij',
     posterUrl: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop',
-    price: 0.00,
     creator: {
       id: 11,
       name: 'Noah Lee',
@@ -57,7 +55,6 @@ export const MOCK_EVENTS: AppEvent[] = [
     capacity: 80,
     attendees: 65,
     posterUrl: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&h=600&fit=crop',
-    price: 25.00,
     creator: {
       id: 12,
       name: 'Maya Rivera',

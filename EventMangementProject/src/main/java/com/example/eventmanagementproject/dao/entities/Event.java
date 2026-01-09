@@ -62,12 +62,7 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
-
-    @Column(nullable = false)
-    private Double price = 0.0;
-
-    @Column(length = 10)
-    private String currency = "USD";
+    // pricing removed: events are free
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
@@ -77,7 +72,7 @@ public class Event {
     private String posterUrl;
 
     // For attendees count, Add a computed field based on Participation count
-    @Transient // if computed from participations
+    @Transient // it computed from participations
     private Integer attendees;
 
 

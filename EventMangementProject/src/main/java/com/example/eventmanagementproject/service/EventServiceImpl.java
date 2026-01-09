@@ -14,7 +14,9 @@ import com.example.eventmanagementproject.dto.EventCreateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,8 +53,7 @@ public class EventServiceImpl implements EventService {
         event.setVirtualLink(dto.getVirtualLink());
         event.setWaitingListEnabled(dto.getWaitingListEnabled() != null ? dto.getWaitingListEnabled() : false);
         event.setRequiresApproval(dto.getRequiresApproval() != null ? dto.getRequiresApproval() : false);
-        event.setPrice(dto.getPrice() != null ? dto.getPrice() : 0.0);
-        event.setCurrency(dto.getCurrency() != null ? dto.getCurrency() : "USD");
+        // pricing removed: events are free
 
         // Directly map the incoming category string to an existing Category entity
         if (dto.getCategory() != null && !dto.getCategory().isBlank()) {
@@ -106,8 +107,49 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event updateEvent(Event event) {
-        return eventRepository.save(event);
+    public Event updateEvent(Long id, EventCreateDTO dto) {
+        Event existing = eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found: " + id));
+
+        if (dto.getTitle() != null) existing.setTitle(dto.getTitle());
+        if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
+        if (dto.getStartDate() != null) existing.setStartDate(dto.getStartDate());
+        if (dto.getEndDate() != null) existing.setEndDate(dto.getEndDate());
+
+        existing.setIsVirtual(dto.getIsVirtual() != null ? dto.getIsVirtual() : existing.getIsVirtual());
+        existing.setVirtualLink(dto.getVirtualLink() != null ? dto.getVirtualLink() : existing.getVirtualLink());
+        existing.setCapacity(dto.getCapacity() != null ? dto.getCapacity() : existing.getCapacity());
+        existing.setWaitingListEnabled(dto.getWaitingListEnabled() != null ? dto.getWaitingListEnabled() : existing.getWaitingListEnabled());
+        existing.setRequiresApproval(dto.getRequiresApproval() != null ? dto.getRequiresApproval() : existing.getRequiresApproval());
+        // pricing removed
+        existing.setPosterUrl(dto.getPosterUrl() != null ? dto.getPosterUrl() : existing.getPosterUrl());
+        Category cat = categoryRepository.findById(dto.getCategoryId()).orElse(null);
+        existing.setCategory(dto.getCategoryId() != null ? cat : existing.getCategory());
+
+
+
+        // Location handling: update or set existing
+        if (dto.getLocation() != null && !dto.getIsVirtual()) {
+            EventCreateDTO.LocationCreateDTO locDto = dto.getLocation();
+            Location location = new Location();
+            location.setName(locDto.getName());
+            location.setStreet(locDto.getStreet());
+            location.setCity(locDto.getCity());
+            location.setRegion(locDto.getRegion());
+            location.setCountry(locDto.getCountry());
+            location.setPostalCode(locDto.getPostalCode());
+            location.setLatitude(locDto.getLatitude());
+            location.setLongitude(locDto.getLongitude());
+            location.setTimezone(locDto.getTimezone());
+            location.setAdditionalInfos(locDto.getAdditionalInfos());
+            location = locationRepository.save(location);
+            existing.setLocation(location);
+        } else if (dto.getLocationId() != null) {
+            locationRepository.findById(dto.getLocationId())
+                    .ifPresent(existing::setLocation);
+        }
+
+        return eventRepository.save(existing);
     }
 
     @Override
@@ -121,6 +163,12 @@ public class EventServiceImpl implements EventService {
 
     public List<Event> findEventsByCategory(String categoryName) {
         return eventRepository.findByCategory_Name(categoryName);
+    }
+
+    @Override
+    public List<Event> findEventsByCategoryAndLocation(String categoryName, String city, String country) {
+        if (city == null || country == null) return new ArrayList<>();
+        return eventRepository.findByCategory_NameAndLocation_CityAndLocation_Country(categoryName, city, country);
     }
 
     @Override
@@ -167,6 +215,14 @@ public class EventServiceImpl implements EventService {
                         * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c; // distance in km
+    }
+
+    @Override
+    public List<Event> findEventByCreator(Long id) {
+        if (userRepository.existsById(id) && eventRepository.findByCreator_id(id) != null) {
+            return eventRepository.findByCreator_id(id);
+        }
+        return new ArrayList<>();
     }
 
 }

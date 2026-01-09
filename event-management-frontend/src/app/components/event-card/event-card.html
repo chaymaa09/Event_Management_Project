@@ -33,14 +33,14 @@
 		<!-- divider -->
 		<div class="w-full h-px bg-gray-200 my-2"></div>
 		<!-- Creator Profile & Price -->
-		<div class="flex items-center gap-3 w-full justify-between">
+			<div class="flex items-center gap-3 w-full justify-between">
 			<div class="flex items-center gap-2" *ngIf="event.creator">
 				<img [src]="event.creator.avatarUrl || 'https://ui-avatars.com/api/?name=' + event.creator.name" 
 					[alt]="event.creator.name" 
 					class="w-8 h-8 rounded-full object-cover" routerLink="/profile">
 				<span class="text-sm text-slate-700 font-medium">{{ event.creator.name }}</span>
 			</div>
-			<span class="font-outfit font-bold text-lg text-slate-900">{{ event.price <= 0 ? 'Free' : (event.price | currency:'USD':'symbol':'1.0-0') }}</span>
+						<span class="font-outfit font-bold text-lg text-slate-900">Free</span>
 		</div>
 
 	</div>

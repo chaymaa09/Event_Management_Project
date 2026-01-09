@@ -12,7 +12,7 @@ public interface EventService {
 
     Event findEventById(Long id);
 
-    Event updateEvent(Event event);
+    Event updateEvent(Long id, com.example.eventmanagementproject.dto.EventCreateDTO dto);
 
     boolean deleteEvent(Long eventId);
 
@@ -35,5 +35,8 @@ public interface EventService {
     // List<Event> searchEvents(String keyword); // Search by title/description
     // boolean isEventFull(Long eventId); // Check capacity
     // int getAvailableSpots(Long eventId); // Remaining capacity
+
+    List<Event> findEventByCreator(Long Id);
+
 
 }
