@@ -97,7 +97,25 @@ cd Event_Management_Project
 
 ### 2. Database Setup
 
-#### Create MySQL Database
+#### Docker Approach (Recommended for Teachers)
+
+The `docker-compose.yml` automatically creates a fresh MySQL database:
+
+```bash
+docker-compose up -d
+```
+
+**Database Initialization Flow:**
+1. Docker creates MySQL container with empty `event-management` database
+2. When backend starts, **Flyway migrations automatically run** (V1-V8):
+   - Creates all tables (events, users, cities, continents, participations, etc.)
+   - Seeds initial data (continents and cities)
+3. Teacher can then create events through the UI
+4. Optional: Export the populated database using `export-database.bat` (Windows) or `export-database.sh` (Linux/Mac)
+
+#### Manual Database Setup
+
+If not using Docker, create the database manually:
 
 ```bash
 mysql -u root -p
@@ -108,17 +126,7 @@ CREATE DATABASE IF NOT EXISTS `event-management`;
 EXIT;
 ```
 
-The application uses Flyway for database migrations, which will automatically create and populate tables on first run.
-
-#### Database Configuration
-
-Update `EventMangementProject/src/main/resources/application.properties` if needed:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/event-management?createDatabaseIfNotExist=true&serverTimezone=UTC
-spring.datasource.username=root
-spring.datasource.password=YOUR_PASSWORD
-```
+The application uses **Flyway** for database migrations, which will automatically create and populate tables on first run.
 
 ### 3. Keycloak Setup
 
@@ -298,6 +306,25 @@ docker-compose down
 
 # Clean everything (including data)
 docker-compose down -v
+```
+
+### Database Export (Optional)
+
+After the teacher adds events and populates the database, they can export it as a backup:
+
+**Windows:**
+```bash
+export-database.bat
+```
+
+**Linux/Mac:**
+```bash
+./export-database.sh
+```
+
+This creates a `.sql` file in the `database-backup/` directory that can be restored later using:
+```bash
+mysql -u root -p event-management < database-backup/latest.sql
 ```
 
 ## 📁 Project Structure
