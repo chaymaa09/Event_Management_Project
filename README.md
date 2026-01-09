@@ -109,8 +109,21 @@ docker-compose up -d
 2. When backend starts, **Flyway migrations automatically run** (V1-V8):
    - Creates all tables (events, users, cities, continents, participations, etc.)
    - Seeds initial data (continents and cities)
-3. Teacher can then create events through the UI
-4. Optional: Export the populated database using `export-database.bat` (Windows) or `export-database.sh` (Linux/Mac)
+3. You can then create events through the UI
+
+#### Import Pre-Populated Database (Optional)
+
+If you want to use the database with sample events already created, import the backup:
+
+```bash
+# Make sure MySQL container is running
+docker-compose up -d
+
+# Import the database backup
+mysql -u root -p -h localhost -P 3306 event-management < database-backup/latest.sql
+```
+
+When prompted, enter the password: `root`
 
 #### Manual Database Setup
 
