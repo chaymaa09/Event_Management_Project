@@ -2,7 +2,19 @@
 
 A full-stack event management application built with Spring Boot, Angular, and Keycloak for authentication. Users can browse events by city and continent, create and manage events, participate in events, and more.
 
-## 🚀 Features
+## �️ Tech Stack Badges
+
+![Java](https://img.shields.io/badge/Java-17-orange?logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-green?logo=springboot&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-20-red?logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-38B2AC?logo=tailwindcss&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-Auth-purple?logo=jsonwebtokens&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-3.x-C71A36?logo=apachemaven&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+
+## �🚀 Features
 
 - **User Authentication**: Secure OAuth2/OIDC authentication via Keycloak
 - **Event Management**: Create, update, and delete events with rich text descriptions
