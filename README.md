@@ -2,7 +2,31 @@
 
 A full-stack event management application built with Spring Boot, Angular, and Keycloak for authentication. Users can browse events by city and continent, create and manage events, participate in events, and more.
 
-## �️ Tech Stack Badges
+## 📖 Overview
+
+**Event Management Platform** is a modern, full-featured web application designed to connect event organizers with attendees. The platform enables users to discover events based on categories (Music, Learn, Create, Connect, Chill), browse events by geographic location (continents and cities), and participate in events that match their interests.
+
+**Key Highlights:**
+
+- 🎯 **Smart Event Discovery**: Browse events by category vibes (Music, Learn, Create, Connect, Chill) with intelligent tagging system
+- 🌍 **Geographic Exploration**: Discover events organized by continents and cities with interactive maps powered by Leaflet
+- 🔐 **Secure Authentication**: OAuth2/OIDC authentication via Keycloak with support for social login (Google, GitHub)
+- 📝 **Rich Event Creation**: Create events with Markdown-supported descriptions, custom posters, tags, and flexible locations (physical or virtual)
+- 👥 **Event Participation**: Join events, track participation status (pending, joined, cancelled), and view attendee lists
+- 📱 **Responsive Design**: Modern, mobile-friendly UI built with Tailwind CSS
+
+**User Journey:**
+
+1. **Landing Page**: Visitors are greeted with trending events and category cards showcasing different event vibes
+2. **Authentication**: Users can sign in via Keycloak (with optional Google/GitHub OAuth)
+3. **Home Dashboard**: Authenticated users see featured events, trending events, and personalized recommendations
+4. **Event Discovery**: Browse events by category tags or explore by continent → city → specific events
+5. **Event Details**: View comprehensive event information including location maps, organizer details, and participation options
+6. **Event Creation**: Organizers can create events with rich descriptions, poster uploads, pricing, and capacity limits
+7. **Profile Management**: Users can view their hosted events, attended events, and manage participation status
+8. **Event Participation**: Request to join events, track approval status, and cancel participation
+
+The application uses a modern tech stack with Spring Boot 3.5 backend, Angular 20 frontend, MySQL database, and Flyway migrations for database versioning. Security is handled through Keycloak integration with JWT tokens, and the platform supports both physical and virtual events with integrated mapping capabilities.
 
 ![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
@@ -14,7 +38,7 @@ A full-stack event management application built with Spring Boot, Angular, and K
 ![Maven](https://img.shields.io/badge/Maven-3.x-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-## �🚀 Features
+## � Features
 
 - **User Authentication**: Secure OAuth2/OIDC authentication via Keycloak
 - **Event Management**: Create, update, and delete events with rich text descriptions
