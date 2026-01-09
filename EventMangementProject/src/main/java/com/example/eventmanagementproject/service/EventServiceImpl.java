@@ -165,11 +165,6 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findByCategory_Name(categoryName);
     }
 
-    @Override
-    public List<Event> findEventsByCategoryAndLocation(String categoryName, String city, String country) {
-        if (city == null || country == null) return new ArrayList<>();
-        return eventRepository.findByCategory_NameAndLocation_CityAndLocation_Country(categoryName, city, country);
-    }
 
     @Override
     public List<Event> findEventsByCity(String cityName) {

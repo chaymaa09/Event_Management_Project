@@ -12,6 +12,8 @@ export interface AppEvent {
   isVirtual?: boolean;
   virtualLink?: string;
   // pricing removed: events are free
+  // optional price retained for compatibility with some test data
+  price?: number;
   category: string;
   capacity: number;
   attendees?: number;
