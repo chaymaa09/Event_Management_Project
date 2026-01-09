@@ -501,8 +501,8 @@ GITHUB_CLIENT_SECRET=your-github-client-secret
 
 ## 👥 Contributors
 
-- Salwa Khattami
-- Chaymaa (chaymaa09)
+- Salwa Khattami (https://github.com/Salwa08)
+- Chaymaa Akrraye (https://github.com/chaymaa09)
 
 ## 📄 License
 
