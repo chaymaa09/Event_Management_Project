@@ -1,0 +1,56 @@
+<a [routerLink]="['/events', event.id]" class="city-event-card">
+  <div class="city-event-body">
+    <!-- Time / Live Badge -->
+    <div class="city-event-time-row">
+      <ng-container *ngIf="isLive; else normalTime">
+        <span class="live-badge">
+          <span class="live-dot"></span>
+          EN DIRECT
+        </span>
+        <span class="city-event-time">{{ event.startDate | date:'HH:mm' }}</span>
+      </ng-container>
+      <ng-template #normalTime>
+        <span class="city-event-time">{{ event.startDate | date:'HH:mm' }}</span>
+      </ng-template>
+    </div>
+
+    <!-- Title -->
+    <h3 class="city-event-title">{{ event.title }}</h3>
+
+    <!-- Organizer -->
+    <div class="city-event-organizer" *ngIf="event.creator">
+      <img 
+        class="organizer-avatar" 
+        [src]="event.creator.avatarUrl || 'https://ui-avatars.com/api/?name=' + event.creator.name" 
+        [alt]="event.creator.name"
+        (error)="$event.target.src='https://ui-avatars.com/api/?name=User'"
+      />
+      <span class="organizer-text">Par {{ event.creator.name }}</span>
+    </div>
+
+    <!-- Location -->
+    <div class="city-event-location" *ngIf="locationDisplay">
+      <!-- Location Pin Icon -->
+      <svg *ngIf="!event.isVirtual" class="location-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+      <!-- Computer Icon for Virtual -->
+      <svg *ngIf="event.isVirtual" class="location-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+      <span>{{ locationDisplay }}</span>
+    </div>
+  </div>
+
+  <!-- Event Image -->
+  <div class="city-event-image" *ngIf="event.posterUrl">
+    <img 
+      [src]="event.posterUrl" 
+      [alt]="event.title"
+      (error)="$event.target.style.display='none'"
+    />
+  </div>
+</a>

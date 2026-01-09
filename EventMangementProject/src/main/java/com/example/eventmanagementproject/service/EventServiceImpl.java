@@ -7,6 +7,7 @@ import com.example.eventmanagementproject.dao.entities.User;
 import com.example.eventmanagementproject.dao.repositories.CategoryRepository;
 import com.example.eventmanagementproject.dao.repositories.EventRepository;
 import com.example.eventmanagementproject.dao.repositories.LocationRepository;
+import com.example.eventmanagementproject.dao.repositories.CityRepository;
 import com.example.eventmanagementproject.dao.repositories.UserRepository;
 
 import com.example.eventmanagementproject.dto.EventCreateDTO;
@@ -25,6 +26,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
+    private final CityRepository cityRepository;
     private final CategoryRepository categoryRepository;
 
     @Override
@@ -81,6 +83,11 @@ public class EventServiceImpl implements EventService {
             location.setAdditionalInfos(locDto.getAdditionalInfos());
             location = locationRepository.save(location);
             event.setLocation(location);
+
+            if (locDto.getCity() != null && !locDto.getCity().isBlank()) {
+                cityRepository.findByNameIgnoreCase(locDto.getCity().trim())
+                        .ifPresent(event::setCity);
+            }
         } else if (dto.getLocationId() != null) {
             locationRepository.findById(dto.getLocationId())
                     .ifPresent(event::setLocation);
@@ -166,7 +173,48 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> findEventsByCity(String cityName) {
-        return eventRepository.findByLocation_City(cityName);
+        return eventRepository.findByCityOrLocationCityIgnoreCase(cityName);
+    }
+
+    @Override
+    public List<Event> findEventsByCategoryAndLocation(String categoryName, String city, String country) {
+        if (city != null && !city.isBlank() && country != null && !country.isBlank()) {
+            return eventRepository.findByCategory_NameAndLocation_CityAndLocation_Country(categoryName, city, country);
+        } else if (city != null && !city.isBlank()) {
+            List<Event> events = eventRepository.findByCategory_Name(categoryName);
+            return events.stream()
+                    .filter(e -> e.getLocation() != null && city.equalsIgnoreCase(e.getLocation().getCity()))
+                    .toList();
+        }
+        return eventRepository.findByCategory_Name(categoryName);
+    }
+
+    @Override
+    public List<Event> findNearbyEvents(Double lat, Double lng, Double radiusKm, String categoryName) {
+        List<Event> events;
+        if (categoryName != null && !categoryName.isBlank()) {
+            events = eventRepository.findByCategory_Name(categoryName);
+        } else {
+            events = eventRepository.findAllWithLocationCoordinates();
+        }
+
+        return events.stream()
+                .filter(e -> e.getLocation() != null && e.getLocation().getLatitude() != null
+                        && e.getLocation().getLongitude() != null)
+                .filter(e -> calculateDistance(lat, lng, e.getLocation().getLatitude(),
+                        e.getLocation().getLongitude()) <= radiusKm)
+                .toList();
+    }
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Radius of the earth in km
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                        * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // distance in km
     }
 
     @Override

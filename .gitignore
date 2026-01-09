@@ -1,0 +1,36 @@
+# Database backups
+database-backup/
+*.sql
+!reset-database.sql
+
+# Docker volumes
+mysql_data/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Backend
+EventMangementProject/target/
+EventMangementProject/.mvn/
+EventMangementProject/mvnw
+EventMangementProject/mvnw.cmd
+EventMangementProject/assets/userUploads/*
+!EventMangementProject/assets/userUploads/.gitkeep
+
+# Frontend
+event-management-frontend/node_modules/
+event-management-frontend/dist/
+event-management-frontend/.angular/
+event-management-frontend/npm-debug.log*
+event-management-frontend/yarn-error.log*
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Environment
+.env
+.env.local

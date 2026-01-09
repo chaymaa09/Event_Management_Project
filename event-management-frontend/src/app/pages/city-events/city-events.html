@@ -1,86 +1,109 @@
-<div class="relative min-h-screen bg-gradient-to-b from-white via-purple-50/30 to-white text-slate-900">
-  <!-- Background blobs -->
-  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
-    <div class="absolute -top-24 left-8 w-72 h-72 bg-purple-200/60 blur-3xl rounded-full"></div>
-    <div class="absolute top-32 right-0 w-80 h-80 bg-blue-200/50 blur-3xl rounded-full"></div>
-    <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-pink-200/40 blur-3xl rounded-full"></div>
-  </div>
-
-  <div class="px-4 sm:px-6 pt-24 pb-16 md:mx-52">
-    <!-- City Header with Poster -->
-    <div class="mb-12">
-      <!-- City Poster/Banner -->
-      <div class="relative h-64 md:h-80 rounded-3xl overflow-hidden mb-8 shadow-2xl">
-        <!-- Background image if available, else gradient -->
-        <img 
-          *ngIf="city?.imageUrl" 
-          [src]="city?.imageUrl" 
-          alt="{{ formattedCityName }}"
-          class="absolute inset-0 w-full h-full object-cover"
-        />
-        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 opacity-60"></div>
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
-          <h1 class="text-5xl md:text-7xl font-outfit font-bold mb-4">{{ formattedCityName }}</h1>
-          <p class="text-xl md:text-2xl font-light">Discover amazing events</p>
+<div class="city-page">
+  <section class="hero" [ngStyle]="heroStyle">
+    <div class="hero-overlay">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-icon">
+            <img [src]="cityLogo" alt="logo" (error)="$event.target.src='https://images.lumacdn.com/discovery/lagos-icon.png'" />
+          </div>
+          <p class="hero-kicker">Que se passe-t-il à</p>
+          <h1 class="hero-title">{{ formattedCityName }}</h1>
+          <div class="hero-meta">
+            <svg class="meta-clock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path stroke-linecap="round" d="M12 6v6l4 2"/>
+            </svg>
+            <span class="meta-time">{{ now | date:'HH:mm' }} UTC+1</span>
+          </div>
+          <div class="hero-separator"></div>
+          <p class="hero-desc">
+            À {{ formattedCityName }}, le pouls de la ville vibre d'événements technologiques et culturels. 
+            Des hackathons d'IA aux scènes ouvertes, il y a une multitude d'événements qui nourrissent l'innovation et la créativité.
+          </p>
+          <button class="hero-cta">S'abonner</button>
         </div>
-        <!-- Decorative elements -->
-        <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/30 to-transparent"></div>
-      </div>
-
-      <!-- Breadcrumb -->
-      <nav class="flex items-center gap-2 text-sm text-slate-600 mb-6">
-        <a routerLink="/" class="hover:text-purple-600 transition">Home</a>
-        <span>/</span>
-        <a routerLink="/explore" class="hover:text-purple-600 transition">Explore</a>
-        <span>/</span>
-        <span class="text-slate-900 font-semibold">{{ formattedCityName }}</span>
-      </nav>
-
-      <!-- City Info -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-        <h2 class="text-2xl font-outfit font-semibold text-slate-900 mb-2">
-          Events in {{ formattedCityName }}
-        </h2>
-        <p class="text-slate-600">
-          <span class="font-semibold text-purple-600">{{ events.length }}</span> 
-          {{ events.length === 1 ? 'event' : 'events' }} happening in this city
-        </p>
       </div>
     </div>
+  </section>
 
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="flex justify-center items-center py-20">
-      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600"></div>
-    </div>
-
-    <!-- Error State -->
-    <div *ngIf="error && !isLoading" class="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-      <svg class="w-12 h-12 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-      <p class="text-red-600 font-semibold">{{ error }}</p>
-    </div>
-
-    <!-- Events Grid -->
-    <div *ngIf="!isLoading && !error">
-      <div *ngIf="events.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <app-event-card
-          *ngFor="let event of events"
-          [event]="event"
-        ></app-event-card>
+  <div class="content-shell">
+    <div class="events-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Événements</h2>
+        <div class="panel-actions">
+          <button class="ghost">+ Soumettre un événement</button>
+          <button class="icon-btn" aria-label="RSS">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5c7.18 0 13 5.82 13 13M6 11a7 7 0 017 7m-6 0a1 1 0 11-2 0 1 1 0 012 0z"/>
+            </svg>
+          </button>
+          <button class="icon-btn" aria-label="Search">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <!-- No Events State -->
-      <div *ngIf="events.length === 0" class="text-center py-20">
-        <svg class="w-24 h-24 text-slate-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-        </svg>
-        <h3 class="text-2xl font-outfit font-semibold text-slate-700 mb-2">No Events Yet</h3>
-        <p class="text-slate-500 mb-6">There are currently no events scheduled in {{ formattedCityName }}.</p>
-        <a routerLink="/explore" class="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
-          Explore Other Cities
-        </a>
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !isLoading" class="error-box">
+        <p>{{ error }}</p>
+      </div>
+
+      <!-- Events List -->
+      <div *ngIf="!isLoading && !error" class="events-list">
+        <div *ngIf="events.length > 0">
+          <!-- Day Group Header -->
+          <div class="day-header">
+            <span class="day-dot"></span>
+            <h3 class="day-label">Aujourd'hui <span class="day-name">{{ now | date:'EEEE':'':'fr' }}</span></h3>
+          </div>
+          
+          <!-- Event Items -->
+          <div class="event-list-items">
+            <app-city-event-card *ngFor="let event of events" [event]="event"></app-city-event-card>
+          </div>
+        </div>
+        
+        <div *ngIf="events.length === 0" class="empty">
+          <p>Pas encore d'événements prévus à {{ formattedCityName }}.</p>
+          <a routerLink="/explore" class="empty-link">Explorer les autres villes</a>
+        </div>
       </div>
     </div>
+
+    <aside class="city-summary" *ngIf="city">
+      <div class="summary-icon-large">
+        <img [src]="cityLogo" alt="logo" />
+      </div>
+      <h3 class="summary-title">{{ formattedCityName }}</h3>
+      <p class="summary-text">
+        Découvrez les événements les plus populaires à {{ formattedCityName }} et soyez notifié des nouveaux événements avant qu'ils n'affichent complet.
+      </p>
+      <button class="summary-cta">S'abonner</button>
+      
+      <!-- Map -->
+      <div class="summary-map">
+        <iframe
+          *ngIf="mapUrl"
+          class="w-full h-full rounded-2xl"
+          style="border:0"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"
+          [src]="mapUrl">
+        </iframe>
+        
+        <div *ngIf="!mapUrl"
+             class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-800/50 rounded-2xl">
+          Map not available
+        </div>
+      </div>
+    </aside>
   </div>
 </div>
