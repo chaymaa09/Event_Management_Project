@@ -1,6 +1,6 @@
 # Database backups
-database-backup/
-*.sql
+
+
 !reset-database.sql
 
 # Docker volumes

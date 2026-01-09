@@ -95,7 +95,7 @@ cd Event_Management_Project
 
 ### 2. Database Setup
 
-#### Docker Approach (Recommended for Teachers)
+#### Docker Approach 
 
 The `docker-compose.yml` automatically creates a fresh MySQL database:
 
