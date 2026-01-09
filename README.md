@@ -38,8 +38,6 @@ A full-stack event management application built with Spring Boot, Angular, and K
 
 The application uses a modern tech stack with Spring Boot 3.5 backend, Angular 20 frontend, MySQL database, and Flyway migrations for database versioning. Security is handled through Keycloak integration with JWT tokens, and the platform supports both physical and virtual events with integrated mapping capabilities.
 
-
-
 ## � Features
 
 - **User Authentication**: Secure OAuth2/OIDC authentication via Keycloak
@@ -106,6 +104,7 @@ docker-compose up -d
 ```
 
 **Database Initialization Flow:**
+
 1. Docker creates MySQL container with empty `event-management` database
 2. When backend starts, **Flyway migrations automatically run** (V1-V8):
    - Creates all tables (events, users, cities, continents, participations, etc.)
@@ -306,25 +305,6 @@ docker-compose down
 
 # Clean everything (including data)
 docker-compose down -v
-```
-
-### Database Export (Optional)
-
-After the teacher adds events and populates the database, they can export it as a backup:
-
-**Windows:**
-```bash
-export-database.bat
-```
-
-**Linux/Mac:**
-```bash
-./export-database.sh
-```
-
-This creates a `.sql` file in the `database-backup/` directory that can be restored later using:
-```bash
-mysql -u root -p event-management < database-backup/latest.sql
 ```
 
 ## 📁 Project Structure
