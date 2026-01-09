@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Category } from '../models/category.model';
 import { AppEvent } from '../models/event.model';
@@ -22,10 +22,22 @@ export class CategoryService {
   }
 
   getEventsByCategoryAndLocation(categoryName: string, city?: string | null, country?: string | null): Observable<AppEvent[]> {
-    let params = new HttpParams();
-    if (city) params = params.set('city', city);
-    if (country) params = params.set('country', country);
-    return this.http.get<AppEvent[]>(`${this.baseUrl}/events/${encodeURIComponent(categoryName)}/by-location`, { params });
+    // Backend does not expose a category+location endpoint; fetch events by category
+    // then filter client-side by city/country to avoid 404 errors.
+    return this.getEventsByCategory(categoryName).pipe(
+      map(events => {
+        if (!city && !country) return events;
+        const cityLower = city ? city.toLowerCase() : null;
+        const countryLower = country ? country.toLowerCase() : null;
+        return events.filter(e => {
+          const evCity = e.location?.city?.toLowerCase();
+          const evCountry = e.location?.country?.toLowerCase();
+          const cityMatches = cityLower ? evCity === cityLower : true;
+          const countryMatches = countryLower ? evCountry === countryLower : true;
+          return cityMatches && countryMatches;
+        });
+      })
+    );
   }
 
   /**

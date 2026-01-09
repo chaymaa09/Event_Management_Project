@@ -6,16 +6,20 @@ import com.example.eventmanagementproject.dao.entities.Participation;
 import com.example.eventmanagementproject.dao.entities.ParticipationStatus;
 import com.example.eventmanagementproject.dao.entities.User;
 import com.example.eventmanagementproject.dao.repositories.EventRepository;
+import com.example.eventmanagementproject.dao.repositories.ParticipationRepository;
 import com.example.eventmanagementproject.dto.ParticipationDTO;
 import com.example.eventmanagementproject.service.ParticipationService;
 
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/participations")
@@ -25,6 +29,7 @@ public class ParticipationController {
 
     private final ParticipationService participationService;
     private final EventRepository eventRepository;
+    private final ParticipationRepository participationRepository;
 
     /**
      * Get all participations for a specific event
@@ -52,22 +57,13 @@ public class ParticipationController {
      * Get participation count for an event
      * GET /api/participations/event/{eventId}/count
      */
-    @GetMapping("/event/{eventId}/count")
-    public ResponseEntity<Long> getParticipationCount(@PathVariable Long eventId) {
-        Event event = eventRepository.findById(eventId).orElse(null);
-        
-        if (event == null) {
-            return ResponseEntity.notFound().build();
-        }
-        
-        List<Participation> participations = participationService.getEventParticipations(event);
-        long confirmedCount = participations.stream()
-                .filter(p -> p.getStatus() == ParticipationStatus.CONFIRMED || 
-                            p.getStatus() == ParticipationStatus.JOINED)
-                .count();
-        
-        return ResponseEntity.ok(confirmedCount);
+    @GetMapping("/event/{eventId}/joined")
+    public List<User> getJoinedAttendees(@PathVariable Long eventId) {
+        return participationService.getJoinedAttendees(eventId);
+
     }
+
+
 
     /**
      * Register user for an event
@@ -117,5 +113,22 @@ public class ParticipationController {
     @GetMapping("event/{eventId}/subscribers/")
     public List<User> getEventSubscribers(@PathVariable Long eventId) {
         return participationService.getEventSubscribers(eventId);
+    }
+
+    @PostMapping("event/{eventId}/request/{userId}")
+    public Boolean requestToJoinEvent(@PathVariable Long eventId, @PathVariable Long userId){
+        return participationService.sendRequestToJoin(eventId, userId);
+    }
+
+    @PostMapping("event/{eventId}/join/{userId}")
+    public Boolean joinEvent(@PathVariable Long eventId, @PathVariable Long userId){
+        return participationService.join(eventId, userId);
+    }
+
+    @GetMapping("/get/event/{eventId}/user/{userId}")
+    public ResponseEntity<ParticipationDTO> getParticipation(@PathVariable Long eventId, @PathVariable Long userId){
+        return participationRepository.findByEvent_idAndUser_id(eventId, userId)
+                .map(p -> ResponseEntity.ok(ParticipationDTO.fromEntity(p)))
+                .orElse(ResponseEntity.ok(null));
     }
 }

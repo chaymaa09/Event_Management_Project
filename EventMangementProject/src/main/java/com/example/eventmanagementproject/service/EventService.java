@@ -12,7 +12,7 @@ public interface EventService {
 
     Event findEventById(Long id);
 
-    Event updateEvent(Event event);
+    Event updateEvent(Long id, com.example.eventmanagementproject.dto.EventCreateDTO dto);
 
     boolean deleteEvent(Long eventId);
 
@@ -21,6 +21,8 @@ public interface EventService {
     List<Event> findEventsByCategory(String categoryName);
 
     List<Event> findEventsByCity(String cityName);
+
+    List<Event> findEventsByCategoryAndLocation(String categoryName, String city, String country);
 
     /// Additional methods we can add later ////////////////
 

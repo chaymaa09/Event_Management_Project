@@ -28,10 +28,9 @@ public class EventCreateDTO {
     private String virtualLink;
     private Boolean waitingListEnabled = false;
     private Boolean requiresApproval = false;
-
-    private Double price = 0.0;
-    private String currency = "USD";
+    // Pricing removed: events are free
     private String category;
+    private Long categoryId; // optional: prefer id lookup when provided
     private String posterUrl;
 
     private Long locationId; // Optional

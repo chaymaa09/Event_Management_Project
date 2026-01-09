@@ -39,6 +39,18 @@ public class CategoryController {
     }
 
 
+    @GetMapping("/events/{name}/by-location")
+    public List<Event> getEventsByCategoryAndLocation(@PathVariable String name,
+                                                      @RequestParam(required = false) String city,
+                                                      @RequestParam(required = false) String country) {
+        if (city == null || country == null) {
+            // If either is missing, fall back to category-only
+            return eventService.findEventsByCategory(name);
+        }
+        return eventService.findEventsByCategoryAndLocation(name, city, country);
+    }
+
+
 
     @GetMapping("/{categoryName}")
     public Optional<Category> getCategoryByName(@PathVariable String categoryName) {

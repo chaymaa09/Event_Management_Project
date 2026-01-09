@@ -17,8 +17,7 @@ public class EventResponseDTO {
     private String virtualLink;
     private Boolean waitingListEnabled;
     private Boolean requiresApproval;
-    private Double price;
-    private String currency;
+    // pricing removed
     private String category;
     private String posterUrl;
     private ZonedDateTime creationDate;

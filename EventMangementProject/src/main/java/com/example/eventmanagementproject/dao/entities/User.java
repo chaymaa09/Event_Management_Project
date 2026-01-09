@@ -18,8 +18,6 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +27,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,11 +43,7 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties({ "createdEvents", "participations", "password", "authorities", "accountNonExpired",
     "accountNonLocked", "credentialsNonExpired" })
-@Table(name = "user",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "email"),
-                @UniqueConstraint(columnNames = "keycloakId")
-        })
+@Table(name = "user")
 
 public class User implements UserDetails {
 
@@ -66,9 +59,6 @@ public class User implements UserDetails {
 
 
     private ZonedDateTime createdAt = ZonedDateTime.now();
-
-    @Enumerated(EnumType.STRING)
-    private AuthType authType;
 
     @Column(nullable=false, unique=true)
     private String keycloakId;

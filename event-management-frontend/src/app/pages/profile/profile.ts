@@ -49,8 +49,7 @@ export class Profile {
           this.hostedEvents = events;
           console.log('Hosted events loaded:', events);
           this.hasEvents = Array.isArray(events) && events.length > 0;
-          // ensure view updates after async assignment
-          try { this.cd.detectChanges(); } catch (e) { /* noop if not needed */ }
+          try { this.cd.detectChanges(); } catch (e) {}
         },
         error: (err) => {
           console.error('Error fetching hosted events:', err);
