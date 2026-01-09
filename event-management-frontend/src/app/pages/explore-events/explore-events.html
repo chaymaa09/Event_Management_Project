@@ -91,7 +91,12 @@
             <a [routerLink]="['/city', city.name]" *ngFor="let city of cities; let i = index" 
             class="p-2 flex items-center gap-2 transition-all duration-200 hover:bg-gray-100 hoverborder rounded-md cursor-pointer">
                 <div class="rounded-full" [ngClass]="cityColors[i % cityColors.length]" >
-                    <img [src]="city.logoUrl" alt="{{city.name}}" class="w-10 h-10 rounded-md object-contain"/>
+                    <img 
+                        [src]="city.logoUrl" 
+                        (error)="handleLogoError($event)"
+                        alt="{{city.name}}" 
+                        class="w-10 h-10 rounded-md object-contain"
+                    />
                 </div>
                 <div class="text-left">
                     <h3 class="text-md font-sans font-semibold text-slate-900">{{city.name}}</h3>

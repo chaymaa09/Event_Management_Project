@@ -22,6 +22,10 @@ public interface EventService {
 
     List<Event> findEventsByCity(String cityName);
 
+    List<Event> findEventsByCategoryAndLocation(String categoryName, String city, String country);
+
+    List<Event> findNearbyEvents(Double lat, Double lng, Double radiusKm, String categoryName);
+
     /// Additional methods we can add later ////////////////
 
     // List<Event> findUpcomingEvents(); // Events in the future
