@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, EMPTY, from} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {User} from '../models/user.model';
 import { environment } from '../../environments/environment';
+import { KeycloakService } from 'keycloak-angular';
 
 @Injectable({
   providedIn: 'root',
@@ -10,10 +12,12 @@ import { environment } from '../../environments/environment';
 export class UserService {
   private readonly apiUrl = `${environment.apiUrl}/users`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private keycloak: KeycloakService) { }
 
   syncUserToDb(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/me`);
+    return from(Promise.resolve(this.keycloak.isLoggedIn())).pipe(
+      switchMap((isLoggedIn) => isLoggedIn ? this.http.get<User>(`${this.apiUrl}/me`) : EMPTY)
+    );
   }
 
   updateProfile(user: User): Observable<User> {

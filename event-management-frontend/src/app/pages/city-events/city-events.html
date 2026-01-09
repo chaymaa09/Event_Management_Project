@@ -14,7 +14,7 @@
         <!-- Background image if available, else gradient -->
         <img 
           *ngIf="city?.imageUrl" 
-          [src]="city.imageUrl" 
+          [src]="city?.imageUrl" 
           alt="{{ formattedCityName }}"
           class="absolute inset-0 w-full h-full object-cover"
         />
