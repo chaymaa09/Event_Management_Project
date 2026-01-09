@@ -1,4 +1,4 @@
-# Event Management Platform
+# GATHER
 
 A full-stack event management application built with Spring Boot, Angular, and Keycloak for authentication. Users can browse events by city and continent, create and manage events, participate in events, and more.
 
@@ -14,7 +14,7 @@ A full-stack event management application built with Spring Boot, Angular, and K
 
 ## 📖 Overview
 
-**Event Management Platform** is a modern, full-featured web application designed to connect event organizers with attendees. The platform enables users to discover events based on categories (Music, Learn, Create, Connect, Chill), browse events by geographic location (continents and cities), and participate in events that match their interests.
+**GATHER** is a modern, full-featured Event Management web application designed to connect event organizers with attendees. The platform enables users to discover events based on categories (Music, Learn, Create, Connect, Chill), browse events by geographic location (continents and cities), and participate in events that match their interests.
 
 **Key Highlights:**
 
