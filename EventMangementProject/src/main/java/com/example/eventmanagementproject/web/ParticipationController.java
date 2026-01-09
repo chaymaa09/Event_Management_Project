@@ -32,7 +32,7 @@ public class ParticipationController {
     private final ParticipationRepository participationRepository;
 
     /**
-     * Get all participations for a specific event
+     * Get all participations for a specific event (including CANCELLED)
      * GET /api/participations/event/{eventId}
      */
     @GetMapping("/event/{eventId}")
@@ -47,6 +47,37 @@ public class ParticipationController {
         
         // Convert to DTOs to avoid circular reference
         List<ParticipationDTO> dtos = participations.stream()
+                .map(ParticipationDTO::fromEntity)
+                .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(dtos);
+    }
+
+    /**
+     * Get all participations for a specific event (excluding CANCELLED)
+     * Sorted by: BLOCKED first, then others
+     * GET /api/participations/event/{eventId}/active
+     */
+    @GetMapping("/event/{eventId}/active")
+    public ResponseEntity<List<ParticipationDTO>> getEventParticipationsActive(@PathVariable Long eventId) {
+        Event event = eventRepository.findById(eventId).orElse(null);
+        
+        if (event == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        List<Participation> participations = participationService.getEventParticipations(event);
+        
+        // Filter out CANCELLED and sort: BLOCKED -> others
+        List<ParticipationDTO> dtos = participations.stream()
+                .filter(p -> p.getStatus() != ParticipationStatus.CANCELLED)
+                .sorted((p1, p2) -> {
+                // BLOCKED first
+                    if (p1.getStatus() == ParticipationStatus.BLOCKED) return -1;
+                    if (p2.getStatus() == ParticipationStatus.BLOCKED) return 1;
+                    // Others (priority 2)
+                    return 0;
+                })
                 .map(ParticipationDTO::fromEntity)
                 .collect(Collectors.toList());
         

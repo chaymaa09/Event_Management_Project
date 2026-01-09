@@ -27,7 +27,7 @@
       </div>
 
       <div class="space-y-4">
-        <div *ngFor="let event of filteredResults" class="flex gap-4 p-2 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group">
+        <div *ngFor="let event of filteredResults" class="flex gap-4 p-2 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group" (click)="$event.stopPropagation(); openEvent(event)">
           <img [src]="event.posterUrl" class="w-20 h-20 rounded-lg object-cover bg-gray-100 shadow-sm">
           
           <div class="flex-1 min-w-0">

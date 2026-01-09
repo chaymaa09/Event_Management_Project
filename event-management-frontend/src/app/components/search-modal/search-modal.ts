@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Required for *ngIf and *ngFor
 import { SearchService } from '../../services/search.service';
+import { SidebarService } from '../../services/sidebar.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -17,7 +18,7 @@ export class SearchModal {
   filteredResults: any[] = [];
   private typingSubject = new Subject<string>();
 
-  constructor(private searchService: SearchService) {
+  constructor(private searchService: SearchService, private sidebar: SidebarService) {
     this.typingSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -25,6 +26,12 @@ export class SearchModal {
       this.filterLocalEvents(term);
       this.searchService.updateSearchTerm(term);
     });
+  }
+
+  openEvent(event: any) {
+    // open the sidebar with the event and close the modal
+    try { this.sidebar.open(event); } catch (e) { console.error('Failed to open sidebar from search modal', e); }
+    this.close();
   }
 
   // Called by the Page Component button

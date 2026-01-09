@@ -47,4 +47,9 @@ export class ParticipationService {
   getUserParticipations(userId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/user/${userId}`);
   }
+
+  // Fetch all participants for an event, excluding CANCELLED, sorted by: ABANDONED, BLOCKED, others
+  getEventParticipantsActive(eventId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/event/${eventId}/active`);
+  }
 }
