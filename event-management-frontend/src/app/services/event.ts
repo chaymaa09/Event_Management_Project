@@ -44,5 +44,9 @@ export class EventService {
     return this.http.post<{ posterUrl: string }>(`${this.baseUrl}/upload-poster`, formData);
   }
 
+  getEventsByCity(cityName: string): Observable<AppEvent[]> {
+    return this.http.get<AppEvent[]>(`${this.baseUrl}/city/${cityName}`);
+  }
+
 
 }

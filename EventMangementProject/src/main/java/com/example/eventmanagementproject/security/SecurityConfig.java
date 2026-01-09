@@ -13,7 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -22,21 +21,20 @@ public class SecurityConfig {
     @Autowired
     private CorsConfigurationSource corsConfigurationSource;
 
-
     public static final String[] WHITE_LIST = {
             "/api/v1/auth/**",
             "/api/events/all",
+            "/api/events/*",
+            "/api/events/city/*",
+            "/api/cities/**",
+            "/api/categories/**",
+            "/api/users/me",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
             "/error",
-            "/assets/**",
-            "/api/categories/**",
-            "/api/events/all"
-    
-
+            "/assets/**"
     };
-
 
     // Security Filter Chain
     @Bean
@@ -46,12 +44,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(WHITE_LIST).permitAll()
-                    // Protect API endpoints (where user info lives). The SPA shell (/, /profile, /settings)
-                    // must remain loadable without a Bearer token; Angular + Keycloak handle the login redirect.
-                    .requestMatchers("/api/**").authenticated()
-                    .anyRequest().permitAll()
-                )
+                        .requestMatchers(WHITE_LIST).permitAll()
+                        // Protect API endpoints (where user info lives). The SPA shell (/, /profile,
+                        // /settings)
+                        // must remain loadable without a Bearer token; Angular + Keycloak handle the
+                        // login redirect.
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);

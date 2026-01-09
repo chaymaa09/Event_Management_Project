@@ -13,10 +13,10 @@ CREATE TABLE IF NOT EXISTS category_subscribers (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Add a foreign key column on event for the new Category entity
-ALTER TABLE event ADD COLUMN IF NOT EXISTS category_id BIGINT NULL;
+ALTER TABLE event ADD COLUMN category_id BIGINT NULL;
 
 ALTER TABLE event
-    ADD CONSTRAINT IF NOT EXISTS fk_event_category
+    ADD CONSTRAINT fk_event_category
     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL;
 
 -- Seed default categories matching the previous enum values

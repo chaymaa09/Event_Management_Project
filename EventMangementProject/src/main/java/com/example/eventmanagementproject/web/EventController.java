@@ -96,9 +96,9 @@ public class EventController {
 
             // Generate unique filename
             String originalFilename = file.getOriginalFilename();
-            String extension = originalFilename != null && originalFilename.contains(".") 
-                ? originalFilename.substring(originalFilename.lastIndexOf(".")) 
-                : ".jpg";
+            String extension = originalFilename != null && originalFilename.contains(".")
+                    ? originalFilename.substring(originalFilename.lastIndexOf("."))
+                    : ".jpg";
             String filename = UUID.randomUUID().toString() + extension;
 
             // Save file
@@ -113,6 +113,15 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Failed to upload file: " + e.getMessage()));
         }
+    }
+
+    @GetMapping("/city/{cityName}")
+    public ResponseEntity<List<EventResponseDTO>> getEventsByCity(@PathVariable String cityName) {
+        List<Event> events = eventService.findEventsByCity(cityName);
+        List<EventResponseDTO> dtos = events.stream()
+                .map(eventMapper::toResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
 }
