@@ -1,8 +1,9 @@
 package com.example.eventmanagementproject.dto;
 
-import lombok.Data;
 import java.time.ZonedDateTime;
 import java.util.Set;
+
+import lombok.Data;
 
 @Data
 public class EventResponseDTO {

@@ -131,4 +131,17 @@ public class ParticipationController {
                 .map(p -> ResponseEntity.ok(ParticipationDTO.fromEntity(p)))
                 .orElse(ResponseEntity.ok(null));
     }
+
+    /**
+     * Get all participations for a specific user
+     * GET /api/participations/user/{userId}
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ParticipationDTO>> getParticipationsByUser(@PathVariable Long userId) {
+        List<Participation> participations = participationService.getUserParticipations(userId);
+        List<ParticipationDTO> dtos = participations.stream()
+                .map(ParticipationDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
 }

@@ -181,6 +181,7 @@ export class EventSidebar {
       this.participationService.requestToJoinEvent(ev.id, user.id).subscribe({
         next: () => {
           this.showToastMessage('Your request to join the event has been sent.');
+          this.participationStatus = ParticipationStatus.PENDING;
           this.getJoinedAttendees();
           this.getParticipation();
           
@@ -194,6 +195,7 @@ export class EventSidebar {
       this.participationService.joinEvent(ev.id, user.id).subscribe({
         next: () => {
           this.showToastMessage('You have successfully joined the event.'); 
+          this.participationStatus = ParticipationStatus.CONFIRMED;
           this.getJoinedAttendees(); 
           this.getParticipation();
         
@@ -234,7 +236,7 @@ export class EventSidebar {
     }
 
     const participationId = this.participation.id;
-    this.participationService.updateStatus(participationId, 'CANCELLED').subscribe({
+    this.participationService.updateStatus(participationId, ParticipationStatus.CANCELLED).subscribe({
       next: () => {
         // update local state
         this.participationStatus = ParticipationStatus.CANCELLED;

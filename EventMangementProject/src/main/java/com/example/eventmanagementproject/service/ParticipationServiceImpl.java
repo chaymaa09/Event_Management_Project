@@ -73,14 +73,9 @@ public class ParticipationServiceImpl implements ParticipationService {
     }
 
     public void validateStatusTransition(ParticipationStatus currentStatus, ParticipationStatus newStatus) {
-        if (currentStatus == ParticipationStatus.CANCELLED && newStatus == ParticipationStatus.CONFIRMED) {
-            throw new RuntimeException("Cannot confirm a cancelled participation");
-        }
-
         if (currentStatus == ParticipationStatus.ATTENDED && newStatus == ParticipationStatus.PENDING) {
             throw new RuntimeException("Cannot change attended participation back to pending");
         }
-
     }
 
     public List<User> getEventSubscribers(Long eventId){
@@ -151,6 +146,7 @@ public class ParticipationServiceImpl implements ParticipationService {
             return true;
         }
         Participation p = createParticipation(event, user, ParticipationStatus.PENDING);
+        participationRepository.save(p);
         return p != null;
 
 
@@ -173,9 +169,15 @@ public class ParticipationServiceImpl implements ParticipationService {
             return false;
         } else {
             Participation pnew = createParticipation(event, user, ParticipationStatus.CONFIRMED);
+            participationRepository.save(pnew);
             return pnew != null;
         }
 
+    }
+
+    @Override
+    public List<Participation> getUserParticipations(Long userId) {
+        return participationRepository.findByUser_id(userId);
     }
 
 }

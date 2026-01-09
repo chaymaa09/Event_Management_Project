@@ -42,4 +42,9 @@ export class ParticipationService {
   getParticipation(eventId: number, userId: number): Observable<Participation> {
     return this.http.get<Participation>(`${this.baseUrl}/get/event/${eventId}/user/${userId}`);
   }
+
+  // Fetch participations for a given user (attended/joined events)
+  getUserParticipations(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/user/${userId}`);
+  }
 }
